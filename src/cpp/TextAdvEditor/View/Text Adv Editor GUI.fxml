@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cpp.TextAdvEditor.View.TextAdvEditorControler">
+  <children>
+    <TabPane fx:id="tabPane" prefHeight="576.0" prefWidth="800.0" rotateGraphic="false" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="24.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0" />
+    <MenuBar prefWidth="800.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
+                  <MenuItem mnemonicParsing="false" onAction="#saveAs" text="Save As" />
+                  <MenuItem mnemonicParsing="false" onAction="#load" text="Load" />
+                  <MenuItem mnemonicParsing="false" onAction="#export" text="Export" />
+          </items>
+        </Menu>
+            <Menu mnemonicParsing="false" onShowing="#update" text="Markers">
+              <items>
+                <MenuItem fx:id="addBook" mnemonicParsing="false" onAction="#addBookmark" text="Add to BookMark" />
+                  <MenuItem fx:id="removeBook" mnemonicParsing="false" onAction="#removeBookmark" text="Remove BookMark" />
+                  <MenuItem mnemonicParsing="false" onAction="#setCurrent" text="Set Selected to Current" />
+                  <MenuItem mnemonicParsing="false" onAction="#setStart" text="Set Selected to Start" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <Menu mnemonicParsing="false" text="Search">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#bookmark" text="BookeMarks" />
+                        <MenuItem mnemonicParsing="false" onAction="#noParent" text="Nodes with No Parents" />
+                        <MenuItem mnemonicParsing="false" onAction="#noChild" text="Nodes with No Children" />
+                        <MenuItem mnemonicParsing="false" onAction="#tree" text="All Nodes" />
+                    </items>
+                  </Menu>
+              </items>
+            </Menu>
+      </menus>
+    </MenuBar>
+  </children>
+</AnchorPane>
