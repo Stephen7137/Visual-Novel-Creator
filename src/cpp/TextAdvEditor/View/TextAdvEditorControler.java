@@ -3,10 +3,14 @@ package cpp.TextAdvEditor.View;
 import java.util.Optional;
 
 import cpp.TextAdvEditor.ChapterEditor;
+import cpp.TextAdvEditor.ImageLoader;
 import cpp.TextAdvEditor.ProjectManager;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -26,7 +30,7 @@ public class TextAdvEditorControler {
 	private ProjectManager manager;
 	private ChapterEditor cHeditor;
 	Editor editor;
-	
+	private ImageLoader imgLoader;
 	private Stage owner;	
 	
 	@FXML
@@ -38,6 +42,9 @@ public class TextAdvEditorControler {
 	@FXML
 	private MenuItem removeBook;
 	
+	@FXML
+	private MenuBar bar;
+		
 	@FXML
 	private void addBookmark(){
 		cHeditor.addBookmark();
@@ -156,6 +163,16 @@ public class TextAdvEditorControler {
 		
 	}
 	
+	@FXML
+	private void importBackground(){
+		imgLoader.loadBackground();
+	}
+	
+	@FXML
+	private void importActor(){
+		imgLoader.loadActor();
+	}
+	
 	/**
 	 * Creates a Alert box and gets the user input of the user.
 	 * notifies if a Node has no parents.
@@ -212,9 +229,17 @@ public class TextAdvEditorControler {
 	 * @param editor
 	 * @param cHeditor
 	 */
-	public void setData(Editor editor, ChapterEditor cHeditor) {
+	public void setData(Editor editor, ChapterEditor cHeditor, ImageLoader imgLoader) {
 		this.editor = editor;
 		this.cHeditor = cHeditor;
+		this.imgLoader = imgLoader;
 		update();
+	}
+
+	public void start() {
+		//tabPane.disableProperty().set(true);
+		//ObservableList<Menu> list = bar.getMenus();
+		//mark.disableProperty().set(true);
+		//image.disableProperty().set(true);
 	}
 }

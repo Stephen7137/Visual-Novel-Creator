@@ -5,6 +5,7 @@ import java.util.Random;
 
 import cpp.TextAdvEditor.CanvasManager;
 import cpp.TextAdvEditor.ChapterEditor;
+import cpp.TextAdvEditor.ImageLoader;
 import cpp.TextAdvEditor.ProjectManager;
 import cpp.TextAdvEditor.Model.Story;
 import javafx.application.Application;
@@ -30,6 +31,7 @@ public class Main extends Application {
 	
 	int height = 600;
 	int width = 800;
+	TextAdvEditorControler mainController;
 	
 	/**
 	 * Sets up the default window to be shown
@@ -37,13 +39,17 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			
+			
 			Scene scene = createScene(new ProjectManager(primaryStage),
 					primaryStage);
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("TA Editor");
+			primaryStage.setMaximized(true);
 			primaryStage.setMinHeight(primaryStage.getHeight());
 			primaryStage.setMinWidth(primaryStage.getWidth());
-			primaryStage.setResizable(false);
+			primaryStage.setResizable(true);
+			mainController.start();
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -73,21 +79,28 @@ public class Main extends Application {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("Text Adv Editor GUI.fxml"));
 		Scene scene = new Scene(loader.load());
-		TextAdvEditorControler controller = loader.getController();
-		controller.setWriteChapter(projectManager, primaryStage);
+		mainController = loader.getController();
+		mainController.setWriteChapter(projectManager, primaryStage);
 		
 		loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("SimConsole.fxml"));
-		controller.addTab("Console", loader.load());
+		mainController.addTab("Console", loader.load());
 		SimConsole console = loader.getController();
 		console.cHeditor(cHeditor);
 		
 		loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("SceneEditor.fxml"));
+		mainController.addTab("Scene Editor", loader.load());
+		//SimConsole console = loader.getController();
+		//console.cHeditor(cHeditor);
+		
+		loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("Editor.fxml"));
-		controller.addTab("Overview", loader.load());
+		mainController.addTab("Overview", loader.load());
 		Editor editor = loader.getController();
 		editor.setCanvasManger(cnvsManager, cHeditor);
-		controller.setData(editor, cHeditor);
+		mainController.setData(editor, cHeditor, new ImageLoader(primaryStage));
+		
 		return scene;
 	}
 			

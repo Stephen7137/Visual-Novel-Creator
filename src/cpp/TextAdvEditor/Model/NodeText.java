@@ -11,9 +11,11 @@ package cpp.TextAdvEditor.Model;
 public class NodeText {
 	
 	private String text;
+	Scene scene;
 	private int ID;
 	
 	public NodeText(String text,int  ID){
+		scene = new Scene();
 		this.text = text;
 		this.ID = ID;
 	}
