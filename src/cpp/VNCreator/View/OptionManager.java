@@ -1,7 +1,7 @@
 package cpp.VNCreator.View;
 
 import java.io.IOException;
-import cpp.VNCreator.CanvasManager;
+import cpp.VNCreator.Controller.CanvasManager;
 import cpp.VNCreator.Node.OptionText;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.GridPane;

@@ -1,4 +1,4 @@
-package cpp.VNCreator;
+package cpp.VNCreator.Controller;
 
 import java.io.File;
 import java.io.FileInputStream;

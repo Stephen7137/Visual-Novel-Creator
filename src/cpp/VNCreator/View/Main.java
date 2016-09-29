@@ -3,11 +3,11 @@ package cpp.VNCreator.View;
 import java.io.IOException;
 import java.util.Random;
 
-import cpp.VNCreator.CanvasManager;
-import cpp.VNCreator.ChapterEditor;
-import cpp.VNCreator.Controller;
-import cpp.VNCreator.ImageLoader;
-import cpp.VNCreator.ProjectManager;
+import cpp.VNCreator.Controller.CanvasManager;
+import cpp.VNCreator.Controller.ChapterEditor;
+import cpp.VNCreator.Controller.Controller;
+import cpp.VNCreator.Controller.ImageLoader;
+import cpp.VNCreator.Controller.ProjectManager;
 import cpp.VNCreator.Model.Story;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

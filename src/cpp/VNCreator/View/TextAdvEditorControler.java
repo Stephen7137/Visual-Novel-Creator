@@ -2,14 +2,12 @@ package cpp.VNCreator.View;
 
 import java.util.Optional;
 
-import cpp.VNCreator.ChapterEditor;
-import cpp.VNCreator.ImageLoader;
-import cpp.VNCreator.ProjectManager;
-import javafx.collections.ObservableList;
+import cpp.VNCreator.Controller.ChapterEditor;
+import cpp.VNCreator.Controller.ImageLoader;
+import cpp.VNCreator.Controller.ProjectManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;

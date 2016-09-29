@@ -1,7 +1,7 @@
 package cpp.VNCreator.View;
 
-import cpp.VNCreator.ImageLoader;
-import cpp.VNCreator.Controller;
+import cpp.VNCreator.Controller.ImageLoader;
+import cpp.VNCreator.Controller.Controller;
 import cpp.VNCreator.Node.Node;
 import cpp.VNCreator.Node.Scene;
 import javafx.fxml.FXML;

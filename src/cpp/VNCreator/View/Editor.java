@@ -2,8 +2,8 @@ package cpp.VNCreator.View;
 
 import java.util.Optional;
 
-import cpp.VNCreator.CanvasManager;
-import cpp.VNCreator.ChapterEditor;
+import cpp.VNCreator.Controller.CanvasManager;
+import cpp.VNCreator.Controller.ChapterEditor;
 import cpp.VNCreator.Model.NodeType.nodeType;
 import cpp.VNCreator.Node.Node;
 import javafx.beans.value.ChangeListener;
@@ -193,21 +193,21 @@ public class Editor {
 	 */
 	public void update(Node node) {
 		//TODO
-		if(node != null){
-			title.setDisable(false);
-			text.setDisable(false);
-			title.setText(node.getTitle());
-			text.setText(node.getText());
-			if(node.getType() == nodeType.Option){
-				option.setDisable(false);
-				optionManager.setOption(cHeditor.getSelOText());
-			}else{
-				option.setDisable(true);
-				//optionManager.reset();
-			}
-		}else{
-			disable();
-		}
+//		if(node != null){
+//			title.setDisable(false);
+//			text.setDisable(false);
+//			title.setText(node.getTitle());
+//			text.setText(node.getText());
+//			if(node.getType() == nodeType.Option){
+//				option.setDisable(false);
+//				optionManager.setOption(cHeditor.getSelOText());
+//			}else{
+//				option.setDisable(true);
+//				//optionManager.reset();
+//			}
+//		}else{
+//			disable();
+//		}
 	}
 
 	/**

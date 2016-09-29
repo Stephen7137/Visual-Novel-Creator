@@ -1,6 +1,6 @@
 package cpp.VNCreator.View;
 
-import cpp.VNCreator.Controller;
+import cpp.VNCreator.Controller.Controller;
 import cpp.VNCreator.Model.NodeType.nodeType;
 import cpp.VNCreator.Node.Node;
 import javafx.fxml.FXML;

@@ -1,4 +1,4 @@
-package cpp.VNCreator;
+package cpp.VNCreator.Controller;
 
 import java.util.ArrayList;
 import cpp.VNCreator.Model.SimpPoint2D;

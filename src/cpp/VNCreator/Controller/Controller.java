@@ -1,4 +1,4 @@
-package cpp.VNCreator;
+package cpp.VNCreator.Controller;
 
 import cpp.VNCreator.View.Editor;
 import cpp.VNCreator.View.SceneEditor;
