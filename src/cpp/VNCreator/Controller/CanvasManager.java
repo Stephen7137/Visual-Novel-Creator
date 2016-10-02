@@ -1,13 +1,19 @@
 package cpp.VNCreator.Controller;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map.Entry;
+
+import cpp.VNCreator.Model.CVNode;
 import cpp.VNCreator.Model.SimpPoint2D;
 import cpp.VNCreator.Model.TreePoint;
+import cpp.VNCreator.Node.Node;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 
 /**
  * Controls the canvas, keep track of all nodes location
@@ -27,40 +33,36 @@ public class CanvasManager {
 	private int diameter;
 	private int toolW;
 	private int toolH;
+	private Font font;
 	
 	private Color background = Color.WHITE;
 	
-	private ArrayList<TreePoint> lookup;
+	private Hashtable<Integer,TreePoint> lookup;
 	private Canvas canvas;
 	private GraphicsContext gc;
 	
-	private int chapterID;
-	private int selectedID;
 	private TreePoint start;
 	private TreePoint selected;
 
 	private Point2D toolText;
 	private SimpPoint2D connect;
 	
-	public CanvasManager(int chID){
-		chapterID = chID;
-	}
 	
 	/**
 	 * Sets up the the canvas and the default values,
 	 * as well as location of the tools.
 	 * @param canvas
-	 * @param key
 	 */
-	public void setCanvas(Canvas canvas, int key){
+	public CanvasManager(Canvas canvas){
 		diameter = radius*2;
 		start = null;
-		lookup = new ArrayList<TreePoint>();
+		selected = null;
+		lookup = new Hashtable<Integer,TreePoint>();
 		this.canvas = canvas;
 		gc = canvas.getGraphicsContext2D();
 		toolW = toolH = diameter + 8;
 		toolText = new Point2D(toolW/2 + 2, toolH - radius - 2);
-		resetSelected();
+		font = new Font("Times New Roman", 12);
 	}
 	
 	/**
@@ -108,7 +110,6 @@ public class CanvasManager {
 		gc.setLineWidth(3);
 		gc.fillRect(2, 2, toolW, toolH);
 		gc.strokeRect(2, 2, toolW, toolH);
-		drawNode(toolText.getX(), toolText.getY(), Color.BLUE);
 	}
 	
 	/**
@@ -116,8 +117,8 @@ public class CanvasManager {
 	 * the child coming from the {@link #selected}.
 	 */
 	private void drawAllLines(){
-		for(int i = 0; i < lookup.size(); i++){
-			drawChild(lookup.get(i), Color.BLACK);
+		for(Entry<Integer, TreePoint> point : lookup.entrySet()){
+			drawChild(point.getValue(), Color.BLACK);
 		}
 		
 		if(selected != null){
@@ -131,8 +132,8 @@ public class CanvasManager {
 	 */
 	private void drawAllNodes(){
 		
-		for(int i = 0; i < lookup.size(); i++){
-			drawNode(lookup.get(i), Color.BLUE);
+		for(Entry<Integer, TreePoint> point : lookup.entrySet()){
+			drawNode(point.getValue(), Color.BLUE);
 		}
 		
 		if(start != null){
@@ -163,7 +164,7 @@ public class CanvasManager {
 	 * @param color
 	 */
 	private void drawNode(TreePoint node, Paint color){
-		drawNode(node.getX(),node.getY(),color);
+		drawNode(node.getTitle(), node.getX(),node.getY(),color);
 	}
 	
 	/**
@@ -173,15 +174,16 @@ public class CanvasManager {
 	 * @param y
 	 * @param color
 	 */
-	private void drawNode(double x, double y, Paint color){
+	private void drawNode(String text, double x, double y, Paint color){
 		gc.setLineWidth(5);
-		gc.setFill(color);
-		gc.fillOval(x - radius, y - radius,
-				diameter, diameter);
+		gc.setFill(Color.LIGHTBLUE);
+		gc.fillRoundRect(x, y, 100, 50, diameter/2, diameter/2);
 		gc.setLineWidth(2);
 		gc.setStroke(Color.BLACK);
-		gc.strokeOval(x - radius, y - radius,
-				diameter, diameter);
+		gc.setFill(Color.BLACK);
+		gc.strokeRoundRect(x, y, 100, 50, diameter/2, diameter/2);
+		gc.setFont(font);
+		gc.fillText(text, x + 10, y + 15);
 	}
 	
 	/**
@@ -191,13 +193,20 @@ public class CanvasManager {
 	 * @param color
 	 */
 	private void drawChild(TreePoint point, Paint color){
-		gc.setLineWidth(5);
-		gc.setStroke(color);
-		for(int j = 0; j < point.childsize(); j++){
-			TreePoint point1 = point.getChild(j);
-			gc.strokeLine(point.getX(), point.getY(), 
-					point1.getX(), point1.getY());
-		}	
+		if(point != null){
+			gc.setLineWidth(5);
+			gc.setStroke(color);
+			ArrayList<CVNode> list = point.getChildren();
+			if(list != null){
+				for(CVNode node : list){
+					if(node != null){
+						TreePoint point1 = searchTree(node.id);
+						gc.strokeLine(point.getX(), point.getY(), 
+							point1.getX(), point1.getY());
+					}				
+				}
+			}			
+		}		
 	}
 	
 	/**
@@ -209,6 +218,9 @@ public class CanvasManager {
 	 * @return the id of the node the point is on.
 	 */
 	public int onNode(double x, double y, boolean selected) {
+		for(Entry<Integer, TreePoint> point : lookup.entrySet()){
+			drawNode(point.getValue(), Color.BLUE);
+		}
 		for(int i = 0; i < lookup.size(); i++){
 			if(lookup.get(i).distance(x, y) <= radius){
 				if(selected){
@@ -222,40 +234,10 @@ public class CanvasManager {
 	}
 
 	public int getSelected() {
-		return selectedID;
+		return selected.getID();
 	}
-
-	/**
-	 * Creates a new node and adds it to selected node.
-	 * If selected has children then space them out when
-	 * add more.
-	 * @param key Id of the node.
-	 */
-	public void addChild(int key) {
-		if(key >= 0){
-			TreePoint cNode = new TreePoint(0,0,key);
-			selected.addChild(cNode);
-			lookup.add(cNode);
-			cNode.addParent(selected);
-			if(!selected.childEmpty()){
-				int n = selected.childsize();
-				int y = (int)selected.getY() - 
-						((n-1)*diameter + distance*(n-1))/2;
-				int x = (int)selected.getX() + nodeDist;
-				for(int i = 0; i < n; i++){
-					selected.getChild().get(i).setXY(x,y);
-					y+= (diameter + distance);
-				}
-			}
-			update();
-		}
-	}
-
-	public int getID() {
-		return chapterID;
-	}
-
-	public ArrayList<TreePoint> saveCanvas() {
+	
+	public Hashtable<Integer, TreePoint> saveCanvas() {
 		return lookup;
 	}
 
@@ -265,25 +247,10 @@ public class CanvasManager {
 	 * @param chapterID
 	 * @param lookup
 	 */
-	public void load(int chapterID, ArrayList<TreePoint> lookup) {
-		this.chapterID = chapterID;
+	public void load( Hashtable<Integer, TreePoint> lookup) {
 		this.lookup = lookup;
-		resetSelected();
-	}
-
-	/**
-	 * Sets all non important variables to default setting and then
-	 * update the canvas.
-	 */
-	public void resetSelected() {
-		selectedID = -1;
 		selected = null;
-		connect = null;
 		update();
-	}
-
-	public int getChapterID() {
-		return chapterID;
 	}
 
 	/**
@@ -344,10 +311,12 @@ public class CanvasManager {
 	 * @param y
 	 * @param createNode
 	 */
-	public void createNode(double x, double y, int createNode) {
-		TreePoint cNode = new TreePoint(x,y,createNode);
-		lookup.add(cNode);
+	public void createNode(double x, double y, Node node) {
+		System.out.println("NodeCreated: " + node.getID());
+		TreePoint cNode = new TreePoint(x,y,node);
+		lookup.put(cNode.getID(),cNode);
 		setSelected(cNode);
+		update();
 	}
 	
 	/**
@@ -367,9 +336,8 @@ public class CanvasManager {
 	private void setSelected(TreePoint node){
 		selected = node;
 		if(selected == null){
-			resetSelected();
+			update();
 		}else{
-			selectedID = selected.getID();
 			connect = new SimpPoint2D(selected.getX() - offset, 
 					selected.getY() - offset);
 		}	
@@ -394,43 +362,12 @@ public class CanvasManager {
 	}
 
 	/**
-	 * Connects node with id to selected node and adds selected to parent
-	 * of node and node to child of selected.
-	 * @param ID
-	 */
-	public void connect(int ID) {
-		if(ID >= 0){
-			if(selected != null){
-				TreePoint node = searchTree(ID);
-				node.addParent(selected);
-				selected.addChild(node);
-			}
-		}
-		update();
-	}
-
-	/**
 	 * Looks through {@link #lookup} for node with the id.
 	 * @param ID
 	 * @return
 	 */
 	private TreePoint searchTree(int ID) {
-		for(int i = 0; i < lookup.size(); i++){
-			if(lookup.get(i).getID() == ID) return lookup.get(i);
-		}
-		return null;
-	}
-
-	/**
-	 * Disconnects node with id from selected node and removes selected to 
-	 * parent of node removes node to child of selected.
-	 * @param ID
-	 */
-	public void disconnect(int ID) {
-		TreePoint point = searchTree(ID);
-		selected.removeChild(point);
-		point.removeParent(selected);
-		update();
+		return lookup.get(ID);
 	}
 
 	/**
@@ -439,27 +376,10 @@ public class CanvasManager {
 	 */
 	public void delete() {
 		if(selected != null){
-			ArrayList<TreePoint> child = selected.getChild();
-			for(int i = 0; i < child.size(); i++){
-				child.get(i).removeParent(selected);
-			}
-			ArrayList<TreePoint> parent = selected.getChild();
-			for(int i = 0; i < parent.size(); i++){
-				parent.get(i).removeChild(selected);
-			}
-			selected.delete();
-			lookup.remove(selected);
-			resetSelected();
+			lookup.remove(selected.getID());
+			selected = null;
+			update();
 		}
-	}
-
-	/**
-	 * Creates the starting node with given id.
-	 * @param ID
-	 */
-	public void StartNode(int ID) {
-		createNode(diameter, canvas.getHeight()/2, ID);
-		start = searchTree(ID);
 	}
 	
 	/**

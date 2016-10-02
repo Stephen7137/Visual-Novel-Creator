@@ -68,4 +68,12 @@ public abstract class Node implements Serializable {
 		public Scene getScene() {
 			return scene;
 		}
+		
+		public boolean isEmpty() {
+			if(title.equals("")) return false;
+			if(text.equals("")) return false;
+			return true;
+		}
+		
+		public abstract boolean hasChild();
 }

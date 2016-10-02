@@ -2,8 +2,8 @@ package cpp.VNCreator.Controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
-import cpp.VNCreator.Model.Chapter;
 import cpp.VNCreator.Model.Story;
 import cpp.VNCreator.Model.TreePoint;
 import cpp.VNCreator.Node.Node;
@@ -20,21 +20,17 @@ public class SaveProject implements Serializable{
 	
 	protected static final long serialVersionUID = 232323;
 	
-	private ArrayList<SaveCanvas> canvas;
-	private ArrayList<SaveEditor> editor;
-	private int currentChapterID;
+	private SaveCanvas canvas;
+	private SaveEditor editor;
 	private Story story;
 	
 	public SaveProject(Story story){
-		canvas = new ArrayList<SaveCanvas>();
-		editor = new  ArrayList<SaveEditor> ();
 		this.story = story;
 	}
 	
 	public void addManagers(CanvasManager cnvsManager, ChapterEditor chEditor){
-		currentChapterID = chEditor.getCHID();
-		canvas.add(new SaveCanvas(cnvsManager));
-		editor.add(new SaveEditor(chEditor));
+		canvas = new SaveCanvas(cnvsManager);
+		editor = new SaveEditor(chEditor);
 	}
 	
 	/**
@@ -49,19 +45,17 @@ public class SaveProject implements Serializable{
 		 * 
 		 */
 		private static final long serialVersionUID = 65393544174854803L;
-		private ArrayList<TreePoint> canvas;
-		private int chapterID;
+		private Hashtable<Integer, TreePoint> canvas;
 		
 		public SaveCanvas(CanvasManager cnvsManager){
 			update(cnvsManager);
 		}
 		
 		public void loadCanvas(CanvasManager cnvsManager){
-			cnvsManager.load(chapterID, canvas);
+			cnvsManager.load(canvas);
 		}
 		
 		public void update(CanvasManager cnvsManager){
-			chapterID = cnvsManager.getID();
 			canvas = cnvsManager.saveCanvas();
 		}
 	}
@@ -82,14 +76,13 @@ public class SaveProject implements Serializable{
 		private ArrayList<Node> noChild;
 		private ArrayList<Node> noParent;
 		private Node currentNode;
-		private int chapterID;
 		
 		public SaveEditor(ChapterEditor chEditor){
 			update(chEditor);
 		}
 		
 		public void loadEditor(ChapterEditor chEditor){
-			chEditor.load(chapterID, currentNode, noParent, noChild, bookmark);
+			chEditor.load(currentNode, noParent, noChild, bookmark);
 		}
 
 		/**
@@ -102,7 +95,6 @@ public class SaveProject implements Serializable{
 			noChild = chEditor.saveNoChild();
 			noParent = chEditor.saveNoParent();
 			currentNode = chEditor.saveCurrent();
-			chapterID = chEditor.getCHID();
 		}
 	}
 
@@ -113,34 +105,9 @@ public class SaveProject implements Serializable{
 	 * @param chEditor is the node editor.
 	 */
 	public void update(CanvasManager cnvsManager, ChapterEditor chEditor) {
-		currentChapterID = chEditor.getCHID();
-		story.getCH(currentChapterID).setStart(chEditor.getStart());
-		searchCanvas(cnvsManager.getChapterID()).update(cnvsManager);
-		searchEditor(chEditor.getCHID()).update(chEditor);	
-	}
-	
-	/**
-	 * searches array of SaveEditors with chapter id ID.
-	 * @param ID chapterID
-	 * @return SaveEditor with ChapterID ID.
-	 */
-	public SaveEditor searchEditor(int ID){
-		for(int i = 0; i < editor.size();i++){
-			if(editor.get(i).chapterID == ID) return editor.get(i);
-		}
-		return null;
-	}
-	
-	/**
-	 * searches array of SaveCanvas with chapter id ID.
-	 * @param ID chapterID
-	 * @return SaveCanvas with ChapterID ID.
-	 */
-	public SaveCanvas searchCanvas(int ID){
-		for(int i = 0; i < canvas.size();i++){
-			if(canvas.get(i).chapterID == ID) return canvas.get(i);
-		}
-		return null;
+		story.setStart(chEditor.getStart());
+		editor.update(chEditor);
+		canvas.update(cnvsManager);	
 	}
 
 	/**
@@ -151,10 +118,9 @@ public class SaveProject implements Serializable{
 	 */
 	public void loadProject(CanvasManager cnvsManager, 
 			ChapterEditor chEditor) {
-		Chapter chapter = story.getCH(currentChapterID);
-		chEditor.loadTree(chapter.getTree(), chapter.getStart());
-		searchEditor(currentChapterID).loadEditor(chEditor);
-		searchCanvas(currentChapterID).loadCanvas(cnvsManager);
+		chEditor.loadTree(story.getTree(), story.getStart());
+		editor.loadEditor(chEditor);
+		canvas.loadCanvas(cnvsManager);
 		cnvsManager.setStart(chEditor.getStart().getID());
 	}
 	

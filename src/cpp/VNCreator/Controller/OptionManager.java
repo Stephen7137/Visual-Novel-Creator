@@ -1,10 +1,13 @@
-package cpp.VNCreator.View;
+package cpp.VNCreator.Controller;
 
 import java.io.IOException;
-import cpp.VNCreator.Controller.CanvasManager;
+import java.util.ArrayList;
+import java.util.Collections;
+
 import cpp.VNCreator.Node.OptionText;
+import cpp.VNCreator.View.Main;
+import cpp.VNCreator.View.OptionBox;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -18,12 +21,12 @@ import javafx.scene.layout.VBox;
 public class OptionManager {
 
 	VBox option;
-	GridPane grid;
-	OptionText[] children;
-	CanvasManager canvas;
+	Controller controller;
+	ArrayList<OptionText> children;
+	ArrayList<OptionBox> optionBox;
 	
-	public OptionManager(VBox option, CanvasManager canvas){
-		this.canvas = canvas;
+	public OptionManager(VBox option, Controller controller){
+		this.controller = controller;
 		this.option = option;
 	}
 	
@@ -34,21 +37,22 @@ public class OptionManager {
 	 * @param text all options
 	 * @throws IOException 
 	 */
-	public void setOption(OptionText[] children){
-		this.children = children;
+	public void setOption(ArrayList<OptionText> arrayList){
+		this.children = arrayList;
 		buildOption();
 	}
 	
 	private void buildOption(){
 		reset();
-		for(int i = 0; i < children.length; i++){
-			
+		optionBox = new ArrayList<OptionBox>();
+		for(int i = 0; i < children.size(); i++){
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("SimConsole.fxml"));
 			OptionBox console = loader.getController();
-			console.controller(this, children[i].text, i);
+			optionBox.add(console);
+			console.controller(this, children.get(i).getText(), i);
 			if(i == 0) console.dissableUp();
-			if(i == children.length-1) console.dissableDown();
+			if(i == children.size()-1) console.dissableDown();
 			try {
 				option.getChildren().add(loader.load());
 			} catch (IOException e) {
@@ -61,13 +65,15 @@ public class OptionManager {
 		option.getChildren().clear();
 	}
 
-	public OptionText[] getOText() {
-		//TODO
+	public ArrayList<OptionText> save() {
+		for(OptionBox box : optionBox){
+			children.get(box.getID()).setText(box.getText());
+		}
 		return children;
 	}
 
 	public void highlight(int id) {
-		canvas.highlight(children[id].node.getID());
+		controller.highlight(children.get(id).getNode().getID());
 	}
 
 	public void shiftUp(int id) {
@@ -81,21 +87,11 @@ public class OptionManager {
 	}
 	
 	private void swap(int i, int j){
-		OptionText tmp = children[i];
-		children[i] = children[j];
-		children[j] = tmp;
+		Collections.swap(children, i, j);
 	}
 
-	public void delete(int id) {
-		OptionText[] tmp = new OptionText[children.length-1];
-		for(int i = 0; i < tmp.length; i++){
-			if(i != id){
-				tmp[i] = children[i];
-			}else{
-				i--;
-			}
-		}
-		children = tmp;
+	public void delete(int id) {		
+		children.remove(children.get(id));
 		buildOption();
 	}
 }

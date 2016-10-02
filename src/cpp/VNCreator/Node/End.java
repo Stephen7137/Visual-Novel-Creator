@@ -19,4 +19,9 @@ public class End extends Node {
 	public End(int id) {
 		super(id, nodeType.End);
 	}
+
+	@Override
+	public boolean hasChild() {
+		return false;
+	}
 }

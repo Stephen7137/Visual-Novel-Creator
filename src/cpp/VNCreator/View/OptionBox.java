@@ -1,5 +1,6 @@
 package cpp.VNCreator.View;
 
+import cpp.VNCreator.Controller.OptionManager;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -17,8 +18,8 @@ public class OptionBox {
 	@FXML
 	private Button down;
 	
-	OptionManager option;
-	int id;
+	private OptionManager option;
+	private int id;
 	
 	@FXML
 	private void moveUp(){
@@ -62,5 +63,12 @@ public class OptionBox {
 		});
 	}
 	
+	public int getID(){
+		return id;
+	}
+	
+	public String getText(){
+		return input.getText();
+	}
 	
 }

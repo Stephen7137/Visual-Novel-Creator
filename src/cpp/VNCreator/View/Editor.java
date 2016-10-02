@@ -2,20 +2,22 @@ package cpp.VNCreator.View;
 
 import java.util.Optional;
 
-import cpp.VNCreator.Controller.CanvasManager;
-import cpp.VNCreator.Controller.ChapterEditor;
+import cpp.VNCreator.Controller.Controller;
+import cpp.VNCreator.Controller.OptionManager;
 import cpp.VNCreator.Model.NodeType.nodeType;
 import cpp.VNCreator.Node.Node;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import cpp.VNCreator.Node.Option;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -45,11 +47,10 @@ public class Editor {
 	@FXML
 	private VBox option;
 
-	private CanvasManager cnvsManager;
-	private ChapterEditor cHeditor;
-	private boolean onSelected;
-	private boolean onConnect;
+	private Node selected;
+	private Controller controller;
 	private OptionManager optionManager;
+	ContextMenu menu;
 	
 	/**
 	 * Takes all the text from the text editor and
@@ -59,15 +60,12 @@ public class Editor {
 	 */
 	@FXML
 	private void save(){
-		//TODO
-//		cHeditor.setSelTitle(title.getText());
-//		cHeditor.setSelText(text.getText());
-//		if(cHeditor.selHasChildren()){
-//			cHeditor.setSelOText(optionManager.getOText());
-//		}
-//		if(cHeditor.isCurrent()){
-//			cHeditor.updateText();
-//		}
+		selected.setTitle(title.getText());
+		selected.setText(text.getText());
+		if(selected.getType() == nodeType.Option){
+			((Option)selected).setChildren(optionManager.save());
+		}
+		controller.updateSel();
 	}
 	
 	/**
@@ -76,15 +74,10 @@ public class Editor {
 	 */
 	@FXML
 	private void delete(){
-		boolean delete = true;
-		if(!cHeditor.isEmpty()){
+		if(!selected.isEmpty()){
 			if(!deteleError()){
-				delete = false;
+				controller.delete(selected);
 			}
-		}
-		if(delete){
-			cHeditor.delete();
-			cnvsManager.delete();
 		}
 	}
 	
@@ -96,31 +89,13 @@ public class Editor {
 	 */
 	@FXML
 	private void onPress(MouseEvent e){
-		if(e.getButton() == MouseButton.PRIMARY){
-			int press = e.getClickCount();
-			
-			switch(cnvsManager.tools(e.getX(),e.getY())){
-			case 0:
-				cnvsManager.createNode(e.getX(),e.getY(), 
-						cHeditor.createText());
-				break;
-			}
-			if(cnvsManager.onSelected(e.getX(),e.getY())){
-				onSelected = true;
-			}
-			if(cnvsManager.onConnect(e.getX(),e.getY())){
-				onConnect = true;
-			}
-			
-			if(cnvsManager.onNode(e.getX(),e.getY(),true) >= 0){
-				cHeditor.setSelected(cnvsManager.getSelected());
-				//TODO
-				//updateEditor();
-			}else if( press > 1){
-				disable();
-				cHeditor.setSelected(-1);
-				cnvsManager.resetSelected();
-			}
+		
+		if(e.isPrimaryButtonDown()){
+			if(menu.isShowing()) menu.hide();
+			controller.mousePress(e);
+		}else if(e.isSecondaryButtonDown()){
+			controller.setLocation(e.getX(), e.getY());
+			menu.show(canvas, e.getScreenX(), e.getScreenY());
 		}
 	}
 	
@@ -133,19 +108,7 @@ public class Editor {
 	 */
 	@FXML
 	private void onRelease(MouseEvent e){
-		//TODO
-//		onSelected = false;
-//		if(onConnect){
-//			if(cHeditor.isChild(cnvsManager.onNode(e.getX(),e.getY(),false))){
-//				cnvsManager.disconnect(cHeditor.disconnect(
-//						cnvsManager.onNode(e.getX(),e.getY(),false)));
-//			}else{
-//				cnvsManager.connect(cHeditor.connect(
-//					cnvsManager.onNode(e.getX(),e.getY(),false)));
-//			}
-//			updateEditor();
-//			onConnect = false;	
-//		}
+		controller.moseRelease(e);
 	}
 	
 	/**
@@ -155,14 +118,7 @@ public class Editor {
 	 */
 	@FXML
 	private void follow(MouseEvent e){
-		//TODO
-//		if(onSelected){
-//			cnvsManager.moveNode(e.getX(),e.getY());
-//		}
-//		if(onConnect){
-//			cnvsManager.drawConnect(e.getX(),e.getY(), cHeditor.isChild(
-//					cnvsManager.onNode(e.getX(),e.getY(),false)));
-//		}
+		controller.follow(e);
 	}
 	
 	/**
@@ -192,22 +148,22 @@ public class Editor {
 	 * Enable text areas if there is a selected node.
 	 */
 	public void update(Node node) {
-		//TODO
-//		if(node != null){
-//			title.setDisable(false);
-//			text.setDisable(false);
-//			title.setText(node.getTitle());
-//			text.setText(node.getText());
-//			if(node.getType() == nodeType.Option){
-//				option.setDisable(false);
-//				optionManager.setOption(cHeditor.getSelOText());
-//			}else{
-//				option.setDisable(true);
-//				//optionManager.reset();
-//			}
-//		}else{
-//			disable();
-//		}
+		if(node != null){
+			selected = node;
+			title.setDisable(false);
+			text.setDisable(false);
+			title.setText(node.getTitle());
+			text.setText(node.getText());
+			if(node.getType() == nodeType.Option){
+				option.setDisable(false);
+				optionManager.setOption((((Option)node).getChildren()));
+			}else{
+				option.setDisable(true);
+				optionManager.reset();
+			}
+		}else{
+			disable();
+		}
 	}
 
 	/**
@@ -216,68 +172,47 @@ public class Editor {
 	 * @param canvasManager
 	 * @param cHeditor
 	 */
-	public void setCanvasManger(CanvasManager canvasManager,
-			ChapterEditor cHeditor) {
-		this.cHeditor = cHeditor;
-		cnvsManager = canvasManager;
-		onSelected = false;
-		onConnect = false;
-		cnvsManager.setCanvas(canvas,cHeditor.currentKey());
-		optionManager = new OptionManager(option, cnvsManager);
+	public void setCanvasManger(Controller controller) {
+		this.controller = controller;
+		optionManager = new OptionManager(option, controller);
 		
-		canvasPane.heightProperty().addListener(new ChangeListener<Number>(){
-
-			@Override
-			public void changed(ObservableValue<? extends Number> 
-					observableValue, Number oldHeight, Number newHeight) {
-				canvas.heightProperty().set((double) newHeight );
-				cnvsManager.update();
-			}
-		});
-	
-		canvasPane.widthProperty().addListener(new ChangeListener<Number>(){
-	
-			@Override
-			public void changed(ObservableValue<? extends Number> 
-					observableValue, Number oldWidth, Number newWidth) {
-				canvas.widthProperty().set((double) newWidth );
-				cnvsManager.update();
-			}
-		});
-		
-		cnvsManager.StartNode(cHeditor.createStart());
-		
-		if(cnvsManager.getSelected() == -1){
-			disable();
-		}
+		canvasPane.heightProperty().addListener( observable -> updateCanvas());
+		canvasPane.widthProperty().addListener( observable -> updateCanvas());
+		buildContextMenu();
 	}
 	
-	public void SetSelected(int ID){
-		cHeditor.setSelected(ID);
-		cnvsManager.setSelected(ID);
-		//TODO
-		//updateEditor();
+	private void updateCanvas(){
+		canvas.heightProperty().set(canvasPane.getHeight());
+		canvas.widthProperty().set(canvasPane.getWidth());
+		controller.reDraw();
+	}
+	
+	public Canvas getCanvas(){
+		return canvas;
 	}
 	
 	private void disable(){
-		title.clear();
-		text.clear();
+		clear();
 		title.setDisable(true);
 		text.setDisable(true);
 	}
-	
-	public void setCurrent(){
-		cHeditor.setCurrent(cnvsManager.getSelected());
-	}
-	
-	public void setStart(){
-		cnvsManager.setStart();
-		cHeditor.setStart();
-	}
 
 	public void clear() {
-		// TODO Auto-generated method stub
+		title.clear();
+		text.clear();
+	}
+	
+	private void buildContextMenu(){
+		menu = new ContextMenu();
+		MenuItem text = new MenuItem("CreateText");
+		text.setOnAction(new EventHandler<ActionEvent>() {
+			
+		    public void handle(ActionEvent t) {
+		        controller.createText();
+		    }
+		});
 		
+		menu.getItems().addAll(text);		
 	}
 	
 }

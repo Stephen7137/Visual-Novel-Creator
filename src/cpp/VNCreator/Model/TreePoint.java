@@ -1,7 +1,14 @@
 package cpp.VNCreator.Model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+
+import cpp.VNCreator.Model.NodeType.nodeType;
+import cpp.VNCreator.Node.Node;
+import cpp.VNCreator.Node.Option;
+import cpp.VNCreator.Node.OptionText;
+import cpp.VNCreator.Node.Text;
+import javafx.geometry.Point2D;
+import javafx.scene.shape.Rectangle;
 /**
  * A simple pointer that keeps track of the location and the
  * points that it is connected to. 
@@ -9,25 +16,18 @@ import java.util.ArrayList;
  * @author Stephen Jackson
  *
  */
-public class TreePoint implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6720937507684278878L;
-	private int id;
-	private SimpPoint2D point;
-	private ArrayList<TreePoint> parent;
-	private ArrayList<TreePoint> child;
+public class TreePoint {
+
+	private Point2D point;
+	private Node node;
 	
-	public TreePoint(double x, double y, int id){
-		point = new SimpPoint2D(x,y);
-		parent = new ArrayList<TreePoint>();
-		child = new ArrayList<TreePoint>();
-		this.id = id;
+	public TreePoint(double x, double y, Node node){
+		point = new Point2D(x,y);
+		this.node = node;
 	}
 	
 	public int getID(){
-		return id;
+		return node.getID();
 	}
 	
 	public double getX(){
@@ -38,60 +38,32 @@ public class TreePoint implements Serializable{
 		return point.getY();
 	}
 	
-	public ArrayList<TreePoint> getChild(){
-		return child;
-	}
-	
-	public TreePoint getChild(int j){
-		return child.get(j);
-	}
-	
-	public ArrayList<TreePoint> getParent(){
-		return parent;
+	public ArrayList<CVNode> getChildren(){
+		ArrayList<CVNode> children = null;
+		if(node.hasChild()){
+			children = new ArrayList<CVNode>();
+			if(node.getType() == nodeType.Option){
+				ArrayList<OptionText> oText = ((Option)node).getChildren();
+				for(OptionText text : oText){
+					children.add(new CVNode(text.getText(), text.getID()));
+				}
+			}else{
+				children.add(new CVNode("", ((Text)node).getChild().getID()));
+			}
+		}
+		
+		return children;
 	}
 
 	public void setXY(double x, double y) {
-		point.setPoint(x, y);	
-	}
-
-	public int childsize() {
-		return child.size();
-	}
-
-	public void addChild(TreePoint cNode) {
-		child.add(cNode);
-	}
-	
-	public void addParent(TreePoint pNode) {
-		parent.add(pNode);
-	}
-
-	public boolean childEmpty() {
-		return child.isEmpty();
-	}
-
-	public int getParentSize() {
-		return parent.size();
-	}
-
-	public TreePoint getParent(int j) {
-		return parent.get(j);
+		point = new Point2D(x, y);	
 	}
 
 	public double distance(double x, double y) {
 		return point.distance(x, y);
 	}
-
-	public void removeChild(TreePoint cNode) {
-		child.remove(cNode);
-	}
-
-	public void removeParent(TreePoint pNode) {
-		parent.remove(pNode);
-	}
-
-	public void delete() {
-		child = null;
-		parent = null;		
+	
+	public String getTitle(){
+		return node.getTitle();
 	}
 }

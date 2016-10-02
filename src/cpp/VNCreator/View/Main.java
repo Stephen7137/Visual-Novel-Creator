@@ -1,14 +1,7 @@
 package cpp.VNCreator.View;
 	
 import java.io.IOException;
-import java.util.Random;
-
-import cpp.VNCreator.Controller.CanvasManager;
-import cpp.VNCreator.Controller.ChapterEditor;
 import cpp.VNCreator.Controller.Controller;
-import cpp.VNCreator.Controller.ImageLoader;
-import cpp.VNCreator.Controller.ProjectManager;
-import cpp.VNCreator.Model.Story;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -32,7 +25,6 @@ public class Main extends Application {
 	
 	int height = 600;
 	int width = 800;
-	TextAdvEditorControler mainController;
 	
 	/**
 	 * Sets up the default window to be shown
@@ -42,15 +34,13 @@ public class Main extends Application {
 		try {
 			
 			
-			Scene scene = createScene(new ProjectManager(primaryStage),
-					primaryStage);
+			Scene scene = createScene(primaryStage);
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("TA Editor");
 			primaryStage.setMaximized(true);
 			primaryStage.setMinHeight(primaryStage.getHeight());
 			primaryStage.setMinWidth(primaryStage.getWidth());
 			primaryStage.setResizable(true);
-			mainController.start();
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -66,42 +56,33 @@ public class Main extends Application {
 	 * @return the main scene to be show to the user.
 	 * @throws IOException if .fxml files cannot be found or open.
 	 */
-	private Scene createScene(ProjectManager projectManager, 
-			Stage primaryStage) throws IOException{
-		
-		Random ran = new Random();
-		Story story = new Story(ran.nextInt(10000));
-		ChapterEditor chEditor = new ChapterEditor(story.getSrtCh().getID(),
-				story.getSrtCh().getTree());
-		CanvasManager cnvsManager = new CanvasManager(
-				story.getSrtCh().getID());
-		projectManager.setStory(story, cnvsManager, chEditor);
-		
+	private Scene createScene(Stage primaryStage) throws IOException{
+				
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("Text Adv Editor GUI.fxml"));
 		Scene scene = new Scene(loader.load());
-		mainController = loader.getController();
-		mainController.setWriteChapter(projectManager, primaryStage);
+		TextAdvEditorControler mainController = loader.getController();
 		
-		Controller cotroller = new Controller(chEditor);
+		Controller controller = new Controller();
 		loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("SimConsole.fxml"));
 		mainController.addTab("Console", loader.load());
 		SimConsole console = loader.getController();
-		console.controller(cotroller);
+		console.controller(controller);
 		
 		loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("SceneEditor.fxml"));
 		mainController.addTab("Scene Editor", loader.load());
 		SceneEditor sEditor = loader.getController();
-		sEditor.controller(cotroller);
+		sEditor.controller(controller);
 		
 		loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("Editor.fxml"));
 		mainController.addTab("Overview", loader.load());
 		Editor editor = loader.getController();
-		editor.setCanvasManger(cnvsManager, chEditor);
-		mainController.setData(editor, chEditor, new ImageLoader(primaryStage));
+		editor.setCanvasManger(controller);
+		mainController.setController(controller);
+		controller.startUp(editor.getCanvas(), primaryStage, editor);
 		
 		return scene;
 	}

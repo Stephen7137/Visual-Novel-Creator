@@ -19,7 +19,6 @@ import cpp.VNCreator.Node.Text;
  */
 public class ChapterEditor{
 	
-	private int chapterID;
 	private ArrayList<Node> noParent;
 	private ArrayList<Node>	noChild;
 	private ArrayList<Node>	bookmark;
@@ -36,8 +35,7 @@ public class ChapterEditor{
 	 * @param chapterID
 	 * @param tree
 	 */
-	public ChapterEditor(int chapterID, ArrayList<Node> tree){
-		this.chapterID = chapterID;
+	public ChapterEditor(ArrayList<Node> tree){
 		memory = new Stack(20);
 		keyGen = new Random();
 		this.tree = tree;
@@ -217,13 +215,17 @@ public class ChapterEditor{
 	 * arrayList tree, noParents, and noChild
 	 * @return key of the new node.
 	 */
-	public int createText() {
+	public Node createText() {
 		Text newText = new Text(createKey());
-		noParent.add(newText);
+		if(tree.size() == 0){
+			start = newText;
+		}else{
+			noParent.add(newText);
+		}		
 		noChild.add(newText);
 		tree.add(newText);
 		selectedNode = newText;
-		return newText.getID();
+		return newText;
 	}
 	
 	private int createKey(){
@@ -338,18 +340,13 @@ public class ChapterEditor{
 	 * @param noChild
 	 * @param bookmark
 	 */
-	public void load(int chapterID, Node currentNode,
+	public void load( Node currentNode,
 			ArrayList<Node> noParent, ArrayList<Node> noChild,
 			ArrayList<Node> bookmark) {
-		this.chapterID = chapterID;
 		this.currentNode = currentNode;
 		this.noParent = noParent;
 		this.noChild = noChild;
 		this.bookmark = bookmark;//TODO find out when called and update text.
-	}
-
-	public int getCHID() {
-		return chapterID;
 	}
 
 	public Node saveCurrent() {
@@ -385,16 +382,6 @@ public class ChapterEditor{
 //		return selectedNode.isChild(text);
 //	}
 	
-	/**
-	 * isEmpty checks selectedNode if it contains any text.
-	 * @return
-	 */
-	public boolean isEmpty() {
-		if(!selectedNode.getTitle().equals("")) return false;
-		if(!selectedNode.getText().equals("")) return false;
-		return true;
-	}
-
 	public boolean currentBookmark() {
 		return bookmark.contains(selectedNode);
 	}
@@ -403,22 +390,11 @@ public class ChapterEditor{
 		return selectedNode == null;
 	}
 	
-	public int getSelectedKey() {
+	public int getSelectedID() {
 		if(selectedNode != null){
 			return selectedNode.getID();
 		}
 		return -1;
-	}
-	
-	/**
-	 * createStart creates a new Text and sets it
-	 * as the starting node for the chapter.
-	 * @return key of the starting node
-	 */
-	public int createStart(){
-		start = searchTree(createText());
-		currentNode = start;
-		return start.getID();
 	}
 	
 	public void setStart() {
