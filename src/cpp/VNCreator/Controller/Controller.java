@@ -1,8 +1,6 @@
 package cpp.VNCreator.Controller;
 
 import java.util.ArrayList;
-import java.util.Random;
-
 import cpp.VNCreator.Model.SearchNode;
 import cpp.VNCreator.Model.Story;
 import cpp.VNCreator.Node.Node;
@@ -18,13 +16,15 @@ import javafx.stage.Stage;
 
 public class Controller {
 	
-	ChapterEditor chEditor;
-	CanvasManager cnvsManager;
-	ProjectManager manager;
-	SimConsole console;
-	SceneEditor sEditor;
-	Editor editor;
-	Point2D mouse;
+	private ChapterEditor chEditor;
+	private CanvasManager cnvsManager;
+	private ProjectManager manager;
+	private SimConsole console;
+	private SceneEditor sEditor;
+	private Editor editor;
+	private Point2D mouse;
+	private Point2D oldPos;
+	private boolean onSelected;
 	
 	public void startUp(Canvas canvas, Stage primaryStage, Editor editor) {
 		this.editor = editor;
@@ -92,7 +92,8 @@ public class Controller {
 
 	public void moseRelease(MouseEvent e) {
 		//TODO
-//		onSelected = false;
+		onSelected = false;
+		oldPos = null;
 //		if(onConnect){
 //			if(cHeditor.isChild(cnvsManager.onNode(e.getX(),e.getY(),false))){
 //				cnvsManager.disconnect(cHeditor.disconnect(
@@ -110,14 +111,14 @@ public class Controller {
 		if(e.getButton() == MouseButton.PRIMARY){
 			int press = e.getClickCount();
 			
-			switch(cnvsManager.tools(e.getX(),e.getY())){
-			case 0:
-				cnvsManager.createNode(e.getX(),e.getY(), 
-						chEditor.getSelected());
-				break;
-			}
+//			switch(cnvsManager.tools(e.getX(),e.getY())){
+//			case 0:
+//				cnvsManager.createNode(e.getX(),e.getY(), 
+//						chEditor.getSelected());
+//				break;
+//			}
 			if(cnvsManager.onSelected(e.getX(),e.getY())){
-				//onSelected = true;
+				onSelected = true;
 			}
 			if(cnvsManager.onConnect(e.getX(),e.getY())){
 				//onConnect = true;
@@ -137,9 +138,17 @@ public class Controller {
 
 	public void follow(MouseEvent e) {
 		//TODO
-//		if(onSelected){
-//			cnvsManager.moveNode(e.getX(),e.getY());
-//		}
+		if(oldPos != null){
+			if(onSelected){
+				cnvsManager.moveNode(oldPos.getX() - e.getScreenX(),
+						oldPos.getY() - e.getScreenY());
+			}else{
+				cnvsManager.moveScreen(oldPos.getX() - e.getScreenX(),
+						oldPos.getY() - e.getScreenY());
+			}			
+		}
+		oldPos = new Point2D(e.getScreenX(), e.getScreenY());
+		
 //		if(onConnect){
 //			cnvsManager.drawConnect(e.getX(),e.getY(), cHeditor.isChild(
 //					cnvsManager.onNode(e.getX(),e.getY(),false)));

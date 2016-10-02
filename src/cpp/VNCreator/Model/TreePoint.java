@@ -8,6 +8,7 @@ import cpp.VNCreator.Node.Option;
 import cpp.VNCreator.Node.OptionText;
 import cpp.VNCreator.Node.Text;
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 /**
  * A simple pointer that keeps track of the location and the
@@ -19,15 +20,34 @@ import javafx.scene.shape.Rectangle;
 public class TreePoint {
 
 	private Point2D point;
+	private double height;
+	private double width;
+	private Color color;
 	private Node node;
 	
-	public TreePoint(double x, double y, Node node){
+	public TreePoint(double x, double y, double height, double width,
+			Color color, Node node){
+		this.height = height;
+		this.width = width;
+		this.color = color;
 		point = new Point2D(x,y);
 		this.node = node;
 	}
 	
 	public int getID(){
 		return node.getID();
+	}
+	
+	public double getWidth(){
+		return width;
+	}
+	
+	public double getHeight(){
+		return height;
+	}
+	
+	public Color getColor(){
+		return color;
 	}
 	
 	public double getX(){
@@ -65,5 +85,20 @@ public class TreePoint {
 	
 	public String getTitle(){
 		return node.getTitle();
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
+	
+	public boolean collition(double x, double y){
+		if(x >= point.getX() && y >= point.getY() 
+				&& x <= width + point.getX() 
+				&& y <= height + point.getY()) return true;
+		return false;
+	}
+
+	public void subXY(double vecX, double vecY) {
+		point = point.subtract(vecX, vecY);
 	}
 }

@@ -29,13 +29,15 @@ public class CanvasManager {
 	private final int distance = 10;
 	private final int nodeDist = 100;
 	private final int offset = 22;
+	private final double defHeight = 75;
+	private final double defWidth = 150;
+	private final Color defColor = Color.LIGHTBLUE;
+	private final Color background = Color.WHITE;
 		
 	private int diameter;
 	private int toolW;
 	private int toolH;
 	private Font font;
-	
-	private Color background = Color.WHITE;
 	
 	private Hashtable<Integer,TreePoint> lookup;
 	private Canvas canvas;
@@ -46,6 +48,7 @@ public class CanvasManager {
 
 	private Point2D toolText;
 	private SimpPoint2D connect;
+	private Color lastColor;
 	
 	
 	/**
@@ -57,6 +60,7 @@ public class CanvasManager {
 		diameter = radius*2;
 		start = null;
 		selected = null;
+		lastColor = defColor;
 		lookup = new Hashtable<Integer,TreePoint>();
 		this.canvas = canvas;
 		gc = canvas.getGraphicsContext2D();
@@ -149,12 +153,12 @@ public class CanvasManager {
 	 */
 	private void drawSelectHighlight(){
 		if(selected != null){
-			gc.setStroke(Color.ORANGE);
 			gc.setLineWidth(5);
-			gc.strokeOval(selected.getX() - radius, selected.getY() - radius,
-					diameter, diameter);
-			gc.setFill(Color.BLACK);
-			gc.fillOval(connect.getX(), connect.getY(), distance, distance);
+			gc.setStroke(Color.DARKORANGE);
+			gc.strokeRect(selected.getX(), selected.getY(), selected.getWidth(), selected.getHeight());
+			gc.setLineWidth(2);
+			gc.setStroke(Color.ORANGE);
+			gc.strokeRect(selected.getX(), selected.getY(), selected.getWidth(), selected.getHeight());
 		}
 	}
 	
@@ -164,26 +168,15 @@ public class CanvasManager {
 	 * @param color
 	 */
 	private void drawNode(TreePoint node, Paint color){
-		drawNode(node.getTitle(), node.getX(),node.getY(),color);
-	}
-	
-	/**
-	 * Draws the node at the location with the provided color.
-	 * Uses {@link #radius} as default radius.
-	 * @param x
-	 * @param y
-	 * @param color
-	 */
-	private void drawNode(String text, double x, double y, Paint color){
-		gc.setLineWidth(5);
-		gc.setFill(Color.LIGHTBLUE);
-		gc.fillRoundRect(x, y, 100, 50, diameter/2, diameter/2);
+		gc.setFill(node.getColor());
+		gc.fillRect(node.getX(), node.getY(), node.getWidth(), node.getHeight());
 		gc.setLineWidth(2);
 		gc.setStroke(Color.BLACK);
 		gc.setFill(Color.BLACK);
-		gc.strokeRoundRect(x, y, 100, 50, diameter/2, diameter/2);
+		gc.strokeRect(node.getX(), node.getY(), node.getWidth(), node.getHeight());
 		gc.setFont(font);
-		gc.fillText(text, x + 10, y + 15);
+		System.out.println("Title: " + node.getTitle());
+		gc.fillText(node.getTitle(), node.getX() + 10, node.getY() + 15);
 	}
 	
 	/**
@@ -217,19 +210,15 @@ public class CanvasManager {
 	 * @param selected boolean to set selected.
 	 * @return the id of the node the point is on.
 	 */
-	public int onNode(double x, double y, boolean selected) {
-		for(Entry<Integer, TreePoint> point : lookup.entrySet()){
-			drawNode(point.getValue(), Color.BLUE);
-		}
-		for(int i = 0; i < lookup.size(); i++){
-			if(lookup.get(i).distance(x, y) <= radius){
-				if(selected){
-					setSelected(lookup.get(i));
-				}
-				update();
-				return lookup.get(i).getID();
+	public int onNode(double x, double y, boolean sel) {
+		for(Entry<Integer, TreePoint> entry : lookup.entrySet()){
+			TreePoint point = entry.getValue();
+			if(point.collition(x, y)){
+				if(sel) setSelected(point.getID());
+				return point.getID();		
 			}
 		}
+		
 		return -1;
 	}
 
@@ -258,12 +247,19 @@ public class CanvasManager {
 	 * @param x
 	 * @param y
 	 */
-	public void moveNode(double x, double y) {
+	public void moveNode(double vecX, double vecY) {
 		if(selected != null){
-			selected.setXY(x, y);
-			connect.setPoint(x - offset, y - offset);
+			selected.subXY(vecX, vecY);
+			connect.setPoint(selected.getX() - offset, selected.getY() - offset);
 			update();
 		}
+	}
+	
+	public void moveScreen(double vecX, double vecY){
+		for(Entry<Integer, TreePoint> point : lookup.entrySet()){
+			point.getValue().subXY(vecX, vecY);
+		}
+		update();
 	}
 
 	/**
@@ -274,7 +270,8 @@ public class CanvasManager {
 	 */
 	public boolean onSelected(double x, double y) {
 		if(selected == null) return false;
-		return selected.distance(x, y) <= radius;
+		if(selected.collition(x, y)) return true;
+		return false;
 	}
 
 	/**
@@ -312,11 +309,16 @@ public class CanvasManager {
 	 * @param createNode
 	 */
 	public void createNode(double x, double y, Node node) {
-		System.out.println("NodeCreated: " + node.getID());
-		TreePoint cNode = new TreePoint(x,y,node);
+		TreePoint cNode = new TreePoint(x,y, defHeight, defWidth,
+				lastColor, node);
 		lookup.put(cNode.getID(),cNode);
 		setSelected(cNode);
 		update();
+	}
+	
+	public void changeColor(Color color){
+		selected.setColor(color);
+		lastColor = color;
 	}
 	
 	/**
