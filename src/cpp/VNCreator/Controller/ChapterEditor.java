@@ -23,6 +23,7 @@ public class ChapterEditor{
 	private ArrayList<Node>	noChild;
 	private ArrayList<Node>	bookmark;
 	private ArrayList<Node> tree;
+	//TODO simplify name
 	private Node currentNode;
 	private Node selectedNode;
 	private Stack memory;
@@ -46,9 +47,16 @@ public class ChapterEditor{
 		noChild = new ArrayList<Node>();
 	}
 		//TODO
-//	public int connect(int id){
-//		return addChild(searchTree(id));
-//	}
+	public int connect(int id){
+		Node node = null;
+		if(selectedNode.getType() == nodeType.Text){
+			node = searchTree(id);
+			((Text)selectedNode).setChild(node);
+			node.addParent(selectedNode);
+		}
+		
+		return node.getID();
+	}
 	
 	/**
 	 * delete removes selected node from the tree and removes the node from the
@@ -437,5 +445,9 @@ public class ChapterEditor{
 	
 	public Node getCurrentNode(){
 		return currentNode;
+	}
+
+	public boolean isSelect(int id) {
+		return selectedNode.getID() == id;
 	}
 }

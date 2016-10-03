@@ -117,8 +117,13 @@ public class Editor {
 	 * @param e
 	 */
 	@FXML
-	private void follow(MouseEvent e){
-		controller.follow(e);
+	private void onDrag(MouseEvent e){
+		controller.onDrag(e);
+	}
+	
+	@FXML
+	private void onMove(MouseEvent e){
+		controller.onMove(e);
 	}
 	
 	/**

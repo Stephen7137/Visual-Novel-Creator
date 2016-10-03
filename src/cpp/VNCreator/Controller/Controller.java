@@ -25,6 +25,7 @@ public class Controller {
 	private Point2D mouse;
 	private Point2D oldPos;
 	private boolean onSelected;
+	private boolean onConnect;
 	
 	public void startUp(Canvas canvas, Stage primaryStage, Editor editor) {
 		this.editor = editor;
@@ -91,52 +92,47 @@ public class Controller {
 	}
 
 	public void moseRelease(MouseEvent e) {
-		//TODO
 		onSelected = false;
 		oldPos = null;
-//		if(onConnect){
-//			if(cHeditor.isChild(cnvsManager.onNode(e.getX(),e.getY(),false))){
-//				cnvsManager.disconnect(cHeditor.disconnect(
-//						cnvsManager.onNode(e.getX(),e.getY(),false)));
-//			}else{
-//				cnvsManager.connect(cHeditor.connect(
-//					cnvsManager.onNode(e.getX(),e.getY(),false)));
-//			}
-//			updateEditor();
-//			onConnect = false;	
-//		}
 	}
 
 	public void mousePress(MouseEvent e) {
 		if(e.getButton() == MouseButton.PRIMARY){
 			int press = e.getClickCount();
 			
-//			switch(cnvsManager.tools(e.getX(),e.getY())){
-//			case 0:
-//				cnvsManager.createNode(e.getX(),e.getY(), 
-//						chEditor.getSelected());
-//				break;
-//			}
-			if(cnvsManager.onSelected(e.getX(),e.getY())){
-				onSelected = true;
+			if( e.getClickCount() == 2){
+				if(cnvsManager.onSelected(e.getX(),e.getY())){
+					onConnect = true;
+				}else{
+					onConnect = false;
+				}
+			}else{
+				if(cnvsManager.onSelected(e.getX(),e.getY())){
+					onSelected = true;
+				}
 			}
-			if(cnvsManager.onConnect(e.getX(),e.getY())){
-				//onConnect = true;
-			}
-			
-			if(cnvsManager.onNode(e.getX(),e.getY(),true) >= 0){
-				chEditor.setSelected(cnvsManager.getSelected());
-				//TODO
-				//updateEditor();
+			//TODO
+			int id = cnvsManager.onNode(e.getX(),e.getY());
+			if(!chEditor.isSelect(id)){
+				if(onConnect){
+					//cnvsManager.connect(
+					chEditor.connect(id);
+					onConnect = false;
+				}else{
+					chEditor.setSelected(id);
+					cnvsManager.setSelected(id);;
+				}
+				updateSel();
 			}else if( press > 1){
+				//TODO
 				//disable();
-				chEditor.setSelected(-1);
+				//chEditor.setSelected(-1);
 				//cnvsManager.resetSelected();
 			}
 		}
 	}
 
-	public void follow(MouseEvent e) {
+	public void onDrag(MouseEvent e) {
 		//TODO
 		if(oldPos != null){
 			if(onSelected){
@@ -148,13 +144,14 @@ public class Controller {
 			}			
 		}
 		oldPos = new Point2D(e.getScreenX(), e.getScreenY());
-		
-//		if(onConnect){
-//			cnvsManager.drawConnect(e.getX(),e.getY(), cHeditor.isChild(
-//					cnvsManager.onNode(e.getX(),e.getY(),false)));
-//		}
 	}
 
+	public void onMove(MouseEvent e) {
+		if(onConnect){
+			cnvsManager.drawConnect(e.getX(),e.getY());
+		}
+	}
+	
 	public void highlight(int id) {
 		// TODO Auto-generated method stub
 		

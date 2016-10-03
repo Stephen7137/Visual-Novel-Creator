@@ -27,7 +27,7 @@
          </children></AnchorPane>
       <AnchorPane fx:id="canvasPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="461.0" prefWidth="505.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="251.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Canvas fx:id="canvas" height="461.0" layoutY="-1.0" onMouseDragged="#follow" onMousePressed="#onPress" onMouseReleased="#onRelease" width="509.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Canvas fx:id="canvas" height="461.0" layoutY="-1.0" onMouseDragged="#onDrag" onMouseMoved="#onMove" onMousePressed="#onPress" onMouseReleased="#onRelease" width="509.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
          </children>
       </AnchorPane>
    </children>

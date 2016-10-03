@@ -1,5 +1,7 @@
 package cpp.VNCreator.Controller;
 
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map.Entry;
@@ -11,9 +13,12 @@ import cpp.VNCreator.Node.Node;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.Rotate;
 
 /**
  * Controls the canvas, keep track of all nodes location
@@ -33,11 +38,13 @@ public class CanvasManager {
 	private final double defWidth = 150;
 	private final Color defColor = Color.LIGHTBLUE;
 	private final Color background = Color.WHITE;
+	
 		
 	private int diameter;
 	private int toolW;
 	private int toolH;
 	private Font font;
+	private Image arrow;
 	
 	private Hashtable<Integer,TreePoint> lookup;
 	private Canvas canvas;
@@ -57,6 +64,8 @@ public class CanvasManager {
 	 * @param canvas
 	 */
 	public CanvasManager(Canvas canvas){
+		URL url = getClass().getClassLoader().getResource("Resources/Images/Arrow.png");
+		arrow = new Image(url.toExternalForm());
 		diameter = radius*2;
 		start = null;
 		selected = null;
@@ -81,7 +90,7 @@ public class CanvasManager {
 		gc.strokeLine(selected.getX(),selected.getY(), tree.getX(),
 				tree.getY());
 		drawAllNodes();
-		drawSelectHighlight();
+		drawSelect();
 		drawAllTools();
 	}
 	
@@ -93,7 +102,7 @@ public class CanvasManager {
 		drawBackground();
 		drawAllLines();
 		drawAllNodes();
-		drawSelectHighlight();
+		drawSelect();
 		drawAllTools();
 	}
 	
@@ -137,11 +146,11 @@ public class CanvasManager {
 	private void drawAllNodes(){
 		
 		for(Entry<Integer, TreePoint> point : lookup.entrySet()){
-			drawNode(point.getValue(), Color.BLUE);
+			drawNode(point.getValue());
 		}
 		
 		if(start != null){
-			drawNode(start,Color.GREEN);
+			drawNode(start);
 		}
 		
 		
@@ -151,8 +160,9 @@ public class CanvasManager {
 	 * Draws a highlight over {@link #selected} to show the
 	 * node and draws a black dot for connection.
 	 */
-	private void drawSelectHighlight(){
+	private void drawSelect(){
 		if(selected != null){
+			drawNode(selected);
 			gc.setLineWidth(5);
 			gc.setStroke(Color.DARKORANGE);
 			gc.strokeRect(selected.getX(), selected.getY(), selected.getWidth(), selected.getHeight());
@@ -167,7 +177,7 @@ public class CanvasManager {
 	 * @param node
 	 * @param color
 	 */
-	private void drawNode(TreePoint node, Paint color){
+	private void drawNode(TreePoint node){
 		gc.setFill(node.getColor());
 		gc.fillRect(node.getX(), node.getY(), node.getWidth(), node.getHeight());
 		gc.setLineWidth(2);
@@ -175,7 +185,6 @@ public class CanvasManager {
 		gc.setFill(Color.BLACK);
 		gc.strokeRect(node.getX(), node.getY(), node.getWidth(), node.getHeight());
 		gc.setFont(font);
-		System.out.println("Title: " + node.getTitle());
 		gc.fillText(node.getTitle(), node.getX() + 10, node.getY() + 15);
 	}
 	
@@ -194,12 +203,34 @@ public class CanvasManager {
 				for(CVNode node : list){
 					if(node != null){
 						TreePoint point1 = searchTree(node.id);
-						gc.strokeLine(point.getX(), point.getY(), 
-							point1.getX(), point1.getY());
+						if(point.getY() + point.getHeight() < point1.getY()){
+							drawArrow(point.getX() + (point.getWidth()/2), point.getY() + (point.getHeight()/2),
+								point1.getX() + (point1.getWidth()/2), point1.getY(), Color.BLACK);
+						}else if(point.getY() > point1.getY() + point.getHeight()){
+							drawArrow(point.getX() + (point.getWidth()/2), point.getY() + (point.getHeight()/2),
+								point1.getX() + (point1.getWidth()/2), point1.getY() + point1.getHeight(), Color.BLACK);
+						}	
+						//TODO
+						//drawArrow(point.getX() + (point.getWidth()/2), point.getY() + (point.getHeight()/2),
+						//		point1.getX(), point1.getY() + (point1.getHeight()/2), Color.BLACK);
+						//drawArrow(point.getX() + (point.getWidth()/2), point.getY() + (point.getHeight()/2),
+						//		point1.getX() + point1.getWidth(), point1.getY() + (point1.getHeight()/2), Color.BLACK);
 					}				
 				}
 			}			
 		}		
+	}
+	
+	private void drawArrow(double x1, double y1, double x2, double y2, Color color){
+		gc.setStroke(color);
+		gc.setLineWidth(2);
+		gc.strokeLine(x1, y1, x2, y2);
+		gc.save();
+		double atan1 = Math.atan2(x2-x1, y2-y1) * -1;
+		Rotate r = new Rotate(Math.toDegrees(atan1),x2,y2);
+		gc.transform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
+		gc.drawImage(arrow, x2 - 10, y2 - 15);
+		gc.restore();
 	}
 	
 	/**
@@ -210,11 +241,10 @@ public class CanvasManager {
 	 * @param selected boolean to set selected.
 	 * @return the id of the node the point is on.
 	 */
-	public int onNode(double x, double y, boolean sel) {
+	public int onNode(double x, double y) {
 		for(Entry<Integer, TreePoint> entry : lookup.entrySet()){
 			TreePoint point = entry.getValue();
 			if(point.collition(x, y)){
-				if(sel) setSelected(point.getID());
 				return point.getID();		
 			}
 		}
@@ -352,15 +382,10 @@ public class CanvasManager {
 	 * @param y
 	 * @param delete
 	 */
-	public void drawConnect(double x, double y, boolean delete) {
+	public void drawConnect(double x, double y) {
 		update();
-		gc.setLineWidth(5);
-		if(delete){
-			gc.setStroke(Color.RED);
-		}else{
-			gc.setStroke(Color.GREEN);	
-		}
-		gc.strokeLine(selected.getX(), selected.getY(), x, y);
+		drawArrow(selected.getX() + selected.getWidth()/2, selected.getY() + selected.getHeight()/2, x, y, Color.GREEN);
+		drawSelect();
 	}
 
 	/**
