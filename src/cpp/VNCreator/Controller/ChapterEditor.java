@@ -1,11 +1,13 @@
 package cpp.VNCreator.Controller;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Random;
 
 import cpp.VNCreator.Model.NodeType.nodeType;
 import cpp.VNCreator.Node.Node;
 import cpp.VNCreator.Node.Option;
+import cpp.VNCreator.Node.OptionText;
 import cpp.VNCreator.Node.Text;
 
 /**
@@ -22,10 +24,9 @@ public class ChapterEditor{
 	private ArrayList<Node> noParent;
 	private ArrayList<Node>	noChild;
 	private ArrayList<Node>	bookmark;
-	private ArrayList<Node> tree;
-	//TODO simplify name
-	private Node currentNode;
-	private Node selectedNode;
+	private Hashtable<Integer,Node> tree;
+	private Node current;
+	private Node selected;
 	private Stack memory;
 	Random keyGen;
 	
@@ -36,23 +37,24 @@ public class ChapterEditor{
 	 * @param chapterID
 	 * @param tree
 	 */
-	public ChapterEditor(ArrayList<Node> tree){
+	public ChapterEditor(Hashtable<Integer,Node> tree){
 		memory = new Stack(20);
 		keyGen = new Random();
 		this.tree = tree;
-		currentNode = null;
-		selectedNode = null;
+		current = null;
+		selected = null;
 		bookmark = new ArrayList<Node>();
 		noParent = new ArrayList<Node>();
 		noChild = new ArrayList<Node>();
 	}
 		//TODO
 	public int connect(int id){
+		if(id == -1) return id;
 		Node node = null;
-		if(selectedNode.getType() == nodeType.Text){
+		if(selected.getType() == nodeType.Text){
 			node = searchTree(id);
-			((Text)selectedNode).setChild(node);
-			node.addParent(selectedNode);
+			((Text)selected).setChild(node);
+			node.addParent(selected);
 		}
 		
 		return node.getID();
@@ -62,30 +64,39 @@ public class ChapterEditor{
 	 * delete removes selected node from the tree and removes the node from the
 	 * parent list from child nodes and removes itself from child list in 
 	 * parent nodes.
+	 * @param id 
 	 */
-	public void delete(){
-	//TODO	
-//		Text[] child = selectedNode.getChild();
-//		for(int i = 0; i < child.length; i++){
-//			child[i].removeParent(selectedNode);
-//			if(child[i].getParentSize() == 0){
-//				noParent.add(child[i]);
-//			}
-//		}
-//		
-//		ArrayList<Text> parent = selectedNode.getParent();
-//		for(int i = 0; i < parent.size(); i++){
-//			parent.get(i).removeChild(selectedNode);
-//			if(parent.get(i).getChildSize() == 0){
-//				noChild.add(parent.get(i));
-//			}
-//		}		
-//		
-//		selectedNode.setChild(null);
-//		selectedNode.setParent(null);
-//		
-//		tree.remove(selectedNode);
-//		selectedNode = null;
+	public void delete(int id){
+		if(selected.getID() == id) selected = null;
+		Node node = tree.get(id);
+		if(node != null){
+			if(node.hasChild()){
+				if(node.getType() == nodeType.Option){
+					for( OptionText text : ((Option)node).getChildren()){
+						text.getNode().removeParent(node.getID());
+					}
+				}else{
+					((Text)node).getChild().removeParent(node.getID());;
+				}
+			}else{
+				noChild.remove(node);
+			}
+			
+			if(node.hasParents()){
+				ArrayList<Node> parent = node.getParents();
+				for(Node tmp : parent){
+					if(tmp.getType() == nodeType.Option){
+						((Option)tmp).deleteChild(node.getID());
+					}else{
+						((Text)tmp).deleteChild();
+					}
+				}
+			}else{
+				noParent.remove(node);
+			}
+			
+			tree.remove(id);
+		}
 	}
 	
 	/**
@@ -111,11 +122,11 @@ public class ChapterEditor{
 //	}
 	
 	public void addBookmark(){
-		bookmark.add(selectedNode);
+		bookmark.add(selected);
 	}
 	
 	public void removeBookmark(){
-		bookmark.remove(selectedNode);
+		bookmark.remove(selected);
 	}
 	
 	/**
@@ -127,16 +138,16 @@ public class ChapterEditor{
 	public boolean next(int input){
 		boolean next = false;
 		if(input >= 0){
-			if(currentNode.getType() == nodeType.Option){
-				Option option = (Option)currentNode;
+			if(current.getType() == nodeType.Option){
+				Option option = (Option)current;
 				if(option.numChildren() < input){
 					
 					next = true;
 				}
 			}else{
-				Text text = (Text)currentNode;
-				currentNode = text.getChild();
-				memory.push(currentNode);
+				Text text = (Text)current;
+				current = text.getChild();
+				memory.push(current);
 				next = true;
 			}
 		}		
@@ -149,7 +160,7 @@ public class ChapterEditor{
 	public boolean back(){
 		
 		if(memory.peek() != null){
-			currentNode = memory.pop();
+			current = memory.pop();
 		}		
 		return true;
 	}
@@ -225,15 +236,25 @@ public class ChapterEditor{
 	 */
 	public Node createText() {
 		Text newText = new Text(createKey());
-		if(tree.size() == 0){
-			start = newText;
-		}else{
-			noParent.add(newText);
-		}		
-		noChild.add(newText);
-		tree.add(newText);
-		selectedNode = newText;
+		createNode(newText);
 		return newText;
+	}
+	
+	public Node createOption() {
+		Option option = new Option(createKey());
+		createNode(option);
+		return option;
+	}
+	
+	private void createNode(Node node){
+		if(tree.size() == 0){
+			start = node;
+		}else{
+			noParent.add(node);
+		}
+		noChild.add(node);
+		tree.put(node.getID(), node);
+		selected = node;
 	}
 	
 	private int createKey(){
@@ -241,34 +262,9 @@ public class ChapterEditor{
 	}
 	
 	public int getKey(){
-		if(currentNode == null) return -1;
-		return currentNode.getID();
+		if(current == null) return -1;
+		return current.getID();
 	}
-	
-	/**
-	 * addChild takes text and adds it to the child
-	 * list of selectedNode.
-	 * @param text
-	 * @return key of the text
-	 */
-	//TODO
-//	public int addChild(Text text){
-//		if(text != null){
-//			
-//			text.addParent(selectedNode);
-//			if(noParent.contains(text)){
-//				noParent.remove(text);
-//			}
-//			
-//			selectedNode.addChild(text);
-//			if(noChild.contains(selectedNode)){
-//				noChild.remove(selectedNode);
-//			}	
-//			
-//			return text.getID();
-//		}
-//		return -1;
-//	}
 	
 	/**
 	 * searchTree searches the tree for nodes that have the ID key.
@@ -297,7 +293,7 @@ public class ChapterEditor{
 	}
 	
 	public ArrayList<Node> getAllNode() {
-		return createList(tree);
+		return new ArrayList<Node>(tree.values());
 	}
 	
 	/**
@@ -320,24 +316,24 @@ public class ChapterEditor{
 	}
 
 	public int currentKey() {
-		if(currentNode == null) return -1;
-		return currentNode.getID();
+		if(current == null) return -1;
+		return current.getID();
 	}
 
 	public void setSelected(int key) {
-		selectedNode = searchTree(key);
+		selected = searchTree(key);
 	}
 
 	public Node getSelected() {
-		return selectedNode;
+		return selected;
 	}
 
-	public void setCurrent(int selected) {
-		currentNode = selectedNode; //TODO check when called and update text.
+	public void setCurrent() {
+		current = selected; //TODO check when called and update text.
 	}
 
 	public boolean isCurrent() {
-		return currentNode == selectedNode;
+		return current == selected;
 	}
 
 	/**
@@ -351,14 +347,14 @@ public class ChapterEditor{
 	public void load( Node currentNode,
 			ArrayList<Node> noParent, ArrayList<Node> noChild,
 			ArrayList<Node> bookmark) {
-		this.currentNode = currentNode;
+		this.current = currentNode;
 		this.noParent = noParent;
 		this.noChild = noChild;
 		this.bookmark = bookmark;//TODO find out when called and update text.
 	}
 
 	public Node saveCurrent() {
-		return currentNode;
+		return current;
 	}
 
 	public ArrayList<Node> saveNoParent() {
@@ -373,40 +369,28 @@ public class ChapterEditor{
 		return bookmark;
 	}
 
-	public void loadTree(ArrayList<Node> tree, Node text) {
+	public void loadTree(Hashtable<Integer, Node> tree, Node text) {
 		this.start = text;
 		this.tree = tree;
 	}
-
-	/**
-	 * isChild checks node with id key is in selectedNodes
-	 * list of child.
-	 * @param key
-	 * @return true if text with key is child.
-	 */
-	//TODO
-//	public boolean isChild(int key) {
-//		Text text = searchTree(key);
-//		return selectedNode.isChild(text);
-//	}
 	
 	public boolean currentBookmark() {
-		return bookmark.contains(selectedNode);
+		return bookmark.contains(selected);
 	}
 
 	public boolean isNull() {
-		return selectedNode == null;
+		return selected == null;
 	}
 	
 	public int getSelectedID() {
-		if(selectedNode != null){
-			return selectedNode.getID();
+		if(selected != null){
+			return selected.getID();
 		}
 		return -1;
 	}
 	
 	public void setStart() {
-		start = selectedNode;
+		start = selected;
 	}
 	
 	public Node getStart() {
@@ -424,30 +408,30 @@ public class ChapterEditor{
 	}
 
 	public String getSelTitle() {
-		return selectedNode.getTitle();
+		return selected.getTitle();
 	}
 	
 	public void setSelTitle(String title) {
-		selectedNode.setTitle(title);
+		selected.setTitle(title);
 	}
 
 	public String getSelText() {
-		return selectedNode.getText();
+		return selected.getText();
 	}
 	
 	public void setSelText(String text) {
-		selectedNode.setText(text);
+		selected.setText(text);
 	}
-//TODO
-//	public boolean selHasChildren() {
-//		return selectedNode.hasChildren();
-//	}
 	
 	public Node getCurrentNode(){
-		return currentNode;
+		return current;
 	}
 
 	public boolean isSelect(int id) {
-		return selectedNode.getID() == id;
+		if(selected == null) return false;
+		return selected.getID() == id;
+	}
+	public boolean isEmpty(int id) {
+		return tree.get(id).isEmpty();
 	}
 }

@@ -13,8 +13,8 @@ public class Option extends Node{
 	
 	private ArrayList<OptionText> child = null;
 
-	public Option(int id, nodeType type) {
-		super(id, type);
+	public Option(int id) {
+		super(id, nodeType.Option);
 		child = new ArrayList<OptionText>();
 	}
 	
@@ -44,5 +44,11 @@ public class Option extends Node{
 			if(text.getNode() != null) return true;
 		}
 		return false;
+	}
+
+	public void deleteChild(int id) {
+		for(OptionText node : child){
+			if(node.getID() == id) node.setNode(null);
+		}
 	}
 }

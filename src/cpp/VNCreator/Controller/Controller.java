@@ -1,15 +1,18 @@
 package cpp.VNCreator.Controller;
 
 import java.util.ArrayList;
+import java.util.Optional;
+
 import cpp.VNCreator.Model.SearchNode;
 import cpp.VNCreator.Model.Story;
-import cpp.VNCreator.Node.Node;
-import cpp.VNCreator.View.DisplaySearch;
 import cpp.VNCreator.View.Editor;
 import cpp.VNCreator.View.SceneEditor;
 import cpp.VNCreator.View.SimConsole;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -22,16 +25,20 @@ public class Controller {
 	private SimConsole console;
 	private SceneEditor sEditor;
 	private Editor editor;
+	private ImageLoader imgLoader;
+	
 	private Point2D mouse;
 	private Point2D oldPos;
 	private boolean onSelected;
 	private boolean onConnect;
 	
-	public void startUp(Canvas canvas, Stage primaryStage, Editor editor) {
+	public void startUp(Canvas canvas, Stage primaryStage, Editor editor, SceneEditor sEditor) {
+		this.sEditor = sEditor;
 		this.editor = editor;
 		manager = new ProjectManager(primaryStage);
 		cnvsManager = new CanvasManager(canvas);
 
+		imgLoader = new ImageLoader(primaryStage);
 		Story story = new Story();
 		chEditor = new ChapterEditor(story.getTree());
 		manager.setStory(story, cnvsManager, chEditor);
@@ -44,9 +51,9 @@ public class Controller {
 	}
 	
 	public void updateSel(){
+		cnvsManager.setSelected(chEditor.getSelectedID());
 		if(chEditor.getSelected() != null){
 			editor.update(chEditor.getSelected());
-			cnvsManager.setSelected(chEditor.getSelectedID());
 		}else{
 			editor.clear();
 		}
@@ -66,14 +73,43 @@ public class Controller {
 		chEditor.back();
 		update();		
 	}
-
-	public void delete(Node selected) {
-		//TODO
-		chEditor.delete();
-		cnvsManager.delete();
-
+	
+	public void delete(){
+		delete(cnvsManager.onNode(mouse.getX(), mouse.getY()));		
 	}
 	
+	public void delete(int id){
+		if(id != -1){
+			if(!chEditor.isEmpty(id)){
+				if(!deleteError()) return;
+			}
+			chEditor.delete(id);
+			cnvsManager.delete(id);
+			updateSel();
+		}		
+	}
+	
+	/**
+	 * Create a alert box if user is trying to delete a node that has
+	 * text in it.
+	 * @return user input.
+	 */
+	private boolean deleteError(){
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Delete Node");
+		alert.setHeaderText(null);
+		alert.setContentText("Node contains Text!\nAre you sure "
+				+ "you want to delte node?");
+		
+		ButtonType buttonYes = new ButtonType("Yes");
+		ButtonType buttonNo = new ButtonType("No");
+		
+		alert.getButtonTypes().setAll(buttonYes, buttonNo);
+		
+		Optional<ButtonType> results = alert.showAndWait();
+		if(results.get() == buttonYes) return true;
+		return false;
+	}
 	
 	public void SetSelected(int ID){
 		chEditor.setSelected(ID);
@@ -83,7 +119,8 @@ public class Controller {
 	
 	
 	public void setCurrent(){
-		chEditor.setCurrent(cnvsManager.getSelected());
+		chEditor.setCurrent();
+		updateSel();
 	}
 	
 	public void setStart(){
@@ -98,7 +135,6 @@ public class Controller {
 
 	public void mousePress(MouseEvent e) {
 		if(e.getButton() == MouseButton.PRIMARY){
-			int press = e.getClickCount();
 			
 			if( e.getClickCount() == 2){
 				if(cnvsManager.onSelected(e.getX(),e.getY())){
@@ -106,16 +142,11 @@ public class Controller {
 				}else{
 					onConnect = false;
 				}
-			}else{
-				if(cnvsManager.onSelected(e.getX(),e.getY())){
-					onSelected = true;
-				}
 			}
 			//TODO
 			int id = cnvsManager.onNode(e.getX(),e.getY());
 			if(!chEditor.isSelect(id)){
 				if(onConnect){
-					//cnvsManager.connect(
 					chEditor.connect(id);
 					onConnect = false;
 				}else{
@@ -123,18 +154,14 @@ public class Controller {
 					cnvsManager.setSelected(id);;
 				}
 				updateSel();
-			}else if( press > 1){
-				//TODO
-				//disable();
-				//chEditor.setSelected(-1);
-				//cnvsManager.resetSelected();
 			}
 		}
 	}
 
 	public void onDrag(MouseEvent e) {
 		//TODO
-		if(oldPos != null){
+		if( !onSelected && cnvsManager.onSelected(e.getX(),e.getY())) onSelected = true;
+		if(oldPos != null && e.getButton() == MouseButton.PRIMARY){
 			if(onSelected){
 				cnvsManager.moveNode(oldPos.getX() - e.getScreenX(),
 						oldPos.getY() - e.getScreenY());
@@ -203,12 +230,16 @@ public class Controller {
 
 	public void loadBackground() {
 		// TODO Auto-generated method stub
+		imgLoader.loadBackground();
+		sEditor.loadBackIcon(imgLoader.getBackground());
+	}
+	
+	public void Icon(){
 		
 	}
 
 	public void loadActor() {
-		// TODO Auto-generated method stub
-		
+		imgLoader.loadActor();
 	}
 
 	public ArrayList<SearchNode> getAllNode() {
@@ -218,7 +249,7 @@ public class Controller {
 
 	public void searchTree() {
 
-		DisplaySearch search = new DisplaySearch();
+		//DisplaySearch search = new DisplaySearch();
 		//setSelected(search.getSearch(controller.getAllNode(),primaryStage));
 		// TODO Auto-generated method stub
 		
@@ -226,7 +257,7 @@ public class Controller {
 
 	public void searchNoParent() {
 
-		DisplaySearch search = new DisplaySearch();
+		//DisplaySearch search = new DisplaySearch();
 		//setSelected(search.getSearch(cHeditor.getNoParentNode(),primaryStage,
 		//		cHeditor.getSelectedKey()));
 		// TODO Auto-generated method stub
@@ -235,7 +266,7 @@ public class Controller {
 
 	public void searchNoChildren() {
 
-		DisplaySearch search = new DisplaySearch();
+		//DisplaySearch search = new DisplaySearch();
 		//setSelected(search.getSearch(cHeditor.getNoChildNode(),primaryStage,
 		//		cHeditor.getSelectedKey()));
 		// TODO Auto-generated method stub
@@ -256,6 +287,11 @@ public class Controller {
 
 	public void createText() {
 		cnvsManager.createNode(mouse.getX(), mouse.getY(), chEditor.createText());
+		updateSel();
+	}
+	
+	public void createOption(){
+		cnvsManager.createNode(mouse.getX(), mouse.getY(), chEditor.createOption());
 		updateSel();
 	}
 

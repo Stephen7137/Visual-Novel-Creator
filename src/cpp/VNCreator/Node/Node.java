@@ -1,7 +1,7 @@
 package cpp.VNCreator.Node;
 
 import java.io.Serializable;
-import java.util.Enumeration;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import cpp.VNCreator.Model.NodeType.nodeType;
@@ -53,8 +53,8 @@ public abstract class Node implements Serializable {
 			parent.put(node.getID(), node);
 		}
 		
-		public Enumeration<Node> getParents(){
-			return parent.elements();
+		public ArrayList<Node> getParents(){
+			return new ArrayList<Node>(parent.values());
 		}
 		
 		public void removeParent(int id){
@@ -64,14 +64,17 @@ public abstract class Node implements Serializable {
 		public void removeParent(Node node){
 			removeParent(node.getID());
 		}
+		
+		public boolean hasParents(){
+			return parent.size() != 0;
+		}
 
 		public Scene getScene() {
 			return scene;
 		}
 		
 		public boolean isEmpty() {
-			if(title.equals("")) return false;
-			if(text.equals("")) return false;
+			if(!title.equals("") || !text.equals("")) return false;
 			return true;
 		}
 		

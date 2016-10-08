@@ -1,6 +1,5 @@
 package cpp.VNCreator.Controller;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -17,7 +16,6 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
-import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
 
 /**
@@ -32,7 +30,7 @@ public class CanvasManager {
 	
 	private final int radius = 15;
 	private final int distance = 10;
-	private final int nodeDist = 100;
+	//private final int nodeDist = 100;
 	private final int offset = 22;
 	private final double defHeight = 75;
 	private final double defWidth = 150;
@@ -91,7 +89,6 @@ public class CanvasManager {
 				tree.getY());
 		drawAllNodes();
 		drawSelect();
-		drawAllTools();
 	}
 	
 	/**
@@ -103,7 +100,6 @@ public class CanvasManager {
 		drawAllLines();
 		drawAllNodes();
 		drawSelect();
-		drawAllTools();
 	}
 	
 	/**
@@ -115,27 +111,12 @@ public class CanvasManager {
 	}
 	
 	/**
-	 * Draws the tools in the a location on the canvas.
-	 */
-	private void drawAllTools(){
-		gc.setFill(background);
-		gc.setStroke(Color.BLACK);
-		gc.setLineWidth(3);
-		gc.fillRect(2, 2, toolW, toolH);
-		gc.strokeRect(2, 2, toolW, toolH);
-	}
-	
-	/**
 	 * Draws the default lines between the nodes and highlights
 	 * the child coming from the {@link #selected}.
 	 */
 	private void drawAllLines(){
 		for(Entry<Integer, TreePoint> point : lookup.entrySet()){
 			drawChild(point.getValue(), Color.BLACK);
-		}
-		
-		if(selected != null){
-			drawChild(selected, Color.YELLOW);
 		}
 	}
 	
@@ -199,25 +180,32 @@ public class CanvasManager {
 			gc.setLineWidth(5);
 			gc.setStroke(color);
 			ArrayList<CVNode> list = point.getChildren();
-			if(list != null){
-				for(CVNode node : list){
-					if(node != null){
+			int i = 0;
+			for(CVNode node : list){
+				if(node != null){
+					if(node.id != -1){
 						TreePoint point1 = searchTree(node.id);
+						//TODO
 						if(point.getY() + point.getHeight() < point1.getY()){
 							drawArrow(point.getX() + (point.getWidth()/2), point.getY() + (point.getHeight()/2),
 								point1.getX() + (point1.getWidth()/2), point1.getY(), Color.BLACK);
 						}else if(point.getY() > point1.getY() + point.getHeight()){
 							drawArrow(point.getX() + (point.getWidth()/2), point.getY() + (point.getHeight()/2),
 								point1.getX() + (point1.getWidth()/2), point1.getY() + point1.getHeight(), Color.BLACK);
-						}	
-						//TODO
-						//drawArrow(point.getX() + (point.getWidth()/2), point.getY() + (point.getHeight()/2),
-						//		point1.getX(), point1.getY() + (point1.getHeight()/2), Color.BLACK);
-						//drawArrow(point.getX() + (point.getWidth()/2), point.getY() + (point.getHeight()/2),
-						//		point1.getX() + point1.getWidth(), point1.getY() + (point1.getHeight()/2), Color.BLACK);
-					}				
-				}
-			}			
+						}else if(point.getX() < point1.getX()){
+							drawArrow(point.getX() + (point.getWidth()/2), point.getY() + (point.getHeight()/2),
+								point1.getX(), point1.getY() + (point1.getHeight()/2), Color.BLACK);
+						}else{
+							drawArrow(point.getX() + (point.getWidth()/2), point.getY() + (point.getHeight()/2),
+								point1.getX() + point1.getWidth(), point1.getY() + (point1.getHeight()/2), Color.BLACK);
+						}
+					}else{
+						gc.setFill(color);
+						gc.fillOval(point.getX() + point.getWidth()/2, point.getY() + point.getHeight() + 5 + i , 10, 10);
+						i += 15;
+					}
+				}				
+			}
 		}		
 	}
 	
@@ -401,12 +389,10 @@ public class CanvasManager {
 	 * Deletes selected node and removes all child nodes and removes
 	 * selected from {@link #lookup}.
 	 */
-	public void delete() {
-		if(selected != null){
-			lookup.remove(selected.getID());
-			selected = null;
-			update();
-		}
+	public void delete(int id) {
+		//if(selected.getID() == id) selected = null;
+		lookup.remove(id);
+		update();
 	}
 	
 	/**

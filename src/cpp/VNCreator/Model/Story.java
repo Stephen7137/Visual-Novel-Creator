@@ -2,6 +2,7 @@ package cpp.VNCreator.Model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import cpp.VNCreator.Node.Node;
 
@@ -20,10 +21,10 @@ public class Story implements Serializable{
 	private static final long serialVersionUID = 1561701032116116746L;
 	private String strName;
 	private Node start;
-	private ArrayList<Node> tree;
+	private Hashtable<Integer, Node> tree;
 	
 	public Story(){
-		tree = new ArrayList<Node>();
+		tree = new Hashtable<Integer, Node>();
 	}
 	
 	public void setName(String strName){
@@ -34,11 +35,11 @@ public class Story implements Serializable{
 		return strName;
 	}
 	
-	public void setTree(ArrayList<Node> newTree){
+	public void setTree(Hashtable<Integer, Node> newTree){
 		tree = newTree;
 	}
 	
-	public ArrayList<Node> getTree(){
+	public Hashtable<Integer, Node> getTree(){
 		return tree;
 	}
 	

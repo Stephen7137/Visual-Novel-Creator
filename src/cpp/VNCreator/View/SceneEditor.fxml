@@ -8,12 +8,46 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cpp.VNCreator.View.SceneEditor">
    <children>
-      <Canvas fx:id="canvas" height="407.0" width="363.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="0.0" />
-      <ScrollPane layoutX="363.0" prefHeight="407.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <content>
-            <VBox fx:id="cast" prefHeight="405.0" prefWidth="198.0" />
-         </content>
-      </ScrollPane>
-      <Separator layoutX="361.0" layoutY="-1.0" orientation="VERTICAL" prefHeight="407.0" prefWidth="6.0" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="196.0" AnchorPane.topAnchor="0.0" />
+      <AnchorPane layoutX="364.0" layoutY="1.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="414.0" prefWidth="246.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <TabPane layoutX="7.0" layoutY="1.0" prefHeight="414.0" prefWidth="246.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <tabs>
+                <Tab text="Controller" />
+                <Tab text="Resources">
+                     <content>
+                        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab text="Background">
+                                 <content>
+                                    <ScrollPane prefHeight="341.0" prefWidth="192.0">
+                                       <content>
+                                          <VBox fx:id="background" prefHeight="354.0" prefWidth="245.0" />
+                                       </content>
+                                    </ScrollPane>
+                                 </content>
+                              </Tab>
+                            <Tab text="Actors">
+                                 <content>
+                                    <ScrollPane prefHeight="200.0" prefWidth="200.0">
+                                       <content>
+                                          <VBox fx:id="cast" prefHeight="356.0" prefWidth="242.0" />
+                                       </content>
+                                    </ScrollPane>
+                                 </content>
+                              </Tab>
+                          </tabs>
+                        </TabPane>
+                     </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="canvasPane" prefHeight="414.0" prefWidth="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="244.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Canvas fx:id="canvas" height="421.0" layoutY="-3.0" width="563.0" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-3.0" />
+         </children>
+      </AnchorPane>
+      <Separator layoutX="560.0" orientation="VERTICAL" prefHeight="407.0" prefWidth="6.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="241.0" AnchorPane.topAnchor="0.0" />
    </children>
 </AnchorPane>

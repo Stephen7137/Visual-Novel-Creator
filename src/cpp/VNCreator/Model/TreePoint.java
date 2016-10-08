@@ -59,9 +59,9 @@ public class TreePoint {
 	}
 	
 	public ArrayList<CVNode> getChildren(){
-		ArrayList<CVNode> children = null;
+		ArrayList<CVNode> children = new ArrayList<CVNode>();
+		//TODO look into not repeating.
 		if(node.hasChild()){
-			children = new ArrayList<CVNode>();
 			if(node.getType() == nodeType.Option){
 				ArrayList<OptionText> oText = ((Option)node).getChildren();
 				for(OptionText text : oText){
@@ -69,6 +69,15 @@ public class TreePoint {
 				}
 			}else{
 				children.add(new CVNode("", ((Text)node).getChild().getID()));
+			}
+		}else{
+			if(node.getType() == nodeType.Option){
+				ArrayList<OptionText> oText = ((Option)node).getChildren();
+				for(OptionText text : oText){
+					children.add(new CVNode(text.getText(), -1));
+				}
+			}else{
+				children.add(new CVNode("", -1));
 			}
 		}
 		

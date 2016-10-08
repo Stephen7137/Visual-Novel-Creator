@@ -33,6 +33,7 @@ public class ImageLoader {
 		filechooser.getExtensionFilters().clear();
 		//filechooser.getExtensionFilters().add(
 		//		new FileChooser.ExtensionFilter("Project file", "*.project"));
+		
 	}
 		
 	public void loadBackground(){
@@ -63,17 +64,30 @@ public class ImageLoader {
 		return background.keySet();		
 	}
 	
-	private class ImageStorage{
-		String name;
-		Image image;
+	public class ImageStorage{
+		private String name;
+		private Image image;
+		
 		
 		public ImageStorage(String name, Image image){
 			this.name = name;
 			this.image = image;
 		}
+		
+		public String getName(){
+			return name;
+		}
+		
+		public Image getImage(){
+			return image;
+		}
 	}
 
 	public Image getBackground(String name) {
 		return background.get(name).image;
+	}
+
+	public Hashtable<String, ImageStorage> getBackground() {
+		return background;
 	}
 }

@@ -29,6 +29,10 @@ public class Text extends Node{
 	public void setChild(Node node) {
 		child = node;		
 	}
+	
+	public void deleteChild(){
+		child = null;
+	}
 
 	@Override
 	public boolean hasChild() {

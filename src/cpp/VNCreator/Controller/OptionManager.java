@@ -7,8 +7,13 @@ import java.util.Collections;
 import cpp.VNCreator.Node.OptionText;
 import cpp.VNCreator.View.Main;
 import cpp.VNCreator.View.OptionBox;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 
 /**
  * Controls the Option text from each node and keeps track of
@@ -20,14 +25,29 @@ import javafx.scene.layout.VBox;
  */
 public class OptionManager {
 
-	VBox option;
+	TabPane option;
 	Controller controller;
 	ArrayList<OptionText> children;
 	ArrayList<OptionBox> optionBox;
+	private int curTab;
 	
-	public OptionManager(VBox option, Controller controller){
+	public OptionManager(TabPane option, Controller controller){
 		this.controller = controller;
 		this.option = option;
+		
+		option.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+		    @Override
+		    public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+		    	if( newValue.intValue() == children.size()){
+		    		addOption();
+		    	}else if(newValue.intValue() > 0){		    		
+		    		curTab = newValue.intValue();
+		    		System.out.println("cur" + curTab);
+		    	}
+		    }
+		}); 
+		//TODO temp replace ussing CSS style file;
+		option.setStyle("-fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;");
 	}
 	
 	/**
@@ -45,24 +65,41 @@ public class OptionManager {
 	private void buildOption(){
 		reset();
 		optionBox = new ArrayList<OptionBox>();
+		ObservableList<Tab> collection = FXCollections.observableArrayList();
 		for(int i = 0; i < children.size(); i++){
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("SimConsole.fxml"));
+			loader.setLocation(Main.class.getResource("OptionBox.fxml"));
+			Tab tab = new Tab();
+			tab.setText(Integer.toString(i+1));
+			try {
+				tab.setContent(loader.load());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			OptionBox console = loader.getController();
 			optionBox.add(console);
 			console.controller(this, children.get(i).getText(), i);
 			if(i == 0) console.dissableUp();
-			if(i == children.size()-1) console.dissableDown();
-			try {
-				option.getChildren().add(loader.load());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			if(i == children.size()-1) console.dissableDown();			
+			collection.add(tab);
+			//option.getTabs().add(tab);			
 		}
+		Tab tab = new Tab();
+		tab.setText("+");
+		collection.add(tab);
+		option.getTabs().addAll(collection);
+		option.getSelectionModel().select(curTab);
+	}
+
+	private void addOption() {
+		children.add(new OptionText(""));
+		System.out.println("Add Child");
+		buildOption();
+		controller.updateSel();
 	}
 
 	public void reset() {
-		option.getChildren().clear();
+		option.getTabs().clear();
 	}
 
 	public ArrayList<OptionText> save() {
@@ -77,11 +114,13 @@ public class OptionManager {
 	}
 
 	public void shiftUp(int id) {
+		--curTab;
 		swap(id, id-1);
 		buildOption();
 	}
 
 	public void shiftDown(int id) {
+		++curTab;
 		swap(id, id+1);
 		buildOption();
 	}
@@ -92,6 +131,8 @@ public class OptionManager {
 
 	public void delete(int id) {		
 		children.remove(children.get(id));
+		curTab = 0;
 		buildOption();
+		controller.updateSel();
 	}
 }

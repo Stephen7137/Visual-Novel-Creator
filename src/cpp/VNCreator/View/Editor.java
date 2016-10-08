@@ -7,8 +7,6 @@ import cpp.VNCreator.Controller.OptionManager;
 import cpp.VNCreator.Model.NodeType.nodeType;
 import cpp.VNCreator.Node.Node;
 import cpp.VNCreator.Node.Option;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
@@ -16,11 +14,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 
 /**
  * Controls the canvas input and the input for the
@@ -45,7 +44,7 @@ public class Editor {
 	private TextArea text;
 	
 	@FXML
-	private VBox option;
+	private TabPane option;
 
 	private Node selected;
 	private Controller controller;
@@ -60,11 +59,7 @@ public class Editor {
 	 */
 	@FXML
 	private void save(){
-		selected.setTitle(title.getText());
-		selected.setText(text.getText());
-		if(selected.getType() == nodeType.Option){
-			((Option)selected).setChildren(optionManager.save());
-		}
+		saveNode();
 		controller.updateSel();
 	}
 	
@@ -75,9 +70,7 @@ public class Editor {
 	@FXML
 	private void delete(){
 		if(!selected.isEmpty()){
-			if(!deteleError()){
-				controller.delete(selected);
-			}
+			controller.delete(selected.getID());
 		}
 	}
 	
@@ -125,35 +118,14 @@ public class Editor {
 	private void onMove(MouseEvent e){
 		controller.onMove(e);
 	}
-	
-	/**
-	 * Create a alert box if user is trying to delete a node that has
-	 * text in it.
-	 * @return user input.
-	 */
-	private boolean deteleError(){
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Delete Node");
-		alert.setHeaderText(null);
-		alert.setContentText("Node contains Text!\nAre you sure "
-				+ "you want to delte node?");
 		
-		ButtonType buttonYes = new ButtonType("Yes");
-		ButtonType buttonNo = new ButtonType("No");
-		
-		alert.getButtonTypes().setAll(buttonYes, buttonNo);
-		
-		Optional<ButtonType> results = alert.showAndWait();
-		if(results.get() == buttonYes) return true;
-		return false;
-	}
-	
 	/**
 	 * updates the text editor with the text from the selected node.
 	 * Enable text areas if there is a selected node.
 	 */
 	public void update(Node node) {
 		if(node != null){
+			if(selected != null) saveNode();
 			selected = node;
 			title.setDisable(false);
 			text.setDisable(false);
@@ -168,6 +140,14 @@ public class Editor {
 			}
 		}else{
 			disable();
+		}
+	}
+	
+	private void saveNode(){
+		selected.setTitle(title.getText());
+		selected.setText(text.getText());
+		if(selected.getType() == nodeType.Option){
+			((Option)selected).setChildren(optionManager.save());
 		}
 	}
 
@@ -203,21 +183,29 @@ public class Editor {
 	}
 
 	public void clear() {
+		if(selected != null) saveNode();
 		title.clear();
 		text.clear();
+		selected = null;
 	}
 	
 	private void buildContextMenu(){
 		menu = new ContextMenu();
-		MenuItem text = new MenuItem("CreateText");
-		text.setOnAction(new EventHandler<ActionEvent>() {
-			
-		    public void handle(ActionEvent t) {
-		        controller.createText();
-		    }
+		MenuItem text = new MenuItem("Create Text");
+		text.setOnAction( handle -> {
+			controller.createText();
 		});
 		
-		menu.getItems().addAll(text);		
+		MenuItem option = new MenuItem("Create Option");
+		option.setOnAction( handle -> {
+			controller.createOption();
+		});
+		
+		MenuItem delete = new MenuItem("Delete Node");
+		delete.setOnAction( handle -> {
+			controller.delete();
+		});
+		
+		menu.getItems().addAll(text, option,new SeparatorMenuItem(), delete);	
 	}
-	
 }

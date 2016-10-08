@@ -1,11 +1,20 @@
 package cpp.VNCreator.Node;
 
 public class OptionText {
+	private String title;
 	private String text;
 	private Node node;
 	
 	public OptionText(String text){
 		this.text = text;
+	}
+	
+	public void setTitle(String title){
+		this.title = title;
+	}
+	
+	public String getTitle(){
+		return title;
 	}
 	
 	public void setText(String text){
@@ -30,6 +39,6 @@ public class OptionText {
 	}
 	
 	public int getID(){
-		return node.getID();
+		return node != null ? node.getID() : -1;
 	}
 }
