@@ -1,7 +1,6 @@
 package cpp.VNCreator.Model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 import cpp.VNCreator.Node.Node;

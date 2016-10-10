@@ -6,7 +6,6 @@ import java.util.Hashtable;
 import java.util.Map.Entry;
 
 import cpp.VNCreator.Model.CVNode;
-import cpp.VNCreator.Model.SimpPoint2D;
 import cpp.VNCreator.Model.TreePoint;
 import cpp.VNCreator.Node.Node;
 import javafx.geometry.Point2D;
@@ -28,19 +27,14 @@ import javafx.scene.transform.Rotate;
  */
 public class CanvasManager {
 	
-	private final int radius = 15;
-	private final int distance = 10;
-	//private final int nodeDist = 100;
-	private final int offset = 22;
+	private final int textOffset = 13;
+	private final int startOffset = 5;
+	private final int offset = 15;
 	private final double defHeight = 75;
 	private final double defWidth = 150;
 	private final Color defColor = Color.LIGHTBLUE;
 	private final Color background = Color.WHITE;
 	
-		
-	private int diameter;
-	private int toolW;
-	private int toolH;
 	private Font font;
 	private Image arrow;
 	
@@ -50,9 +44,8 @@ public class CanvasManager {
 	
 	private TreePoint start;
 	private TreePoint selected;
-
-	private Point2D toolText;
-	private SimpPoint2D connect;
+	private int onConnect;
+	
 	private Color lastColor;
 	
 	
@@ -64,15 +57,12 @@ public class CanvasManager {
 	public CanvasManager(Canvas canvas){
 		URL url = getClass().getClassLoader().getResource("Resources/Images/Arrow.png");
 		arrow = new Image(url.toExternalForm());
-		diameter = radius*2;
 		start = null;
 		selected = null;
 		lastColor = defColor;
 		lookup = new Hashtable<Integer,TreePoint>();
 		this.canvas = canvas;
 		gc = canvas.getGraphicsContext2D();
-		toolW = toolH = diameter + 8;
-		toolText = new Point2D(toolW/2 + 2, toolH - radius - 2);
 		font = new Font("Times New Roman", 12);
 	}
 	
@@ -185,24 +175,27 @@ public class CanvasManager {
 				if(node != null){
 					if(node.id != -1){
 						TreePoint point1 = searchTree(node.id);
-						//TODO
-						if(point.getY() + point.getHeight() < point1.getY()){
-							drawArrow(point.getX() + (point.getWidth()/2), point.getY() + (point.getHeight()/2),
-								point1.getX() + (point1.getWidth()/2), point1.getY(), Color.BLACK);
-						}else if(point.getY() > point1.getY() + point.getHeight()){
-							drawArrow(point.getX() + (point.getWidth()/2), point.getY() + (point.getHeight()/2),
-								point1.getX() + (point1.getWidth()/2), point1.getY() + point1.getHeight(), Color.BLACK);
+						if(point.getBottom() < point1.getY()){
+							drawArrow(point.getHalfTop(), point.getHalfLeft(),
+								point1.getHalfTop(), point1.getY(), Color.BLACK);
+						}else if(point.getY() > point1.getBottom()){
+							drawArrow(point.getHalfTop(), point.getHalfLeft(),
+								point1.getHalfTop(), point1.getBottom(), Color.BLACK);
 						}else if(point.getX() < point1.getX()){
-							drawArrow(point.getX() + (point.getWidth()/2), point.getY() + (point.getHeight()/2),
-								point1.getX(), point1.getY() + (point1.getHeight()/2), Color.BLACK);
+							drawArrow(point.getHalfTop(), point.getHalfLeft(),
+								point1.getX(), point1.getHalfLeft(), Color.BLACK);
 						}else{
-							drawArrow(point.getX() + (point.getWidth()/2), point.getY() + (point.getHeight()/2),
-								point1.getX() + point1.getWidth(), point1.getY() + (point1.getHeight()/2), Color.BLACK);
+							drawArrow(point.getHalfTop(), point.getHalfLeft(),
+								point1.getRight(), point1.getHalfLeft(), Color.BLACK);
 						}
 					}else{
-						gc.setFill(color);
-						gc.fillOval(point.getX() + point.getWidth()/2, point.getY() + point.getHeight() + 5 + i , 10, 10);
-						i += 15;
+						//if( !(point == selected && node.id == onConnect) ){
+							gc.setFill(color);
+							node.point = new Point2D(point.getHalfTop() + point.getRadious(), point.getBottom() + startOffset + i + point.getRadious());
+							gc.fillOval(point.getHalfTop(), point.getBottom() + startOffset + i , point.getRadious(), point.getRadious());
+							gc.fillText(node.title, point.getHalfTop() + textOffset, point.getBottom() + textOffset + i );
+							i += offset;
+						//}						
 					}
 				}				
 			}
@@ -239,6 +232,25 @@ public class CanvasManager {
 		
 		return -1;
 	}
+	
+	/**
+	 * Checks to see if coordinates are on a node already connected
+	 * to the selected node.
+	 * @param x
+	 * @param y
+	 * @return true if on child node of selected node.
+	 */
+	public boolean onConnect(double x, double y){
+		for(Entry<Integer, TreePoint> point : lookup.entrySet()){
+			onConnect = point.getValue().onChild(x, y);
+			if(onConnect != -1){
+				System.out.println(onConnect);
+				setSelected(point.getValue().getID());
+				return true;
+			}
+		}
+		return false;	
+	}
 
 	public int getSelected() {
 		return selected.getID();
@@ -268,7 +280,6 @@ public class CanvasManager {
 	public void moveNode(double vecX, double vecY) {
 		if(selected != null){
 			selected.subXY(vecX, vecY);
-			connect.setPoint(selected.getX() - offset, selected.getY() - offset);
 			update();
 		}
 	}
@@ -291,34 +302,7 @@ public class CanvasManager {
 		if(selected.collition(x, y)) return true;
 		return false;
 	}
-
-	/**
-	 * Checks to see if coordinates are on the tool section of the
-	 * canvas.
-	 * @param x
-	 * @param y
-	 * @return true if on tools.
-	 */
-	public int tools(double x, double y) {
-		if(x >= 0 && x <= toolW && y >=0 && y <= toolH ){
-			if(toolText.distance(x,y) <= radius) return 0;
-		}
-		return -1;
-	}
 	
-	/**
-	 * Checks to see if coordinates are on a node already connected
-	 * to the selected node.
-	 * @param x
-	 * @param y
-	 * @return true if on child node of selected node.
-	 */
-	public boolean onConnect(double x, double y){
-		if(connect == null) return false;
-		return connect.distance(x,y) <= distance;
-		
-	}
-
 	/**
 	 * Creates a new node at coordinates with id CreateNode and 
 	 * adds node to the main ArrayList, then set node as selected.
@@ -357,9 +341,6 @@ public class CanvasManager {
 		selected = node;
 		if(selected == null){
 			update();
-		}else{
-			connect = new SimpPoint2D(selected.getX() - offset, 
-					selected.getY() - offset);
 		}	
 	}
 
@@ -372,7 +353,7 @@ public class CanvasManager {
 	 */
 	public void drawConnect(double x, double y) {
 		update();
-		drawArrow(selected.getX() + selected.getWidth()/2, selected.getY() + selected.getHeight()/2, x, y, Color.GREEN);
+		drawArrow(selected.getHalfTop(), selected.getHalfLeft(), x, y, Color.GREEN);
 		drawSelect();
 	}
 
@@ -419,5 +400,13 @@ public class CanvasManager {
 	 */
 	public void highlight(int ID) {
 		updateWithHighlight(searchTree(ID));
+	}
+
+	public int getConnected() {
+		return onConnect;
+	}
+
+	public void resetOnConnect() {
+		onConnect = -1;
 	}
 }

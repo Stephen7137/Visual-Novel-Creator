@@ -130,6 +130,12 @@ public class Controller {
 
 	public void moseRelease(MouseEvent e) {
 		onSelected = false;
+		if(onConnect){
+			chEditor.connect(cnvsManager.onNode(e.getX(),e.getY()), cnvsManager.getConnected());
+			cnvsManager.resetOnConnect();
+			updateSel();
+			onConnect = false;
+		}
 		oldPos = null;
 	}
 
@@ -146,13 +152,8 @@ public class Controller {
 			//TODO
 			int id = cnvsManager.onNode(e.getX(),e.getY());
 			if(!chEditor.isSelect(id)){
-				if(onConnect){
-					chEditor.connect(id);
-					onConnect = false;
-				}else{
-					chEditor.setSelected(id);
-					cnvsManager.setSelected(id);;
-				}
+				chEditor.setSelected(id);
+				cnvsManager.setSelected(id);
 				updateSel();
 			}
 		}
@@ -160,23 +161,24 @@ public class Controller {
 
 	public void onDrag(MouseEvent e) {
 		//TODO
-		if( !onSelected && cnvsManager.onSelected(e.getX(),e.getY())) onSelected = true;
+		if( !onConnect && !onSelected && cnvsManager.onSelected(e.getX(),e.getY())) onSelected = true;
+		if( !onSelected && !onConnect && cnvsManager.onConnect(e.getX(),e.getY())){
+			chEditor.setSelected(cnvsManager.getSelected());
+			updateSel();
+			onConnect = true;
+		}
 		if(oldPos != null && e.getButton() == MouseButton.PRIMARY){
 			if(onSelected){
 				cnvsManager.moveNode(oldPos.getX() - e.getScreenX(),
 						oldPos.getY() - e.getScreenY());
+			}else if(onConnect){
+				cnvsManager.drawConnect(e.getX(),e.getY());
 			}else{
 				cnvsManager.moveScreen(oldPos.getX() - e.getScreenX(),
 						oldPos.getY() - e.getScreenY());
 			}			
 		}
 		oldPos = new Point2D(e.getScreenX(), e.getScreenY());
-	}
-
-	public void onMove(MouseEvent e) {
-		if(onConnect){
-			cnvsManager.drawConnect(e.getX(),e.getY());
-		}
 	}
 	
 	public void highlight(int id) {

@@ -5,7 +5,12 @@ public class OptionText {
 	private String text;
 	private Node node;
 	
-	public OptionText(String text){
+	public OptionText(){
+		this("","");
+	}
+	
+	public OptionText(String title, String text){
+		this.title = title;
 		this.text = text;
 	}
 	
@@ -17,7 +22,8 @@ public class OptionText {
 		return title;
 	}
 	
-	public void setText(String text){
+	public void setText(String title, String text){
+		this.title = title;
 		this.text = text;
 	}
 	

@@ -1,7 +1,5 @@
 package cpp.VNCreator.View;
 
-import java.util.Optional;
-
 import cpp.VNCreator.Controller.Controller;
 import cpp.VNCreator.Controller.OptionManager;
 import cpp.VNCreator.Model.NodeType.nodeType;
@@ -9,9 +7,6 @@ import cpp.VNCreator.Node.Node;
 import cpp.VNCreator.Node.Option;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
@@ -112,11 +107,6 @@ public class Editor {
 	@FXML
 	private void onDrag(MouseEvent e){
 		controller.onDrag(e);
-	}
-	
-	@FXML
-	private void onMove(MouseEvent e){
-		controller.onMove(e);
 	}
 		
 	/**

@@ -48,11 +48,13 @@ public class ChapterEditor{
 		noChild = new ArrayList<Node>();
 	}
 		//TODO
-	public int connect(int id){
+	public int connect(int id, int child){
 		if(id == -1) return id;
-		Node node = null;
-		if(selected.getType() == nodeType.Text){
-			node = searchTree(id);
+		Node node = tree.get(id);
+		if(selected.getType() == nodeType.Option){
+			((Option)selected).setChild(node, child);
+			node.addParent(selected);
+		}else{
 			((Text)selected).setChild(node);
 			node.addParent(selected);
 		}
@@ -266,20 +268,6 @@ public class ChapterEditor{
 		return current.getID();
 	}
 	
-	/**
-	 * searchTree searches the tree for nodes that have the ID key.
-	 * @param key
-	 * @return text with id key
-	 */
-	private Node searchTree(int key){
-		if(key >= 0){
-			for(int i = 0; i < tree.size(); i++){
-				if(tree.get(i).getID() == key)return tree.get(i);
-			}
-		}
-		return null;
-	}
-	
 	public ArrayList<Node> getBookMark() {
 		return createList(bookmark);
 	}
@@ -320,8 +308,8 @@ public class ChapterEditor{
 		return current.getID();
 	}
 
-	public void setSelected(int key) {
-		selected = searchTree(key);
+	public void setSelected(int id) {
+		selected = tree.get(id);
 	}
 
 	public Node getSelected() {

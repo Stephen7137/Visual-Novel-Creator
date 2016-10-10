@@ -18,8 +18,8 @@ public class Option extends Node{
 		child = new ArrayList<OptionText>();
 	}
 	
-	public void addChild(String text){
-		child.add(new OptionText(text));
+	public void addChild(){
+		child.add(new OptionText());
 	}
 	
 	public void removeChild(OptionText node){
@@ -50,5 +50,9 @@ public class Option extends Node{
 		for(OptionText node : child){
 			if(node.getID() == id) node.setNode(null);
 		}
+	}
+
+	public void setChild(Node node, int id) {
+		child.get(id).setNode(node);		
 	}
 }

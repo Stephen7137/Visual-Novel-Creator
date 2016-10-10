@@ -9,7 +9,6 @@ import cpp.VNCreator.Node.OptionText;
 import cpp.VNCreator.Node.Text;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 /**
  * A simple pointer that keeps track of the location and the
  * points that it is connected to. 
@@ -19,11 +18,13 @@ import javafx.scene.shape.Rectangle;
  */
 public class TreePoint {
 
+	private final int radius = 10;
 	private Point2D point;
 	private double height;
 	private double width;
 	private Color color;
 	private Node node;
+	private ArrayList<CVNode> children;
 	
 	public TreePoint(double x, double y, double height, double width,
 			Color color, Node node){
@@ -58,6 +59,26 @@ public class TreePoint {
 		return point.getY();
 	}
 	
+	public double getBottom(){
+		return point.getY() + height;
+	}
+	
+	public double getRight(){
+		return point.getX() + width;
+	}
+	
+	public double getHalfTop(){
+		return point.getX() + width/2;
+	}
+	
+	public double getHalfLeft(){
+		return point.getY() + height/2;
+	}
+	
+	public int getRadious(){
+		return radius;
+	}
+	
 	public ArrayList<CVNode> getChildren(){
 		ArrayList<CVNode> children = new ArrayList<CVNode>();
 		//TODO look into not repeating.
@@ -65,22 +86,23 @@ public class TreePoint {
 			if(node.getType() == nodeType.Option){
 				ArrayList<OptionText> oText = ((Option)node).getChildren();
 				for(OptionText text : oText){
-					children.add(new CVNode(text.getText(), text.getID()));
+					children.add(new CVNode(text.getTitle(),
+							text.getText(), text.getID()));
 				}
 			}else{
-				children.add(new CVNode("", ((Text)node).getChild().getID()));
+				children.add(new CVNode("", "", ((Text)node).getChild().getID()));
 			}
 		}else{
 			if(node.getType() == nodeType.Option){
 				ArrayList<OptionText> oText = ((Option)node).getChildren();
 				for(OptionText text : oText){
-					children.add(new CVNode(text.getText(), -1));
+					children.add(new CVNode(text.getTitle(), text.getText(), -1));
 				}
 			}else{
-				children.add(new CVNode("", -1));
+				children.add(new CVNode("", "", -1));
 			}
 		}
-		
+		this.children = children;
 		return children;
 	}
 
@@ -109,5 +131,15 @@ public class TreePoint {
 
 	public void subXY(double vecX, double vecY) {
 		point = point.subtract(vecX, vecY);
+	}
+
+	public int onChild(double x, double y) {
+		if(children != null){
+			for(int i = 0; i < children.size(); i++){
+				if(children.get(i).point == null) return -1;//TODO
+				if(children.get(i).point.distance(x, y) < radius) return i;
+			}
+		}		
+		return -1;
 	}
 }

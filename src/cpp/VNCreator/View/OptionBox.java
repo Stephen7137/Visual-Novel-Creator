@@ -6,11 +6,15 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 public class OptionBox {
 	
 	@FXML
-	private TextArea input;
+	private TextField title;
+	
+	@FXML
+	private TextArea text;
 	
 	@FXML
 	private Button up;
@@ -44,11 +48,12 @@ public class OptionBox {
 		down.disableProperty().set(true);
 	}
 
-	public void controller(OptionManager option, String text, int id) {
+	public void controller(OptionManager option, String title, String text, int id) {
 		this.id = id;
 		this.option = option;
-		input.setText(text);
-		input.focusedProperty().addListener(
+		this.title.setText(title);
+		this.text.setText(text);
+		this.text.focusedProperty().addListener(
 				new ChangeListener<Boolean>(){
 
 			@Override
@@ -68,7 +73,11 @@ public class OptionBox {
 	}
 	
 	public String getText(){
-		return input.getText();
+		return text.getText();
+	}
+	
+	public String getTitle(){
+		return title.getText();
 	}
 	
 }

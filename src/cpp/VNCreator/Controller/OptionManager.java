@@ -42,7 +42,6 @@ public class OptionManager {
 		    		addOption();
 		    	}else if(newValue.intValue() > 0){		    		
 		    		curTab = newValue.intValue();
-		    		System.out.println("cur" + curTab);
 		    	}
 		    }
 		}); 
@@ -78,7 +77,7 @@ public class OptionManager {
 			}
 			OptionBox console = loader.getController();
 			optionBox.add(console);
-			console.controller(this, children.get(i).getText(), i);
+			console.controller(this, children.get(i).getTitle(), children.get(i).getText(), i);
 			if(i == 0) console.dissableUp();
 			if(i == children.size()-1) console.dissableDown();			
 			collection.add(tab);
@@ -92,8 +91,7 @@ public class OptionManager {
 	}
 
 	private void addOption() {
-		children.add(new OptionText(""));
-		System.out.println("Add Child");
+		children.add(new OptionText());
 		buildOption();
 		controller.updateSel();
 	}
@@ -104,7 +102,7 @@ public class OptionManager {
 
 	public ArrayList<OptionText> save() {
 		for(OptionBox box : optionBox){
-			children.get(box.getID()).setText(box.getText());
+			children.get(box.getID()).setText(box.getTitle(), box.getText());
 		}
 		return children;
 	}
@@ -114,13 +112,13 @@ public class OptionManager {
 	}
 
 	public void shiftUp(int id) {
-		--curTab;
+		curTab = id - 1;
 		swap(id, id-1);
 		buildOption();
 	}
 
 	public void shiftDown(int id) {
-		++curTab;
+		curTab = id + 1;
 		swap(id, id+1);
 		buildOption();
 	}
