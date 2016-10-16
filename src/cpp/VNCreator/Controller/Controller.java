@@ -236,12 +236,9 @@ public class Controller {
 		sEditor.loadBackIcon(imgLoader.getBackground());
 	}
 	
-	public void Icon(){
-		
-	}
-
-	public void loadActor() {
+	public void loadSprite(){
 		imgLoader.loadActor();
+		sEditor.loadSpriteIcon(imgLoader.getSprite());
 	}
 
 	public ArrayList<SearchNode> getAllNode() {

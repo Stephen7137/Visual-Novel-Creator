@@ -124,7 +124,7 @@ public class TextAdvEditorControler {
 	
 	@FXML
 	private void importActor(){
-		controller.loadActor();
+		controller.loadSprite();
 	}
 	
 	/**

@@ -90,4 +90,12 @@ public class ImageLoader {
 	public Hashtable<String, ImageStorage> getBackground() {
 		return background;
 	}
+
+	public Image getSprite(String fileName) {
+		return actors.get(fileName).getImage();
+	}
+	
+	public Hashtable<String, ImageStorage> getSprite() {
+		return actors;
+	}
 }

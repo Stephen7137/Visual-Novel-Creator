@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.canvas.*?>
@@ -8,11 +9,24 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cpp.VNCreator.View.SceneEditor">
    <children>
+      <Separator layoutY="420.0" prefHeight="0.0" prefWidth="563.0" AnchorPane.bottomAnchor="238.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="244.0" />
       <AnchorPane layoutX="364.0" layoutY="1.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="414.0" prefWidth="246.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <TabPane layoutX="7.0" layoutY="1.0" prefHeight="414.0" prefWidth="246.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <tabs>
-                <Tab text="Controller" />
+                <Tab text="Controller">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <ScrollPane layoutX="23.0" layoutY="358.0" prefHeight="200.0" prefWidth="200.0">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                                </content>
+                              </ScrollPane>
+                              <ImageView fitHeight="164.0" fitWidth="200.0" layoutX="23.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </AnchorPane>
+                     </content></Tab>
                 <Tab text="Resources">
                      <content>
                         <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
@@ -43,11 +57,18 @@
             </TabPane>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="canvasPane" prefHeight="414.0" prefWidth="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="244.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane fx:id="canvasPane" prefHeight="414.0" prefWidth="563.0" AnchorPane.bottomAnchor="240.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="244.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Canvas fx:id="canvas" height="421.0" layoutY="-3.0" width="563.0" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-3.0" />
+            <Canvas fx:id="canvas" height="421.0" layoutY="-3.0" width="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
          </children>
       </AnchorPane>
       <Separator layoutX="560.0" orientation="VERTICAL" prefHeight="407.0" prefWidth="6.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="241.0" AnchorPane.topAnchor="0.0" />
+      <AnchorPane layoutY="422.0" prefHeight="239.0" prefWidth="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="244.0">
+         <children>
+            <Button layoutY="2.0" mnemonicParsing="false" onAction="#play" text="Play" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Button layoutX="38.0" layoutY="2.0" mnemonicParsing="false" onAction="#pause" text="Pause" AnchorPane.leftAnchor="38.0" AnchorPane.topAnchor="0.0" />
+            <Button layoutX="85.0" layoutY="2.0" mnemonicParsing="false" onAction="#stop" text="Stop" AnchorPane.leftAnchor="85.0" AnchorPane.topAnchor="0.0" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>
