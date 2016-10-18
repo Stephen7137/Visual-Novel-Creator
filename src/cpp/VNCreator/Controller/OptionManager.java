@@ -58,6 +58,7 @@ public class OptionManager {
 	 */
 	public void setOption(ArrayList<OptionText> arrayList){
 		this.children = arrayList;
+		curTab = 0;
 		buildOption();
 	}
 	

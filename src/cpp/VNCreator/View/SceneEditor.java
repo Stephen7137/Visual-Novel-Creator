@@ -7,9 +7,6 @@ import cpp.VNCreator.Model.Sprite;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import cpp.VNCreator.Controller.Controller;
 import cpp.VNCreator.Node.Node;
 import cpp.VNCreator.Node.Scene;

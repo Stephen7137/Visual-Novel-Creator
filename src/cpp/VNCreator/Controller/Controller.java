@@ -75,6 +75,7 @@ public class Controller {
 	}
 	
 	public void delete(){
+		
 		delete(cnvsManager.onNode(mouse.getX(), mouse.getY()));		
 	}
 	
@@ -128,7 +129,7 @@ public class Controller {
 		chEditor.setStart();
 	}
 
-	public void moseRelease(MouseEvent e) {
+	public void mouseRelease(MouseEvent e) {
 		onSelected = false;
 		if(onConnect){
 			chEditor.connect(cnvsManager.onNode(e.getX(),e.getY()), cnvsManager.getConnected());
@@ -142,15 +143,10 @@ public class Controller {
 	public void mousePress(MouseEvent e) {
 		if(e.getButton() == MouseButton.PRIMARY){
 			
-			if( e.getClickCount() == 2){
-				if(cnvsManager.onSelected(e.getX(),e.getY())){
-					onConnect = true;
-				}else{
-					onConnect = false;
-				}
-			}
+			
 			//TODO
 			int id = cnvsManager.onNode(e.getX(),e.getY());
+			if(e.getClickCount() == 2) cnvsManager.printChild(id);
 			if(!chEditor.isSelect(id)){
 				chEditor.setSelected(id);
 				cnvsManager.setSelected(id);

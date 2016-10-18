@@ -96,7 +96,7 @@ public class Editor {
 	 */
 	@FXML
 	private void onRelease(MouseEvent e){
-		controller.moseRelease(e);
+		controller.mouseRelease(e);
 	}
 	
 	/**

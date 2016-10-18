@@ -33,6 +33,7 @@ public class TreePoint {
 		this.color = color;
 		point = new Point2D(x,y);
 		this.node = node;
+		children = new ArrayList<CVNode>();
 	}
 	
 	public int getID(){
@@ -80,29 +81,24 @@ public class TreePoint {
 	}
 	
 	public ArrayList<CVNode> getChildren(){
-		ArrayList<CVNode> children = new ArrayList<CVNode>();
+		children = new ArrayList<CVNode>();
 		//TODO look into not repeating.
-		if(node.hasChild()){
-			if(node.getType() == nodeType.Option){
-				ArrayList<OptionText> oText = ((Option)node).getChildren();
-				for(OptionText text : oText){
-					children.add(new CVNode(text.getTitle(),
-							text.getText(), text.getID()));
-				}
-			}else{
-				children.add(new CVNode("", "", ((Text)node).getChild().getID()));
+		if(node.getType() == nodeType.Option){
+			ArrayList<OptionText> oText = ((Option)node).getChildren();
+			for(int i = 0; i < oText.size(); i++){
+				int id  = node.hasChild() ? oText.get(i).getID() : -1;
+				children.add(new CVNode(oText.get(i).getTitle(),
+						oText.get(i).getText(), id));
 			}
 		}else{
-			if(node.getType() == nodeType.Option){
-				ArrayList<OptionText> oText = ((Option)node).getChildren();
-				for(OptionText text : oText){
-					children.add(new CVNode(text.getTitle(), text.getText(), -1));
-				}
-			}else{
-				children.add(new CVNode("", "", -1));
-			}
+			int id  = node.hasChild() ? ((Text)node).getChild().getID() : -1;
+			children.add(new CVNode("", "", id));
 		}
-		this.children = children;
+		
+		return children;
+	}
+	
+	public ArrayList<CVNode> getChildren2(){		
 		return children;
 	}
 
@@ -134,10 +130,11 @@ public class TreePoint {
 	}
 
 	public int onChild(double x, double y) {
-		if(children != null){
+		if(children.size() > 0){
 			for(int i = 0; i < children.size(); i++){
-				if(children.get(i).point == null) return -1;//TODO
-				if(children.get(i).point.distance(x, y) < radius) return i;
+				if(children.get(i).getPoint() != null){
+					if(children.get(i).getPoint().distance(x, y) < radius) return i;
+				}
 			}
 		}		
 		return -1;

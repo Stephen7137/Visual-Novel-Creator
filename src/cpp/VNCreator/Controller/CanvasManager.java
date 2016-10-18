@@ -191,7 +191,7 @@ public class CanvasManager {
 					}else{
 						//if( !(point == selected && node.id == onConnect) ){
 							gc.setFill(color);
-							node.point = new Point2D(point.getHalfTop() + point.getRadious(), point.getBottom() + startOffset + i + point.getRadious());
+							node.setPoint(new Point2D(point.getHalfTop() + point.getRadious(), point.getBottom() + startOffset + i + point.getRadious()));
 							gc.fillOval(point.getHalfTop(), point.getBottom() + startOffset + i , point.getRadious(), point.getRadious());
 							gc.fillText(node.title, point.getHalfTop() + textOffset, point.getBottom() + textOffset + i );
 							i += offset;
@@ -339,9 +339,7 @@ public class CanvasManager {
 	 */
 	private void setSelected(TreePoint node){
 		selected = node;
-		if(selected == null){
-			update();
-		}	
+		update();
 	}
 
 	/**
@@ -408,5 +406,13 @@ public class CanvasManager {
 
 	public void resetOnConnect() {
 		onConnect = -1;
+	}
+
+	public void printChild(int id) {
+		ArrayList<CVNode> nodes = searchTree(id).getChildren2();
+		System.out.println(nodes.size());
+		for(CVNode node : nodes){
+			System.out.println(node.id + " - " + node.getPoint());
+		}
 	}
 }

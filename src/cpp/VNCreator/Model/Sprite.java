@@ -13,7 +13,7 @@ public class Sprite {
 	private Image image;
 	
 	
-	public Sprite(String filename, Point2D startingPos, Point2D endingPos, 
+	public Sprite(String fileName, Point2D startingPos, Point2D endingPos, 
 			long start, long duration) {
 		this.fileName = fileName;
 		this.startingPos = startingPos;

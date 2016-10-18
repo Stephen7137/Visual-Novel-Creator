@@ -69,13 +69,13 @@ public class ChapterEditor{
 	 * @param id 
 	 */
 	public void delete(int id){
-		if(selected.getID() == id) selected = null;
+		if(selected != null && selected.getID() == id) selected = null;
 		Node node = tree.get(id);
 		if(node != null){
 			if(node.hasChild()){
 				if(node.getType() == nodeType.Option){
 					for( OptionText text : ((Option)node).getChildren()){
-						text.getNode().removeParent(node.getID());
+						if(text.getNode() != null)text.getNode().removeParent(node.getID());
 					}
 				}else{
 					((Text)node).getChild().removeParent(node.getID());;

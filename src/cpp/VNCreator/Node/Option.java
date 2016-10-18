@@ -16,6 +16,7 @@ public class Option extends Node{
 	public Option(int id) {
 		super(id, nodeType.Option);
 		child = new ArrayList<OptionText>();
+		child.add(new OptionText());
 	}
 	
 	public void addChild(){
