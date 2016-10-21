@@ -21,7 +21,7 @@ public class Controller {
 	
 	private ChapterEditor chEditor;
 	private CanvasManager cnvsManager;
-	private ProjectManager manager;
+	private ProjectManager save;
 	private SimConsole console;
 	private SceneEditor sEditor;
 	private Editor editor;
@@ -35,13 +35,12 @@ public class Controller {
 	public void startUp(Canvas canvas, Stage primaryStage, Editor editor, SceneEditor sEditor) {
 		this.sEditor = sEditor;
 		this.editor = editor;
-		manager = new ProjectManager(primaryStage);
+		
 		cnvsManager = new CanvasManager(canvas);
-
 		imgLoader = new ImageLoader(primaryStage);
 		Story story = new Story();
 		chEditor = new ChapterEditor(story.getTree());
-		manager.setStory(story, cnvsManager, chEditor);
+		save = new ProjectManager(primaryStage,story, cnvsManager, chEditor);
 	}
 	
 	public void next(int n){
@@ -198,13 +197,11 @@ public class Controller {
 	}
 
 	public void save() {
-		// TODO Auto-generated method stub
-		
+		save.save();		
 	}
 
 	public void saveAs() {
-		// TODO Auto-generated method stub
-		
+		save.saveAs();
 	}
 
 	public void load() {
@@ -213,7 +210,7 @@ public class Controller {
 	}
 
 	public void export() {
-		manager.export();
+		save.export();
 	}
 
 	public boolean selIsNull() {

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import cpp.VNCreator.Model.Story;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 //import javax.Json.Json;
@@ -24,11 +25,32 @@ public class ProjectManager {
 	CanvasManager cnvsManager;
 	SaveProject save;
 	FileChooser fileChooser;
+	DirectoryChooser directory;
 	File file;
 	Stage primaryStage;
 	
-	public ProjectManager(Stage primaryStage) {
+	public ProjectManager(Stage primaryStage, Story story, CanvasManager cnvsManager,
+			ChapterEditor editor) {
+		this.editor = editor;
+		this.cnvsManager = cnvsManager;
 		this.primaryStage = primaryStage;
+		save = new SaveProject(story);
+		save.addManagers(cnvsManager, editor);
+		
+		directory = new DirectoryChooser();
+		directory.setInitialDirectory(new File(System.
+				getProperty("user.home")));
+		fileChooser = new FileChooser();
+		setFileType();
+		fileChooser.setInitialDirectory(new File(System.
+				getProperty("user.home")));
+	}
+		
+	/**
+	 * setFileType sets fileChooser to be .project
+	 */
+	private void setFileType(){
+		fileChooser.getExtensionFilters().clear();
 	}
 
 	/**
@@ -49,9 +71,12 @@ public class ProjectManager {
 	 * location to {@link #file} for later uses.
 	 */
 	public void saveAs(){
-		file = fileChooser.showSaveDialog(primaryStage);
+		file = directory.showDialog(primaryStage);
         if (file != null) {
-        	saveProject();
+        	
+        	System.out.println(file.toString());
+        	System.out.println(file.mkdirs());
+        	//saveProject();
         }
 	}
 	
@@ -117,34 +142,5 @@ public class ProjectManager {
 	
 	public ChapterEditor getChapter(){
 		return editor;
-	}
-
-	/**
-	 * setStory is Fist time setup so that the fileChooser is correct
-	 * and all the story, ChapterEditor, and CanvasManager are properly
-	 * formated to be saved to a file. 
-	 * @param story
-	 * @param cnvsManager
-	 * @param editor
-	 */
-	public void setStory(Story story, CanvasManager cnvsManager,
-			ChapterEditor editor) {
-		this.editor = editor;
-		this.cnvsManager = cnvsManager;
-		save = new SaveProject(story);
-		save.addManagers(cnvsManager, editor);
-		fileChooser = new FileChooser();
-		setFileType();
-		fileChooser.setInitialDirectory(new File(System.
-				getProperty("user.home")));
-	}
-	
-	/**
-	 * setFileType sets fileChooser to be .project
-	 */
-	private void setFileType(){
-		fileChooser.getExtensionFilters().clear();
-		fileChooser.getExtensionFilters().add(
-				new FileChooser.ExtensionFilter("Project file", "*.project"));
 	}
 }
