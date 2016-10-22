@@ -4,6 +4,7 @@ import cpp.VNCreator.Controller.Controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
@@ -24,6 +25,18 @@ public class TextAdvEditorControler {
 	
 	@FXML
 	private TabPane tabPane;
+	
+	@FXML
+	private Menu sprite;
+	
+	@FXML
+	private Menu marker;
+	
+	@FXML
+	private MenuItem save;
+	
+	@FXML
+	private MenuItem export;
 	
 	@FXML
 	private MenuItem addBook;
@@ -97,8 +110,8 @@ public class TextAdvEditorControler {
 	}
 	
 	@FXML
-	private void saveAs(){
-		controller.saveAs();
+	private void newProject(){
+		controller.newProject();
 	}
 	
 	@FXML
@@ -194,5 +207,13 @@ public class TextAdvEditorControler {
 				removeBook.setDisable(true);
 			}
 		}
+	}
+	
+	public void disable(){
+		tabPane.setDisable(true);
+		sprite.setDisable(true);
+		marker.setDisable(true);
+		save.setDisable(true);
+		export.setDisable(true);
 	}
 }

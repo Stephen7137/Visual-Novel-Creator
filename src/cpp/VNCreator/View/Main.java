@@ -62,6 +62,7 @@ public class Main extends Application {
 		loader.setLocation(Main.class.getResource("Text Adv Editor GUI.fxml"));
 		Scene scene = new Scene(loader.load());
 		TextAdvEditorControler mainController = loader.getController();
+		mainController.disable();
 		
 		Controller controller = new Controller();
 		loader = new FXMLLoader();

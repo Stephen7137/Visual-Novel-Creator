@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import cpp.VNCreator.Model.Story;
-import javafx.stage.DirectoryChooser;
+import cpp.VNCreator.View.Main;
+import cpp.VNCreator.View.NewProject;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 //import javax.Json.Json;
@@ -25,7 +28,6 @@ public class ProjectManager {
 	CanvasManager cnvsManager;
 	SaveProject save;
 	FileChooser fileChooser;
-	DirectoryChooser directory;
 	File file;
 	Stage primaryStage;
 	
@@ -36,10 +38,6 @@ public class ProjectManager {
 		this.primaryStage = primaryStage;
 		save = new SaveProject(story);
 		save.addManagers(cnvsManager, editor);
-		
-		directory = new DirectoryChooser();
-		directory.setInitialDirectory(new File(System.
-				getProperty("user.home")));
 		fileChooser = new FileChooser();
 		setFileType();
 		fileChooser.setInitialDirectory(new File(System.
@@ -53,25 +51,37 @@ public class ProjectManager {
 		fileChooser.getExtensionFilters().clear();
 	}
 
-	/**
-	 * Checks to see if {@link #file} is null, if not then calls 
+	/**	 * Checks to see if {@link #file} is null, if not then calls 
 	 * {@link #saveChapter()} If file is not null then {@link #editor} has 
 	 * been saved before or has been loaded from a file.
 	 */
 	public void save(){
-		if(file == null){
-			saveAs();
-		}else{
-			saveProject();
-		}
+		saveProject();
 	}
 
 	/**
 	 * Ask the user for location of where to save the project and saves the 
 	 * location to {@link #file} for later uses.
 	 */
-	public void saveAs(){
-		file = directory.showDialog(primaryStage);
+	public void newProject(){
+		
+		FXMLLoader loader = new FXMLLoader(Main.class.getResource("NewProject.fxml"));
+		Stage stage = null;
+		try {
+			stage = new Stage();
+			stage.setScene(new Scene(loader.load()));
+		} catch (IOException e) {}
+		
+		NewProject nwProj = loader.getController();
+		nwProj.showAndWait(stage,this);
+		try {
+			
+			stage.setTitle("New Project");
+			stage.setResizable(false);
+			stage.show();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
         if (file != null) {
         	
         	System.out.println(file.toString());
@@ -142,5 +152,19 @@ public class ProjectManager {
 	
 	public ChapterEditor getChapter(){
 		return editor;
+	}
+
+	public void setDirectory(File file) {
+		// TODO Auto-generated method stub
+		if(file.mkdir()){
+			File tmp = (new File(file + "\\Background"));
+			tmp.mkdir();
+			tmp = (new File(file + "\\Actors"));
+			tmp.mkdir();
+			
+		}else{
+			System.out.println("Directory not made.");
+		}
+		
 	}
 }

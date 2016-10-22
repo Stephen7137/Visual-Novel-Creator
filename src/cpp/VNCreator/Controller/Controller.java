@@ -200,8 +200,8 @@ public class Controller {
 		save.save();		
 	}
 
-	public void saveAs() {
-		save.saveAs();
+	public void newProject() {
+		save.newProject();
 	}
 
 	public void load() {
