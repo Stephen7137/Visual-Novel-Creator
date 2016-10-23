@@ -5,9 +5,12 @@ import java.util.Optional;
 
 import cpp.VNCreator.Model.SearchNode;
 import cpp.VNCreator.Model.Story;
+import cpp.VNCreator.Model.TreePoint;
+import cpp.VNCreator.Node.Node;
 import cpp.VNCreator.View.Editor;
 import cpp.VNCreator.View.SceneEditor;
 import cpp.VNCreator.View.SimConsole;
+import cpp.VNCreator.View.TextAdvEditorControler;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
@@ -26,21 +29,26 @@ public class Controller {
 	private SceneEditor sEditor;
 	private Editor editor;
 	private ImageLoader imgLoader;
+	private TextAdvEditorControler taController;
+	Story story;
 	
 	private Point2D mouse;
 	private Point2D oldPos;
 	private boolean onSelected;
 	private boolean onConnect;
 	
-	public void startUp(Canvas canvas, Stage primaryStage, Editor editor, SceneEditor sEditor) {
+	public void startUp(Canvas canvas, Stage primaryStage, Editor editor, SceneEditor sEditor, 
+				TextAdvEditorControler taController, SimConsole console) {
+		this.console = console;
+		this.taController = taController;
 		this.sEditor = sEditor;
 		this.editor = editor;
 		
 		cnvsManager = new CanvasManager(canvas);
 		imgLoader = new ImageLoader(primaryStage);
-		Story story = new Story();
+		story = new Story();
 		chEditor = new ChapterEditor(story.getTree());
-		save = new ProjectManager(primaryStage,story, cnvsManager, chEditor);
+		save = new ProjectManager(primaryStage,this);
 	}
 	
 	public void next(int n){
@@ -61,7 +69,7 @@ public class Controller {
 	public void update(){
 		if(chEditor.getCurrentNode() != null){
 			console.update(chEditor.getCurrentNode());
-			sEditor.update(chEditor.getCurrentNode());
+			//sEditor.update(chEditor.getCurrentNode());
 		}else{
 			console.clear();
 			sEditor.clear();
@@ -205,8 +213,7 @@ public class Controller {
 	}
 
 	public void load() {
-		// TODO Auto-generated method stub
-		
+		save.load();
 	}
 
 	public void export() {
@@ -289,5 +296,25 @@ public class Controller {
 
 	public void setLocation(double x, double y) {
 		mouse = new Point2D(x,y);
+	}
+
+	public void verfiedDir() {
+		taController.enable();
+	}
+
+	public int getStartID() {
+		return chEditor.getStart() != null ? chEditor.getStart().getID() : -1;
+	}
+
+	public ArrayList<Node> getTree() {
+		return new ArrayList<Node>(story.getTree().values());
+	}
+
+	public ArrayList<Node> getBookmark() {
+		return chEditor.getBookMark();
+	}
+
+	public ArrayList<TreePoint> getTreePoint() {
+		return cnvsManager.getTree();
 	}
 }

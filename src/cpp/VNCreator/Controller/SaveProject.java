@@ -2,11 +2,15 @@ package cpp.VNCreator.Controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.List;
 
-import cpp.VNCreator.Model.Story;
 import cpp.VNCreator.Model.TreePoint;
+import cpp.VNCreator.Model.NodeType.nodeType;
 import cpp.VNCreator.Node.Node;
+import cpp.VNCreator.Node.Option;
+import cpp.VNCreator.Node.OptionText;
+import cpp.VNCreator.Node.Text;
+import javafx.scene.paint.Color;
 
 /**
  * SaveProject is used for saving the current
@@ -20,111 +24,141 @@ public class SaveProject implements Serializable{
 	
 	protected static final long serialVersionUID = 232323;
 	
-	private SaveCanvas canvas;
-	private SaveEditor editor;
-	private Story story;
+	public List<saveTreePoint> canvas;
+	public List<saveNode> tree;
+	public List<Integer> bookmark;	
+	public int start;
 	
-	public SaveProject(Story story){
-		this.story = story;
+	public SaveProject(int start, ArrayList<Node> tree, ArrayList<Node> node, ArrayList<TreePoint> treePoint){
+		createStart(start);
+		createTree(tree);
+		createBookmark(node);
+		createCanvas(treePoint);
 	}
 	
-	public void addManagers(CanvasManager cnvsManager, ChapterEditor chEditor){
-		canvas = new SaveCanvas(cnvsManager);
-		editor = new SaveEditor(chEditor);
+	public void createStart(int start){
+		this.start = start;
 	}
 	
-	/**
-	 * SaveCanvas holds the canvas points and chapter Id to
-	 * be saved to a file with out any non important data.
-	 * 
-	 * @author Stephen Jackson
-	 *
-	 */
-	class SaveCanvas implements Serializable{
+	public void createTree(ArrayList<Node> node){
+		tree = new ArrayList<saveNode>();
+		for(Node tmp : node){
+			if(tmp.getType() == nodeType.Option){
+				tree.add(new saveOption(tmp.getTitle(), tmp.getText(), tmp.getType(),
+						tmp.getID(), tmp.getParents(), ((Option)tmp).getChildren()));
+			}else if(tmp.getType() == nodeType.Text){
+				tree.add(new saveText(tmp.getTitle(), tmp.getText(), tmp.getType(),
+						tmp.getID(), tmp.getParents(), ((Text)tmp).getChildId()));
+			}
+			
+		}
+	}
+	
+	public void createBookmark(ArrayList<Node> node){
+		bookmark = new ArrayList<Integer>();
+		for(Node tmp : node){
+			bookmark.add(tmp.getID());
+		}	
+	}
+	
+	public void createCanvas(ArrayList<TreePoint> treePoint){
+		canvas = new ArrayList<saveTreePoint>();
+		for(TreePoint tmp : treePoint){
+			canvas.add(new saveTreePoint(tmp.getX(), tmp.getY(), tmp.getHeight(),
+					tmp.getWidth(), tmp.getColor(), tmp.getID()));
+		}	
+	}
+	
+	class saveNode implements Serializable{
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 65393544174854803L;
-		private Hashtable<Integer, TreePoint> canvas;
+		private static final long serialVersionUID = 1L;
+		public String title;
+		public String text;
+		public int id;
+		public nodeType type;
+		public List<Integer> parent;
 		
-		public SaveCanvas(CanvasManager cnvsManager){
-			update(cnvsManager);
-		}
-		
-		public void loadCanvas(CanvasManager cnvsManager){
-			cnvsManager.load(canvas);
-		}
-		
-		public void update(CanvasManager cnvsManager){
-			canvas = cnvsManager.saveCanvas();
+		public saveNode(String title, String text, nodeType type,
+				int id, ArrayList<Node> parent){
+			this.id = id;
+			this.title = title;
+			this.text = text;
+			this.type = type;
+			this.parent = new ArrayList<Integer>();
+			for(Node tmp : parent){
+				this.parent.add(tmp.getID());
+			}			
 		}
 	}
 	
-	/**
-	 * SaveEditor collects all the important information
-	 * from editor to be saved to file.
-	 * 
-	 * @author Stephen Jackson
-	 *
-	 */
-	class SaveEditor implements Serializable{
+	class saveText extends saveNode{
+		
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 1344309469972722400L;
-		private ArrayList<Node> bookmark;
-		private ArrayList<Node> noChild;
-		private ArrayList<Node> noParent;
-		private Node currentNode;
+		private static final long serialVersionUID = 1L;
+		public int child;
 		
-		public SaveEditor(ChapterEditor chEditor){
-			update(chEditor);
-		}
-		
-		public void loadEditor(ChapterEditor chEditor){
-			chEditor.load(currentNode, noParent, noChild, bookmark);
-		}
-
-		/**
-		 * update refreshes the variables so they are up to date
-		 * when saving to a file.
-		 * @param chEditor the node editor.
-		 */
-		public void update(ChapterEditor chEditor) {
-			bookmark = chEditor.saveBookmark();
-			noChild = chEditor.saveNoChild();
-			noParent = chEditor.saveNoParent();
-			currentNode = chEditor.saveCurrent();
-		}
-	}
-
-	/**
-	 * update refreshes the SaveEditor and SaveCanvas contents so that the
-	 * newest information is saved to file.
-	 * @param cnvsManager is the canvas editor.
-	 * @param chEditor is the node editor.
-	 */
-	public void update(CanvasManager cnvsManager, ChapterEditor chEditor) {
-		story.setStart(chEditor.getStart());
-		editor.update(chEditor);
-		canvas.update(cnvsManager);	
-	}
-
-	/**
-	 * loadProject restores the CanvasManager and ChapterEditor from
-	 * a previous save.
-	 * @param cnvsManager
-	 * @param chEditor
-	 */
-	public void loadProject(CanvasManager cnvsManager, 
-			ChapterEditor chEditor) {
-		chEditor.loadTree(story.getTree(), story.getStart());
-		editor.loadEditor(chEditor);
-		canvas.loadCanvas(cnvsManager);
-		cnvsManager.setStart(chEditor.getStart().getID());
+		public saveText(String title, String text, nodeType type, int id, ArrayList<Node> parent, int child) {
+			super(title, text, type, id, parent);
+			this.child = child;
+		}	
 	}
 	
-	public Story getStory(){
-		return story;
+	class saveOption extends saveNode{
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		public List<saveOptionText> children;
+		
+		public saveOption(String title, String text, nodeType type, int id, ArrayList<Node> parent, ArrayList<OptionText> child) {
+			super(title, text, type, id, parent);
+			children = new ArrayList<saveOptionText>();
+			for(OptionText tmp : child){
+				children.add(new saveOptionText(tmp.getTitle(), tmp.getTitle(), tmp.getID()));
+			}	
+		}
+	}
+	
+	class saveOptionText implements Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		public String title;
+		public String text;
+		public int id;
+		
+		public saveOptionText(String title, String text, int id){
+			this.title = title;
+			this.text = text;
+			this.id = id;
+		}
+	}
+	
+	class saveTreePoint implements Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		public double x;
+		public double y;
+		public double height;
+		public double width;
+		public Color color;
+		public int node;
+		
+		public saveTreePoint(double x, double y, double height, double width, Color color, int node){
+			this.x = x;
+			this.y = y;
+			this.height = height;
+			this.width = width;
+			this.color = color;
+			this. node = node;
+		}
 	}
 }

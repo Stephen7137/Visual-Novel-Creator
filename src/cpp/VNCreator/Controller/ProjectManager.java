@@ -2,16 +2,28 @@ package cpp.VNCreator.Controller;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Reader;
+import java.io.Writer;
+
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import cpp.VNCreator.Model.Story;
 import cpp.VNCreator.View.Main;
 import cpp.VNCreator.View.NewProject;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 //import javax.Json.Json;
 
@@ -24,20 +36,14 @@ import javafx.stage.Stage;
  */
 public class ProjectManager {
 	
-	ChapterEditor editor;
-	CanvasManager cnvsManager;
-	SaveProject save;
+	Controller controller;
 	FileChooser fileChooser;
 	File file;
 	Stage primaryStage;
 	
-	public ProjectManager(Stage primaryStage, Story story, CanvasManager cnvsManager,
-			ChapterEditor editor) {
-		this.editor = editor;
-		this.cnvsManager = cnvsManager;
+	public ProjectManager(Stage primaryStage, Controller controller) {
+		this.controller = controller;
 		this.primaryStage = primaryStage;
-		save = new SaveProject(story);
-		save.addManagers(cnvsManager, editor);
 		fileChooser = new FileChooser();
 		setFileType();
 		fileChooser.setInitialDirectory(new File(System.
@@ -75,19 +81,14 @@ public class ProjectManager {
 		NewProject nwProj = loader.getController();
 		nwProj.showAndWait(stage,this);
 		try {
-			
+			stage.initModality(Modality.WINDOW_MODAL);
+			stage.initOwner(primaryStage);
 			stage.setTitle("New Project");
 			stage.setResizable(false);
 			stage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-        if (file != null) {
-        	
-        	System.out.println(file.toString());
-        	System.out.println(file.mkdirs());
-        	//saveProject();
-        }
 	}
 	
 	/**
@@ -95,15 +96,16 @@ public class ProjectManager {
 	 * the same as the Chapter title.
 	 */
 	private void saveProject(){
-		try {
-			FileOutputStream fos = new FileOutputStream(file);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			save.update(cnvsManager, editor);
-			oos.writeObject(save);
-			oos.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Gson gson = new GsonBuilder()
+	             .disableHtmlEscaping()
+	             .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
+	             .setPrettyPrinting()
+	             .serializeNulls()
+	             .create();
+		try(Writer writer = new FileWriter(file + ".json")){
+			gson.toJson(new SaveProject(controller.getStartID(), controller.getTree(),
+					controller.getBookmark(), controller.getTreePoint()), writer);
+		} catch (IOException e) {}
 	}
 	
 	/**
@@ -111,23 +113,23 @@ public class ProjectManager {
 	 */
 	public void export(){
 		//JsonObject jsonStory;
-		fileChooser.getExtensionFilters().clear();
-		fileChooser.getExtensionFilters().add(
-				new FileChooser.ExtensionFilter("Story file", "*.story"));
-		File exportfile = fileChooser.showSaveDialog(primaryStage);
-		if(exportfile != null){
-			
-			try {
-				FileOutputStream fos = new FileOutputStream(exportfile);
-				ObjectOutputStream oos = new ObjectOutputStream(fos);
-				oos.writeObject(save.getStory());
-				oos.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		setFileType();
+//		fileChooser.getExtensionFilters().clear();
+//		fileChooser.getExtensionFilters().add(
+//				new FileChooser.ExtensionFilter("Story file", "*.story"));
+//		File exportfile = fileChooser.showSaveDialog(primaryStage);
+//		if(exportfile != null){
+//			
+//			try {
+//				FileOutputStream fos = new FileOutputStream(exportfile);
+//				ObjectOutputStream oos = new ObjectOutputStream(fos);
+//				oos.writeObject(save.getStory());
+//				oos.close();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		setFileType();
 	}
 	
 	/**
@@ -135,36 +137,29 @@ public class ProjectManager {
 	 * CanvasManager and ChapterEditor.
 	 */
 	public void load(){
-		file = fileChooser.showOpenDialog(new Stage());
-		if(file != null){
-			try {
-				FileInputStream fos = new FileInputStream(file);
-				ObjectInputStream oos = new ObjectInputStream(fos);
-				save = (SaveProject) oos.readObject();
-				save.loadProject(cnvsManager, editor);
-				oos.close();
-			} catch (IOException | ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	public ChapterEditor getChapter(){
-		return editor;
+		
+		if(file == null ) file = new File(System.getProperty("user.home"));
+		
+		DirectoryChooser directory = new DirectoryChooser();
+		
+		directory.setInitialDirectory(file);
+		file = directory.showDialog(primaryStage);
+		Gson gson = new Gson();
+		SaveProject save = null;
+		try(Reader reader = new FileReader(new File(file.toString() + "\\" + file.getName() + ".json"))){
+			save = gson.fromJson(reader, SaveProject.class);
+		} catch (Exception e) {e.printStackTrace();} 
+			System.out.println(save);
 	}
 
 	public void setDirectory(File file) {
-		// TODO Auto-generated method stub
 		if(file.mkdir()){
 			File tmp = (new File(file + "\\Background"));
 			tmp.mkdir();
 			tmp = (new File(file + "\\Actors"));
 			tmp.mkdir();
-			
-		}else{
-			System.out.println("Directory not made.");
+			this.file = new File(file + "\\" + file.getName());
+			controller.verfiedDir();
 		}
-		
 	}
 }

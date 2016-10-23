@@ -26,6 +26,10 @@ public class Text extends Node{
 		return child;
 	}
 	
+	public int getChildId() {
+		return child != null ? child.getID() : -1;
+	}
+	
 	public void setChild(Node node) {
 		child = node;		
 	}

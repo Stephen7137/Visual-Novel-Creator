@@ -415,4 +415,8 @@ public class CanvasManager {
 			System.out.println(node.id + " - " + node.getPoint());
 		}
 	}
+
+	public ArrayList<TreePoint> getTree() {
+		return new ArrayList<TreePoint>(lookup.values());
+	}
 }

@@ -83,7 +83,8 @@ public class Main extends Application {
 		Editor editor = loader.getController();
 		editor.setCanvasManger(controller);
 		mainController.setController(controller);
-		controller.startUp(editor.getCanvas(), primaryStage, editor, sEditor);
+		controller.startUp(editor.getCanvas(), primaryStage, editor, sEditor,
+				mainController, console);
 		
 		return scene;
 	}

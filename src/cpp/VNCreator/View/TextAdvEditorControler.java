@@ -216,4 +216,12 @@ public class TextAdvEditorControler {
 		save.setDisable(true);
 		export.setDisable(true);
 	}
+	
+	public void enable(){
+		tabPane.setDisable(false);
+		sprite.setDisable(false);
+		marker.setDisable(false);
+		save.setDisable(false);
+		export.setDisable(false);
+	}
 }

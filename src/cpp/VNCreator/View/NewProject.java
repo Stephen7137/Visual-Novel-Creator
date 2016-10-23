@@ -41,7 +41,7 @@ public class NewProject {
 	}
 	
 	private void updateText(){
-		directory.setText(file.toString());
+		if(file != null) directory.setText(file.toString());
 	}
 	
 	public void showAndWait(Stage stage, ProjectManager manger){

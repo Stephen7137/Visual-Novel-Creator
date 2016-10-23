@@ -139,7 +139,8 @@ public class ChapterEditor{
 	 */
 	public boolean next(int input){
 		boolean next = false;
-		if(input >= 0){
+		if(current != null) current = start;
+		if(current != null && input >= 0){
 			if(current.getType() == nodeType.Option){
 				Option option = (Option)current;
 				if(option.numChildren() < input){
@@ -379,6 +380,7 @@ public class ChapterEditor{
 	
 	public void setStart() {
 		start = selected;
+		current = start;
 	}
 	
 	public Node getStart() {
