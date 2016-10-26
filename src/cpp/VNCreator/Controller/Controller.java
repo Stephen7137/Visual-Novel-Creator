@@ -218,6 +218,10 @@ public class Controller {
 
 	public void load() {
 		save.load();
+		imgLoader.loadBackground(save.loadBackground());
+		imgLoader.loadActor(save.loadActor());
+		sEditor.loadBackIcon(imgLoader.getBackground());
+		sEditor.loadActorIcon(imgLoader.getSprite());
 	}
 
 	public void export() {
@@ -242,7 +246,7 @@ public class Controller {
 	
 	public void loadSprite(){
 		imgLoader.loadActor(save.importActor());
-		sEditor.loadSpriteIcon(imgLoader.getSprite());
+		sEditor.loadActorIcon(imgLoader.getSprite());
 	}
 
 	public ArrayList<SearchNode> getAllNode() {

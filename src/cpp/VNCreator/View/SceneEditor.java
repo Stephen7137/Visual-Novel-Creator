@@ -169,7 +169,7 @@ public class SceneEditor {
 		}
 	}
 	
-	public void loadSpriteIcon(Hashtable<String, ImageStorage> spriteTable) {
+	public void loadActorIcon(Hashtable<String, ImageStorage> spriteTable) {
 		for(Entry<String, ImageStorage> entry : spriteTable.entrySet() ){
 			ImageView view = new ImageView(entry.getValue().getImage());
 			view.setFitHeight(100);

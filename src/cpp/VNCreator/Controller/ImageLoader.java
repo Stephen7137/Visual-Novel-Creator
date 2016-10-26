@@ -25,7 +25,6 @@ public class ImageLoader {
 	}
 	
 	public void loadImage(List<File> list, Hashtable<String, ImageStorage> table){
-		
     	for( File file : list){
     		if(!table.containsKey(file.getName())){
     			Image image = new Image(file.toURI().toString());

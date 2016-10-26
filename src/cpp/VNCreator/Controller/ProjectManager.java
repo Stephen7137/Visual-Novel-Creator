@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Optional;
@@ -250,6 +251,16 @@ public class ProjectManager {
 			this.file = new File(file + File.separator + file.getName());
 			controller.verfiedDir();
 		}
+	}
+	
+	public ArrayList<File> loadBackground(){
+		return new ArrayList<File>(Arrays.asList((
+				new File(this.file + bckFodler)).listFiles()));
+	}
+	
+	public ArrayList<File> loadActor() {
+		return new ArrayList<File>(Arrays.asList((
+				new File(this.file + actFolder)).listFiles()));
 	}
 
 	public ArrayList<File> importBackground() {
