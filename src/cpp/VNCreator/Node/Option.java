@@ -19,6 +19,13 @@ public class Option extends Node{
 		child.add(new OptionText());
 	}
 	
+	public Option(int id, String title, String text, ArrayList<OptionText> oText) {
+		this(id);
+		setTitle(title);
+		setText(text);
+		setChildren(oText);
+	}
+	
 	public void addChild(){
 		child.add(new OptionText());
 	}

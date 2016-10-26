@@ -18,7 +18,6 @@ public class Story implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1561701032116116746L;
-	private String strName;
 	private Node start;
 	private Hashtable<Integer, Node> tree;
 	
@@ -26,12 +25,9 @@ public class Story implements Serializable{
 		tree = new Hashtable<Integer, Node>();
 	}
 	
-	public void setName(String strName){
-		this.strName = strName;
-	}
-	
-	public String getName(){
-		return strName;
+	public Story(Node start, Hashtable<Integer, Node> tree ){
+		this.start = start;
+		this.tree = tree;
 	}
 	
 	public void setTree(Hashtable<Integer, Node> newTree){
@@ -52,5 +48,9 @@ public class Story implements Serializable{
 	
 	public Node getStart(){
 		return start;
+	}
+
+	public Node getNode(int i) {
+		return tree.get(i);
 	}
 }

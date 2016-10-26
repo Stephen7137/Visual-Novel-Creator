@@ -24,30 +24,29 @@ public class SaveProject implements Serializable{
 	
 	protected static final long serialVersionUID = 232323;
 	
-	public List<saveTreePoint> canvas;
-	public List<saveNode> tree;
+	public List<SaveTreePoint> canvas;
+	public List<SaveText> text;
+	public List<SaveOption> option;
 	public List<Integer> bookmark;	
 	public int start;
 	
 	public SaveProject(int start, ArrayList<Node> tree, ArrayList<Node> node, ArrayList<TreePoint> treePoint){
-		createStart(start);
+		this.start = start;
 		createTree(tree);
 		createBookmark(node);
 		createCanvas(treePoint);
 	}
 	
-	public void createStart(int start){
-		this.start = start;
-	}
-	
 	public void createTree(ArrayList<Node> node){
-		tree = new ArrayList<saveNode>();
+		text =  new ArrayList<SaveText>();
+		option = new ArrayList<SaveOption>();	
+		
 		for(Node tmp : node){
 			if(tmp.getType() == nodeType.Option){
-				tree.add(new saveOption(tmp.getTitle(), tmp.getText(), tmp.getType(),
+				option.add(new SaveOption(tmp.getTitle(), tmp.getText(), tmp.getType(),
 						tmp.getID(), tmp.getParents(), ((Option)tmp).getChildren()));
 			}else if(tmp.getType() == nodeType.Text){
-				tree.add(new saveText(tmp.getTitle(), tmp.getText(), tmp.getType(),
+				text.add(new SaveText(tmp.getTitle(), tmp.getText(), tmp.getType(),
 						tmp.getID(), tmp.getParents(), ((Text)tmp).getChildId()));
 			}
 			
@@ -62,14 +61,25 @@ public class SaveProject implements Serializable{
 	}
 	
 	public void createCanvas(ArrayList<TreePoint> treePoint){
-		canvas = new ArrayList<saveTreePoint>();
+		canvas = new ArrayList<SaveTreePoint>();
 		for(TreePoint tmp : treePoint){
-			canvas.add(new saveTreePoint(tmp.getX(), tmp.getY(), tmp.getHeight(),
+			canvas.add(new SaveTreePoint(tmp.getX(), tmp.getY(), tmp.getHeight(),
 					tmp.getWidth(), tmp.getColor(), tmp.getID()));
 		}	
 	}
 	
-	class saveNode implements Serializable{
+	public ArrayList<SaveNode> getTree(){
+		ArrayList<SaveNode> tree = new ArrayList<SaveNode>();
+		for(SaveText node : text){
+			tree.add(node);
+		}
+		for(SaveOption node : option){
+			tree.add(node);
+		}
+		return tree;
+	}
+	
+	public class SaveNode implements Serializable{
 		/**
 		 * 
 		 */
@@ -80,7 +90,7 @@ public class SaveProject implements Serializable{
 		public nodeType type;
 		public List<Integer> parent;
 		
-		public saveNode(String title, String text, nodeType type,
+		public SaveNode(String title, String text, nodeType type,
 				int id, ArrayList<Node> parent){
 			this.id = id;
 			this.title = title;
@@ -93,7 +103,7 @@ public class SaveProject implements Serializable{
 		}
 	}
 	
-	class saveText extends saveNode{
+	public class SaveText extends SaveNode{
 		
 		/**
 		 * 
@@ -101,30 +111,30 @@ public class SaveProject implements Serializable{
 		private static final long serialVersionUID = 1L;
 		public int child;
 		
-		public saveText(String title, String text, nodeType type, int id, ArrayList<Node> parent, int child) {
+		public SaveText(String title, String text, nodeType type, int id, ArrayList<Node> parent, int child) {
 			super(title, text, type, id, parent);
 			this.child = child;
 		}	
 	}
 	
-	class saveOption extends saveNode{
+	public class SaveOption extends SaveNode{
 		
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		public List<saveOptionText> children;
+		public List<SaveOptionText> children;
 		
-		public saveOption(String title, String text, nodeType type, int id, ArrayList<Node> parent, ArrayList<OptionText> child) {
+		public SaveOption(String title, String text, nodeType type, int id, ArrayList<Node> parent, ArrayList<OptionText> child) {
 			super(title, text, type, id, parent);
-			children = new ArrayList<saveOptionText>();
+			children = new ArrayList<SaveOptionText>();
 			for(OptionText tmp : child){
-				children.add(new saveOptionText(tmp.getTitle(), tmp.getTitle(), tmp.getID()));
+				children.add(new SaveOptionText(tmp.getTitle(), tmp.getTitle(), tmp.getID()));
 			}	
 		}
 	}
 	
-	class saveOptionText implements Serializable{
+	public class SaveOptionText implements Serializable{
 		/**
 		 * 
 		 */
@@ -133,14 +143,14 @@ public class SaveProject implements Serializable{
 		public String text;
 		public int id;
 		
-		public saveOptionText(String title, String text, int id){
+		public SaveOptionText(String title, String text, int id){
 			this.title = title;
 			this.text = text;
 			this.id = id;
 		}
 	}
 	
-	class saveTreePoint implements Serializable{
+	class SaveTreePoint implements Serializable{
 		/**
 		 * 
 		 */
@@ -152,7 +162,7 @@ public class SaveProject implements Serializable{
 		public Color color;
 		public int node;
 		
-		public saveTreePoint(double x, double y, double height, double width, Color color, int node){
+		public SaveTreePoint(double x, double y, double height, double width, Color color, int node){
 			this.x = x;
 			this.y = y;
 			this.height = height;

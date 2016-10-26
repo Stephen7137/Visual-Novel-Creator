@@ -22,6 +22,12 @@ public class Text extends Node{
 		super(id, nodeType.Text);
 	}
 	
+	public Text(int id, String title, String text) {
+		this(id);
+		setTitle(title);
+		setText(text);
+	}
+
 	public Node getChild() {
 		return child;
 	}

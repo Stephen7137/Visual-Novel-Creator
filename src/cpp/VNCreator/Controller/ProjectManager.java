@@ -1,26 +1,37 @@
 package cpp.VNCreator.Controller;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Reader;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Optional;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 
+import cpp.VNCreator.Controller.SaveProject.*;
+import cpp.VNCreator.Model.ColorParser;
+import cpp.VNCreator.Model.NodeType.nodeType;
 import cpp.VNCreator.Model.Story;
+import cpp.VNCreator.Model.TreePoint;
+import cpp.VNCreator.Node.*;
 import cpp.VNCreator.View.Main;
 import cpp.VNCreator.View.NewProject;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -36,10 +47,15 @@ import javafx.stage.Stage;
  */
 public class ProjectManager {
 	
+	final String bckFodler = File.separator + "Background";
+	final String actFolder = File.separator + "Actors";
+	
+	FileChooser imagechooser;
 	Controller controller;
 	FileChooser fileChooser;
 	File file;
 	Stage primaryStage;
+	Gson gson;
 	
 	public ProjectManager(Stage primaryStage, Controller controller) {
 		this.controller = controller;
@@ -48,6 +64,26 @@ public class ProjectManager {
 		setFileType();
 		fileChooser.setInitialDirectory(new File(System.
 				getProperty("user.home")));
+		
+		imagechooser = new FileChooser();
+		imagechooser.setInitialDirectory(new File(System.
+				getProperty("user.home")));
+		imagechooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("All Images", "*.*"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                new FileChooser.ExtensionFilter("PNG", "*.png")
+            );
+		
+		//List<SaveNode> list = new ArrayList<SaveNode>();
+		
+		gson = new GsonBuilder()
+	             .disableHtmlEscaping()
+	             .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
+	             .setPrettyPrinting()
+	             .serializeNulls()
+	             //.registerTypeHierarchyAdapter(list.getClass(), new CustomParser())
+	             .registerTypeAdapter(Color.class, new ColorParser())
+	             .create();
 	}
 		
 	/**
@@ -96,15 +132,11 @@ public class ProjectManager {
 	 * the same as the Chapter title.
 	 */
 	private void saveProject(){
-		Gson gson = new GsonBuilder()
-	             .disableHtmlEscaping()
-	             .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-	             .setPrettyPrinting()
-	             .serializeNulls()
-	             .create();
+		
 		try(Writer writer = new FileWriter(file + ".json")){
-			gson.toJson(new SaveProject(controller.getStartID(), controller.getTree(),
-					controller.getBookmark(), controller.getTreePoint()), writer);
+			gson.toJson(new SaveProject(controller.getStartID(),
+					controller.getTree(), controller.getBookmark(), 
+					controller.getTreePoint()), writer);
 		} catch (IOException e) {}
 	}
 	
@@ -144,22 +176,115 @@ public class ProjectManager {
 		
 		directory.setInitialDirectory(file);
 		file = directory.showDialog(primaryStage);
-		Gson gson = new Gson();
 		SaveProject save = null;
-		try(Reader reader = new FileReader(new File(file.toString() + "\\" + file.getName() + ".json"))){
+		try(JsonReader reader = new JsonReader( new FileReader(
+				new File(file.toString() + File.separator + file.getName() + ".json")))){
 			save = gson.fromJson(reader, SaveProject.class);
-		} catch (Exception e) {e.printStackTrace();} 
-			System.out.println(save);
+		} catch (Exception e) {e.printStackTrace();}
+		
+		
+		Hashtable<Integer, Node> tree =	createStory(save.getTree());
+		Story story = new Story(tree.get(save.start), tree);
+		controller.loadProject(story, createBookmark(save,story), createCanvas(save,story));
+		
+	}
+	
+	private Hashtable<Integer, Node> createStory(ArrayList<SaveNode> save){
+		Hashtable<Integer, Node> tree = new Hashtable<Integer, Node>();
+		for(SaveNode node : save){
+			if(node.type == nodeType.Option){
+				ArrayList<OptionText> oNode = new ArrayList<OptionText>();
+				for(SaveOptionText oText : ((SaveOption)node).children){
+					oNode.add(new OptionText(oText.title, oText.title));
+				}
+				tree.put(node.id, new Option(node.id, node.title, node.text, oNode));
+			}else{
+				tree.put(node.id, new Text(node.id, node.title, node.text));
+			}
+		}
+		
+		for(SaveNode node : save){
+			Node tmpNode = tree.get(node.id);
+			for(int id : node.parent){
+				tmpNode.addParent(tree.get(id));
+			}
+			if(node.type == nodeType.Option){
+				for(SaveOptionText sText : ((SaveOption)node).children){
+					if(sText.id != -1){
+						for(OptionText text : ((Option)tmpNode).getChildren()){
+							if(text.getTitle().equals(sText.title)) 
+								text.setNode(tree.get(sText.id));
+						}
+					}					
+				}
+			}else{
+				((Text)tmpNode).setChild(tree.get(((SaveText)node).child));
+			}
+		}
+		return tree;
+	}
+	
+	private ArrayList<Node> createBookmark(SaveProject save, Story story){
+		ArrayList<Node> bookmark = new ArrayList<Node>();
+		for(int i : save.bookmark){
+			bookmark.add(story.getNode(i));
+		}
+		return bookmark;
+	}
+	
+	private Hashtable<Integer, TreePoint> createCanvas(SaveProject save, Story story){
+		Hashtable<Integer,TreePoint> lookup = new Hashtable<Integer,TreePoint>();
+		for(SaveTreePoint node : save.canvas){
+			lookup.put(node.node, new TreePoint(node.x, node.y, node.height,
+					node.width, node.color, story.getNode(node.node)));
+		}
+		return lookup;
 	}
 
 	public void setDirectory(File file) {
 		if(file.mkdir()){
-			File tmp = (new File(file + "\\Background"));
+			File tmp = (new File(file + bckFodler));
 			tmp.mkdir();
-			tmp = (new File(file + "\\Actors"));
+			tmp = (new File(file + actFolder));
 			tmp.mkdir();
-			this.file = new File(file + "\\" + file.getName());
+			this.file = new File(file + File.separator + file.getName());
 			controller.verfiedDir();
 		}
+	}
+
+	public ArrayList<File> importBackground() {
+		return loadImage(bckFodler );
+	}
+
+	public ArrayList<File> importActor() {
+		return loadImage(actFolder);
+	}
+	
+	public ArrayList<File> loadImage(String folder){
+		List<File> images = imagechooser.showOpenMultipleDialog(primaryStage);
+		ArrayList<File> loaded = new ArrayList<File>();
+		for(File file : images){
+			File tmp = new File(this.file + folder + File.separator + file.getName());
+			if(tmp.exists()){
+				Alert alert = new Alert(AlertType.CONFIRMATION);
+				alert.setTitle("Copy");
+				alert.setHeaderText("File already exist");
+				alert.setContentText("Replace old image with new image?");
+				alert.getButtonTypes().setAll( ButtonType.YES, ButtonType.NO);
+				
+				Optional<ButtonType> results = alert.showAndWait();
+				if(results.get() == ButtonType.NO) continue;
+			}
+			try {
+				Files.copy(file.toPath(), tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+				loaded.add(tmp);
+			} catch (IOException e) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Importer error!");
+				alert.setHeaderText("File could not copy file.");
+				alert.setContentText(file + "\n" + tmp);
+			}
+		}
+		return loaded;
 	}
 }

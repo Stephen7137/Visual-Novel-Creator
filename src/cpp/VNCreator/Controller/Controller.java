@@ -1,6 +1,7 @@
 package cpp.VNCreator.Controller;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Optional;
 
 import cpp.VNCreator.Model.SearchNode;
@@ -45,10 +46,12 @@ public class Controller {
 		this.editor = editor;
 		
 		cnvsManager = new CanvasManager(canvas);
-		imgLoader = new ImageLoader(primaryStage);
+		imgLoader = new ImageLoader();
 		story = new Story();
 		chEditor = new ChapterEditor(story.getTree());
 		save = new ProjectManager(primaryStage,this);
+		
+		sEditor.setLoader(imgLoader);
 	}
 	
 	public void next(int n){
@@ -134,6 +137,7 @@ public class Controller {
 	public void setStart(){
 		cnvsManager.setStart();
 		chEditor.setStart();
+		story.setStart(chEditor.getStart());
 	}
 
 	public void mouseRelease(MouseEvent e) {
@@ -232,12 +236,12 @@ public class Controller {
 
 	public void loadBackground() {
 		// TODO Auto-generated method stub
-		imgLoader.loadBackground();
+		imgLoader.loadBackground(save.importBackground());
 		sEditor.loadBackIcon(imgLoader.getBackground());
 	}
 	
 	public void loadSprite(){
-		imgLoader.loadActor();
+		imgLoader.loadActor(save.importActor());
 		sEditor.loadSpriteIcon(imgLoader.getSprite());
 	}
 
@@ -316,5 +320,13 @@ public class Controller {
 
 	public ArrayList<TreePoint> getTreePoint() {
 		return cnvsManager.getTree();
+	}
+
+	public void loadProject(Story story, ArrayList<Node> bookmark, 
+			Hashtable<Integer, TreePoint> lookup) {
+		this.story = story;
+		chEditor.load(story.getStart(), story.getTree(), bookmark);
+		cnvsManager.load(lookup);
+		taController.enable();
 	}
 }

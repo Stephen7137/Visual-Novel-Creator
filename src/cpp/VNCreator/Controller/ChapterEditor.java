@@ -325,23 +325,6 @@ public class ChapterEditor{
 		return current == selected;
 	}
 
-	/**
-	 * load sets all values to the new values provided.
-	 * @param chapterID
-	 * @param currentNode2
-	 * @param noParent
-	 * @param noChild
-	 * @param bookmark
-	 */
-	public void load( Node currentNode,
-			ArrayList<Node> noParent, ArrayList<Node> noChild,
-			ArrayList<Node> bookmark) {
-		this.current = currentNode;
-		this.noParent = noParent;
-		this.noChild = noChild;
-		this.bookmark = bookmark;//TODO find out when called and update text.
-	}
-
 	public Node saveCurrent() {
 		return current;
 	}
@@ -356,11 +339,6 @@ public class ChapterEditor{
 
 	public ArrayList<Node> saveBookmark() {
 		return bookmark;
-	}
-
-	public void loadTree(Hashtable<Integer, Node> tree, Node text) {
-		this.start = text;
-		this.tree = tree;
 	}
 	
 	public boolean currentBookmark() {
@@ -423,5 +401,11 @@ public class ChapterEditor{
 	}
 	public boolean isEmpty(int id) {
 		return tree.get(id).isEmpty();
+	}
+	public void load(Node start, Hashtable<Integer, Node> tree, 
+			ArrayList<Node> bookmark) {
+		this.start = start;
+		this.tree = tree;
+		this.bookmark = bookmark;		
 	}
 }

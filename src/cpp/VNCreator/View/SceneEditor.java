@@ -27,8 +27,8 @@ public class SceneEditor {
 	ImageLoader loader;
 	Image bckgrndImage;
 	GraphicsContext gc;
-	Hashtable<String, ImageStorage> bckgrndTable;
-	Hashtable<String, ImageStorage> spriteTable;
+	ImageLoader imgLoader;
+	
 	private final float fixedIterval = 0.02f;
 	private ArrayList<Sprite> actorList;
 	private ArrayList<Sprite> activeActor;
@@ -157,7 +157,7 @@ public class SceneEditor {
 	}
 
 	public void loadBackIcon(Hashtable<String, ImageStorage> bckgrndTable) {
-		this.bckgrndTable = bckgrndTable;
+		background.getChildren().clear();
 		for(Entry<String, ImageStorage> entry : bckgrndTable.entrySet() ){
 			ImageView view = new ImageView(entry.getValue().getImage());
 			view.setFitHeight(100);
@@ -170,7 +170,6 @@ public class SceneEditor {
 	}
 	
 	public void loadSpriteIcon(Hashtable<String, ImageStorage> spriteTable) {
-		this.spriteTable = spriteTable;
 		for(Entry<String, ImageStorage> entry : spriteTable.entrySet() ){
 			ImageView view = new ImageView(entry.getValue().getImage());
 			view.setFitHeight(100);
@@ -188,7 +187,7 @@ public class SceneEditor {
 	}
 	
 	public void setBackground(String name){
-		bckgrndImage = bckgrndTable.get(name).getImage();
+		bckgrndImage = imgLoader.getBackground(name);
 	}
 	
 	private void resetSprite(){
@@ -196,5 +195,9 @@ public class SceneEditor {
 		for(Sprite sprite : activeActor){
 			sprite.setStartPos();
 		}
+	}
+
+	public void setLoader(ImageLoader imgLoader) {
+		this.imgLoader = imgLoader;
 	}
 }
