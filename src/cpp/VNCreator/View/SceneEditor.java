@@ -18,6 +18,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -27,6 +28,7 @@ public class SceneEditor {
 	ImageLoader loader;
 	Image bckgrndImage;
 	GraphicsContext gc;
+	GraphicsContext bgc;
 	ImageLoader imgLoader;
 	
 	private final float fixedIterval = 0.02f;
@@ -38,6 +40,9 @@ public class SceneEditor {
 	long sceneTimer = 0;
 	
 	@FXML
+	private Canvas backdrop;
+	
+	@FXML
 	private Canvas canvas;
 	
 	@FXML
@@ -47,7 +52,7 @@ public class SceneEditor {
 	private VBox cast;
 	
 	@FXML
-	private AnchorPane canvasPane;
+	private StackPane canvasPane;
 	
 	@FXML
 	private void play(){
@@ -78,8 +83,11 @@ public class SceneEditor {
 	}
 	
 	public void update(){
-		gc.setFill(Color.BLACK);
-		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		bgc.setFill(Color.BLACK);
+		bgc.fillRect(0, 0, backdrop.getWidth(), backdrop.getHeight());
+		
+		gc.setFill(Color.WHITE);
+		gc.fillRect(0, 0, 200, 200);
 		if(bckgrndImage != null){
 			gc.drawImage(bckgrndImage, 0, 0);
 		}		
@@ -109,10 +117,11 @@ public class SceneEditor {
 	}
 
 	
-	int x = 0;
-	int y = 0;
+	//int x = 0;
+	//int y = 0;
 	public void controller(Controller cotroller) {
 		gc = canvas.getGraphicsContext2D();
+		bgc = backdrop.getGraphicsContext2D();
 		this.cotroller = cotroller;
 		canvasPane.heightProperty().addListener( observable -> updateCanvas());
 		canvasPane.widthProperty().addListener( observable -> updateCanvas());
@@ -139,20 +148,37 @@ public class SceneEditor {
 					update();
 				}
 				if(sceneTimer >= 1000000000){
-					System.out.println(fps);
 					fps = 0;
 					sceneTimer = 0;
 				}
 				lastTime = now;
 			}
 		};
-		
 		pause();
+		updateCanvas();
 	}
 
+	double ar = 1.77777777778;
 	private void updateCanvas(){
-		canvas.heightProperty().set(canvasPane.getHeight());
-		canvas.widthProperty().set(canvasPane.getWidth());
+		
+		backdrop.heightProperty().set(canvasPane.getHeight());
+		backdrop.widthProperty().set(canvasPane.getWidth());
+		
+		if( backdrop.getWidth() > backdrop.getHeight() * ar){
+			canvas.widthProperty().set(backdrop.getHeight() * ar);
+			canvas.heightProperty().set(backdrop.getHeight());
+		}else{
+			canvas.widthProperty().set(backdrop.getWidth());
+			canvas.heightProperty().set(backdrop.getWidth() * (1/ar));
+		}
+		
+		
+//		if(imgLoader.getRatio() != 0){
+//			backdrop.getWidth() * 
+//				imgLoader.getRatio());
+//		}
+		
+		
 		update();
 	}
 
@@ -187,6 +213,7 @@ public class SceneEditor {
 	}
 	
 	public void setBackground(String name){
+		if(bckgrndImage == null) updateCanvas();
 		bckgrndImage = imgLoader.getBackground(name);
 	}
 	

@@ -244,7 +244,6 @@ public class CanvasManager {
 		for(Entry<Integer, TreePoint> point : lookup.entrySet()){
 			onConnect = point.getValue().onChild(x, y);
 			if(onConnect != -1){
-				System.out.println(onConnect);
 				setSelected(point.getValue().getID());
 				return true;
 			}
@@ -410,7 +409,6 @@ public class CanvasManager {
 
 	public void printChild(int id) {
 		ArrayList<CVNode> nodes = searchTree(id).getChildren2();
-		System.out.println(nodes.size());
 		for(CVNode node : nodes){
 			System.out.println(node.id + " - " + node.getPoint());
 		}

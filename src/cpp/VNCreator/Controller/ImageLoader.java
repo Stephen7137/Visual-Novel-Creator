@@ -10,6 +10,7 @@ public class ImageLoader {
 	
 	Hashtable<String, ImageStorage> background;
 	Hashtable<String, ImageStorage> actors;
+	double aspRatio;
 	
 	public ImageLoader() {
 		background = new Hashtable<String, ImageStorage>();
@@ -28,6 +29,7 @@ public class ImageLoader {
     	for( File file : list){
     		if(!table.containsKey(file.getName())){
     			Image image = new Image(file.toURI().toString());
+    			if(aspRatio == 0)aspRatio = image.getWidth() / image.getHeight();
     			table.put(file.getName(), new ImageStorage(file.getName(), image));
     		}
     	}
@@ -74,5 +76,10 @@ public class ImageLoader {
 	
 	public Hashtable<String, ImageStorage> getSprite() {
 		return actors;
+	}
+
+	public double getRatio() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

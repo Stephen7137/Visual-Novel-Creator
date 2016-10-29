@@ -1,5 +1,6 @@
 package cpp.VNCreator.Controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Optional;
@@ -187,11 +188,6 @@ public class Controller {
 		}
 		oldPos = new Point2D(e.getScreenX(), e.getScreenY());
 	}
-	
-	public void highlight(int id) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	public Object reDraw() {
 		cnvsManager.update();// TODO Auto-generated method stub
@@ -218,10 +214,6 @@ public class Controller {
 
 	public void load() {
 		save.load();
-		imgLoader.loadBackground(save.loadBackground());
-		imgLoader.loadActor(save.loadActor());
-		sEditor.loadBackIcon(imgLoader.getBackground());
-		sEditor.loadActorIcon(imgLoader.getSprite());
 	}
 
 	public void export() {
@@ -327,10 +319,20 @@ public class Controller {
 	}
 
 	public void loadProject(Story story, ArrayList<Node> bookmark, 
-			Hashtable<Integer, TreePoint> lookup) {
+			Hashtable<Integer, TreePoint> lookup, ArrayList<File> background, ArrayList<File> actors) {
 		this.story = story;
 		chEditor.load(story.getStart(), story.getTree(), bookmark);
 		cnvsManager.load(lookup);
 		taController.enable();
+
+		imgLoader.loadBackground(background);
+		imgLoader.loadActor(actors);
+		sEditor.loadBackIcon(imgLoader.getBackground());
+		sEditor.loadActorIcon(imgLoader.getSprite());
+	}
+
+	public void closeSave() {
+		// TODO Auto-generated method stub
+		
 	}
 }

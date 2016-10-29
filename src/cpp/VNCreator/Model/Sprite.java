@@ -24,7 +24,6 @@ public class Sprite {
 	}
 	
 	public void move(){
-		System.out.println("X= " + getVelX() + " Y= "+ getVelY());
 		currentPos = currentPos.add(getVelX(), getVelY());
 	}
 	

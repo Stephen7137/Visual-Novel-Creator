@@ -57,13 +57,18 @@
             </TabPane>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="canvasPane" prefHeight="414.0" prefWidth="563.0" AnchorPane.bottomAnchor="240.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="244.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="414.0" prefWidth="563.0" AnchorPane.bottomAnchor="240.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="244.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Canvas fx:id="canvas" height="421.0" layoutY="-3.0" width="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <StackPane fx:id="canvasPane" prefHeight="414.0" prefWidth="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Canvas fx:id="backdrop" height="200.0" width="200.0" />
+                  <Canvas fx:id="canvas" height="200.0" width="200.0" />
+               </children>
+            </StackPane>
          </children>
       </AnchorPane>
       <Separator layoutX="560.0" orientation="VERTICAL" prefHeight="407.0" prefWidth="6.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="241.0" AnchorPane.topAnchor="0.0" />
-      <AnchorPane layoutY="422.0" prefHeight="239.0" prefWidth="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="244.0">
+      <AnchorPane layoutY="422.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="239.0" prefWidth="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="244.0">
          <children>
             <Button layoutY="2.0" mnemonicParsing="false" onAction="#play" text="Play" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <Button layoutX="38.0" layoutY="2.0" mnemonicParsing="false" onAction="#pause" text="Pause" AnchorPane.leftAnchor="38.0" AnchorPane.topAnchor="0.0" />

@@ -92,6 +92,7 @@ public class OptionManager {
 	}
 
 	private void addOption() {
+		save();
 		children.add(new OptionText());
 		buildOption();
 		controller.updateSel();
@@ -107,11 +108,7 @@ public class OptionManager {
 		}
 		return children;
 	}
-
-	public void highlight(int id) {
-		controller.highlight(children.get(id).getNode().getID());
-	}
-
+	
 	public void shiftUp(int id) {
 		curTab = id - 1;
 		swap(id, id-1);

@@ -3,8 +3,10 @@ package cpp.VNCreator.View;
 import java.io.IOException;
 import cpp.VNCreator.Controller.Controller;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.scene.Scene;
 
 /**
@@ -36,10 +38,10 @@ public class Main extends Application {
 			
 			Scene scene = createScene(primaryStage);
 			primaryStage.setScene(scene);
-			primaryStage.setTitle("TA Editor");
+			primaryStage.setTitle("VN Editor");
 			primaryStage.setMaximized(true);
-			primaryStage.setMinHeight(primaryStage.getHeight());
-			primaryStage.setMinWidth(primaryStage.getWidth());
+			primaryStage.setMinHeight(700);
+			primaryStage.setMinWidth(1000);
 			primaryStage.setResizable(true);
 			primaryStage.show();
 		} catch(Exception e) {
@@ -85,6 +87,15 @@ public class Main extends Application {
 		mainController.setController(controller);
 		controller.startUp(editor.getCanvas(), primaryStage, editor, sEditor,
 				mainController, console);
+		
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>(){
+
+			@Override
+			public void handle(WindowEvent arg0) {
+				controller.closeSave();
+			}
+			
+		});
 		
 		return scene;
 	}

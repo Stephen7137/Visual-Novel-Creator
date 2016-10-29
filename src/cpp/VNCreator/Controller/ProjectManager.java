@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
+import java.util.prefs.Preferences;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -57,8 +59,12 @@ public class ProjectManager {
 	File file;
 	Stage primaryStage;
 	Gson gson;
+	Preferences prefs;
+	String last = "LastFile";
 	
 	public ProjectManager(Stage primaryStage, Controller controller) {
+		prefs = Preferences.userNodeForPackage(Controller.class);
+		file = new File(prefs.get(last, ""));
 		this.controller = controller;
 		this.primaryStage = primaryStage;
 		fileChooser = new FileChooser();
@@ -85,6 +91,8 @@ public class ProjectManager {
 	             //.registerTypeHierarchyAdapter(list.getClass(), new CustomParser())
 	             .registerTypeAdapter(Color.class, new ColorParser())
 	             .create();
+		
+		if(!file.getPath().equals("")) loadProject();
 	}
 		
 	/**
@@ -171,12 +179,18 @@ public class ProjectManager {
 	 */
 	public void load(){
 		
-		if(file == null ) file = new File(System.getProperty("user.home"));
-		
 		DirectoryChooser directory = new DirectoryChooser();
-		
-		directory.setInitialDirectory(file);
+		if(file == null || file.getPath().equals("")) 
+			directory.setInitialDirectory(new File(System.getProperty("user.home")));
+		else
+			directory.setInitialDirectory(file.getParentFile());
+					
 		file = directory.showDialog(primaryStage);
+		if(file != null) prefs.put(last, file.toString());
+		loadProject();		
+	}
+	
+	private void loadProject(){
 		SaveProject save = null;
 		try(JsonReader reader = new JsonReader( new FileReader(
 				new File(file.toString() + File.separator + file.getName() + ".json")))){
@@ -186,8 +200,8 @@ public class ProjectManager {
 		
 		Hashtable<Integer, Node> tree =	createStory(save.getTree());
 		Story story = new Story(tree.get(save.start), tree);
-		controller.loadProject(story, createBookmark(save,story), createCanvas(save,story));
-		
+		controller.loadProject(story, createBookmark(save,story), 
+				createCanvas(save,story), loadBackground(), loadActor());
 	}
 	
 	private Hashtable<Integer, Node> createStory(ArrayList<SaveNode> save){
@@ -255,12 +269,12 @@ public class ProjectManager {
 	
 	public ArrayList<File> loadBackground(){
 		return new ArrayList<File>(Arrays.asList((
-				new File(this.file + bckFodler)).listFiles()));
+				new File(file + bckFodler)).listFiles()));
 	}
 	
 	public ArrayList<File> loadActor() {
 		return new ArrayList<File>(Arrays.asList((
-				new File(this.file + actFolder)).listFiles()));
+				new File(file + actFolder)).listFiles()));
 	}
 
 	public ArrayList<File> importBackground() {

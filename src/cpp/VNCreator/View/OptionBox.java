@@ -53,19 +53,19 @@ public class OptionBox {
 		this.option = option;
 		this.title.setText(title);
 		this.text.setText(text);
-		this.text.focusedProperty().addListener(
-				new ChangeListener<Boolean>(){
-
-			@Override
-			public void changed(
-					ObservableValue<? extends Boolean> observable,
-					Boolean oldValue, Boolean newValue) {
-				if(newValue){
-					option.highlight(id);
-				}
-			}
-			
-		});
+//		this.text.focusedProperty().addListener(
+//				new ChangeListener<Boolean>(){
+//
+//			@Override
+//			public void changed(
+//					ObservableValue<? extends Boolean> observable,
+//					Boolean oldValue, Boolean newValue) {
+//				if(newValue){
+//					option.highlight(id);
+//				}
+//			}
+//			
+//		});
 	}
 	
 	public int getID(){
