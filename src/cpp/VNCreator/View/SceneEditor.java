@@ -11,16 +11,20 @@ import cpp.VNCreator.Controller.Controller;
 import cpp.VNCreator.Node.Node;
 import cpp.VNCreator.Node.Scene;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 public class SceneEditor {
 
@@ -30,6 +34,8 @@ public class SceneEditor {
 	GraphicsContext gc;
 	GraphicsContext bgc;
 	ImageLoader imgLoader;
+	Timeline timeline;
+	ImageView actor;
 	
 	private final float fixedIterval = 0.02f;
 	private ArrayList<Sprite> actorList;
@@ -38,6 +44,12 @@ public class SceneEditor {
 	int fps = 0;
 
 	long sceneTimer = 0;
+	
+	@FXML
+	private ImageView imagebck;
+	
+	@FXML
+	private Pane stageSet;
 	
 	@FXML
 	private Canvas backdrop;
@@ -57,15 +69,18 @@ public class SceneEditor {
 	@FXML
 	private void play(){
 		animTimer.start();
+		timeline.play();
 	}
 	
 	@FXML
 	private void pause(){
 		animTimer.stop();
+		timeline.pause();
 	}
 	
 	@FXML
 	private void stop(){
+		timeline.stop();
 		pause();
 		resetSprite();
 		update();
@@ -86,17 +101,17 @@ public class SceneEditor {
 		bgc.setFill(Color.BLACK);
 		bgc.fillRect(0, 0, backdrop.getWidth(), backdrop.getHeight());
 		
-		gc.setFill(Color.WHITE);
-		gc.fillRect(0, 0, 200, 200);
-		if(bckgrndImage != null){
-			gc.drawImage(bckgrndImage, 0, 0);
-		}		
-		for(Sprite sprite : activeActor){
-			gc.drawImage(sprite.getImage(), sprite.getCurX(), sprite.getCurY());
-		}
-		gc.setFill(Color.AQUA);
-		gc.fillOval( 0, 0, 10, 10);
-		gc.fillOval(300, 300, 10, 10);
+//		gc.setFill(Color.WHITE);
+//		gc.fillRect(0, 0, 200, 200);
+//		if(bckgrndImage != null){
+//			gc.drawImage(bckgrndImage, 0, 0);
+//		}		
+//		for(Sprite sprite : activeActor){
+//			gc.drawImage(sprite.getImage(), sprite.getCurX(), sprite.getCurY());
+//		}
+//		gc.setFill(Color.AQUA);
+//		gc.fillOval( 0, 0, 10, 10);
+//		gc.fillOval(300, 300, 10, 10);
 	}
 	
 	private void fixedUpdate(){
@@ -120,12 +135,15 @@ public class SceneEditor {
 	//int x = 0;
 	//int y = 0;
 	public void controller(Controller cotroller) {
-		gc = canvas.getGraphicsContext2D();
+		//gc = canvas.getGraphicsContext2D();
 		bgc = backdrop.getGraphicsContext2D();
 		this.cotroller = cotroller;
 		canvasPane.heightProperty().addListener( observable -> updateCanvas());
 		canvasPane.widthProperty().addListener( observable -> updateCanvas());
+		imagebck.fitWidthProperty().bind(canvasPane.widthProperty());
+		imagebck.fitHeightProperty().bind(canvasPane.heightProperty());
 		
+		timeline = new Timeline();
 		actorList = new ArrayList<Sprite>();
 		activeActor = new ArrayList<Sprite>();
 		
@@ -163,14 +181,16 @@ public class SceneEditor {
 		
 		backdrop.heightProperty().set(canvasPane.getHeight());
 		backdrop.widthProperty().set(canvasPane.getWidth());
-		
-		if( backdrop.getWidth() > backdrop.getHeight() * ar){
-			canvas.widthProperty().set(backdrop.getHeight() * ar);
-			canvas.heightProperty().set(backdrop.getHeight());
-		}else{
-			canvas.widthProperty().set(backdrop.getWidth());
-			canvas.heightProperty().set(backdrop.getWidth() * (1/ar));
-		}
+		//imagebck.setFitWidth(backdrop.getWidth());
+//		if(imagebck.getFitHeight() > backdrop.getHeight())
+//			imagebck.set
+//		if( backdrop.getWidth() > backdrop.getHeight() * ar){
+//			canvas.widthProperty().set(backdrop.getHeight() * ar);
+//			canvas.heightProperty().set(backdrop.getHeight());
+//		}else{
+//			canvas.widthProperty().set(backdrop.getWidth());
+//			canvas.heightProperty().set(backdrop.getWidth() * (1/ar));
+//		}
 		
 		
 //		if(imgLoader.getRatio() != 0){
@@ -201,7 +221,7 @@ public class SceneEditor {
 			view.setFitHeight(100);
 			view.setPreserveRatio(true);
 			view.setOnMousePressed(event -> {
-				setBackground(entry.getValue().getName());
+				setActor(entry.getValue().getName());
 			});
 			cast.getChildren().add(view);
 			//TODO
@@ -212,9 +232,28 @@ public class SceneEditor {
 		}
 	}
 	
+	private void setActor(String name) {
+		timeline = new Timeline();
+		actor = new ImageView(imgLoader.getSprite(name));
+		actor.setLayoutX(700);
+		actor.setLayoutY(700);
+		stageSet.getChildren().add(actor);
+		KeyValue key = new KeyValue(actor.layoutXProperty(),300);
+		KeyFrame frame = new KeyFrame(Duration.millis(5000), key);
+		timeline.getKeyFrames().add(frame);
+	}
+
 	public void setBackground(String name){
-		if(bckgrndImage == null) updateCanvas();
-		bckgrndImage = imgLoader.getBackground(name);
+		imagebck.setImage(imgLoader.getBackground(name));
+		imagebck.setSmooth(true);
+		imagebck.setPreserveRatio(true);
+		//imagebck.setFitHeight(300);
+		System.out.println("resize: " + imagebck.isResizable());
+		System.out.println("resize: " + imagebck.preserveRatioProperty().getValue());
+		updateCanvas();
+		
+//		if(bckgrndImage == null) updateCanvas();
+//		bckgrndImage = imgLoader.getBackground(name);
 	}
 	
 	private void resetSprite(){

@@ -62,7 +62,8 @@
             <StackPane fx:id="canvasPane" prefHeight="414.0" prefWidth="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Canvas fx:id="backdrop" height="200.0" width="200.0" />
-                  <Canvas fx:id="canvas" height="200.0" width="200.0" />
+                  <ImageView fx:id="imagebck" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                  <Pane fx:id="stageSet" prefHeight="200.0" prefWidth="200.0" />
                </children>
             </StackPane>
          </children>
