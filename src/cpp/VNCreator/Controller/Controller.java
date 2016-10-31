@@ -155,10 +155,15 @@ public class Controller {
 	public void mousePress(MouseEvent e) {
 		if(e.getButton() == MouseButton.PRIMARY){
 			
-			
-			//TODO
 			int id = cnvsManager.onNode(e.getX(),e.getY());
-			if(e.getClickCount() == 2) cnvsManager.printChild(id);
+			if(e.getClickCount() >= 2){
+				if(cnvsManager.onConnect(e.getX(),e.getY()) && cnvsManager.isConnected()){
+					System.out.println("delete");
+					chEditor.disconnect(cnvsManager.getSelected(), cnvsManager.getConnected());
+					cnvsManager.resetOnConnect();
+					updateSel();
+				}
+			}
 			if(!chEditor.isSelect(id)){
 				chEditor.setSelected(id);
 				cnvsManager.setSelected(id);
@@ -168,9 +173,10 @@ public class Controller {
 	}
 
 	public void onDrag(MouseEvent e) {
-		//TODO
+
 		if( !onConnect && !onSelected && cnvsManager.onSelected(e.getX(),e.getY())) onSelected = true;
-		if( !onSelected && !onConnect && cnvsManager.onConnect(e.getX(),e.getY())){
+		if( !onSelected && !onConnect && cnvsManager.onConnect(e.getX(),e.getY())
+				&& !cnvsManager.isConnected()){
 			chEditor.setSelected(cnvsManager.getSelected());
 			updateSel();
 			onConnect = true;
@@ -189,19 +195,16 @@ public class Controller {
 		oldPos = new Point2D(e.getScreenX(), e.getScreenY());
 	}
 
-	public Object reDraw() {
-		cnvsManager.update();// TODO Auto-generated method stub
-		return null;
+	public void reDraw() {
+		cnvsManager.update();
 	}
 
 	public void addBookmark() {
-		// TODO Auto-generated method stub
-		
+		chEditor.addBookmark();
 	}
 
 	public void removeBookmark() {
-		// TODO Auto-generated method stub
-		
+		chEditor.removeBookmark();		
 	}
 
 	public void save() {
@@ -221,17 +224,14 @@ public class Controller {
 	}
 
 	public boolean selIsNull() {
-		// TODO Auto-generated method stub
-		return false;
+		return chEditor.getSelected() == null;
 	}
 
 	public boolean inBookmark() {
-		// TODO Auto-generated method stub
-		return false;
+		return chEditor.currentBookmark();
 	}
 
 	public void loadBackground() {
-		// TODO Auto-generated method stub
 		imgLoader.loadBackground(save.importBackground());
 		sEditor.loadBackIcon(imgLoader.getBackground());
 	}

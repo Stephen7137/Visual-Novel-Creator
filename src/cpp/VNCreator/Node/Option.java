@@ -33,6 +33,10 @@ public class Option extends Node{
 	public void removeChild(OptionText node){
 		child.remove(node);
 	}
+
+	public void removeConnection(int i) {
+		child.get(i).setNode(null);;
+	}
 	
 	public ArrayList<OptionText> getChildren(){
 		return child;
@@ -62,5 +66,9 @@ public class Option extends Node{
 
 	public void setChild(Node node, int id) {
 		child.get(id).setNode(node);		
+	}
+
+	public Node getChild(int index) {
+		return child.get(index).getNode();
 	}
 }

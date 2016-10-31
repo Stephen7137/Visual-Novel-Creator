@@ -82,23 +82,17 @@ public class TreePoint {
 	
 	public ArrayList<CVNode> getChildren(){
 		children = new ArrayList<CVNode>();
-		//TODO look into not repeating.
+		
 		if(node.getType() == nodeType.Option){
 			ArrayList<OptionText> oText = ((Option)node).getChildren();
-			for(int i = 0; i < oText.size(); i++){
-				int id  = node.hasChild() ? oText.get(i).getID() : -1;
-				children.add(new CVNode(oText.get(i).getTitle(),
-						oText.get(i).getText(), id));
+			for( OptionText text : oText){
+				children.add(new CVNode(text.getTitle(),
+						text.getText(), text.getID()));
 			}
 		}else{
-			int id  = node.hasChild() ? ((Text)node).getChild().getID() : -1;
-			children.add(new CVNode("", "", id));
+			children.add(new CVNode("", "", ((Text)node).getChildId()));
 		}
 		
-		return children;
-	}
-	
-	public ArrayList<CVNode> getChildren2(){		
 		return children;
 	}
 
@@ -138,5 +132,10 @@ public class TreePoint {
 			}
 		}		
 		return -1;
+	}
+
+	public boolean isConnected(int onConnect) {
+		if(children != null && children.get(onConnect).id != -1 ) return true;
+		return false;
 	}
 }

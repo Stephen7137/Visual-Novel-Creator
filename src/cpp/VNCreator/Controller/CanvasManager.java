@@ -175,19 +175,26 @@ public class CanvasManager {
 				if(node != null){
 					if(node.id != -1){
 						TreePoint point1 = searchTree(node.id);
+						Point2D mPoint = null;
+						
 						if(point.getBottom() < point1.getY()){
-							drawArrow(point.getHalfTop(), point.getHalfLeft(),
+							mPoint = drawArrow(point.getHalfTop(), point.getHalfLeft(),
 								point1.getHalfTop(), point1.getY(), Color.BLACK);
 						}else if(point.getY() > point1.getBottom()){
-							drawArrow(point.getHalfTop(), point.getHalfLeft(),
+							mPoint = drawArrow(point.getHalfTop(), point.getHalfLeft(),
 								point1.getHalfTop(), point1.getBottom(), Color.BLACK);
 						}else if(point.getX() < point1.getX()){
-							drawArrow(point.getHalfTop(), point.getHalfLeft(),
+							mPoint = drawArrow(point.getHalfTop(), point.getHalfLeft(),
 								point1.getX(), point1.getHalfLeft(), Color.BLACK);
 						}else{
-							drawArrow(point.getHalfTop(), point.getHalfLeft(),
+							mPoint = drawArrow(point.getHalfTop(), point.getHalfLeft(),
 								point1.getRight(), point1.getHalfLeft(), Color.BLACK);
 						}
+						node.setPoint(mPoint);
+						gc.setFill(Color.RED);
+						gc.fillOval(mPoint.getX() - point.getRadious()/2, mPoint.getY() - point.getRadious()/2, point.getRadious(), point.getRadious());
+						gc.setFill(color);
+						gc.fillText(node.title, mPoint.getX() + textOffset,  mPoint.getY() + textOffset);
 					}else{
 						//if( !(point == selected && node.id == onConnect) ){
 							gc.setFill(color);
@@ -202,7 +209,7 @@ public class CanvasManager {
 		}		
 	}
 	
-	private void drawArrow(double x1, double y1, double x2, double y2, Color color){
+	private Point2D drawArrow(double x1, double y1, double x2, double y2, Color color){
 		gc.setStroke(color);
 		gc.setLineWidth(2);
 		gc.strokeLine(x1, y1, x2, y2);
@@ -212,6 +219,7 @@ public class CanvasManager {
 		gc.transform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
 		gc.drawImage(arrow, x2 - 10, y2 - 15);
 		gc.restore();
+		return new Point2D((x1 + x2)/2, (y1 + y2)/2);
 	}
 	
 	/**
@@ -407,14 +415,11 @@ public class CanvasManager {
 		onConnect = -1;
 	}
 
-	public void printChild(int id) {
-		ArrayList<CVNode> nodes = searchTree(id).getChildren2();
-		for(CVNode node : nodes){
-			System.out.println(node.id + " - " + node.getPoint());
-		}
-	}
-
 	public ArrayList<TreePoint> getTree() {
 		return new ArrayList<TreePoint>(lookup.values());
+	}
+
+	public boolean isConnected() {
+		return selected.isConnected(onConnect);
 	}
 }

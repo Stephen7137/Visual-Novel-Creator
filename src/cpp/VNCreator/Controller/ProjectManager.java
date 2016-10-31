@@ -142,7 +142,7 @@ public class ProjectManager {
 	 */
 	private void saveProject(){
 		
-		try(Writer writer = new FileWriter(file + ".json")){
+		try(Writer writer = new FileWriter(file + File.separator +  file.getName() + ".json")){
 			gson.toJson(new SaveProject(controller.getStartID(),
 					controller.getTree(), controller.getBookmark(), 
 					controller.getTreePoint()), writer);

@@ -47,7 +47,7 @@ public class ChapterEditor{
 		noParent = new ArrayList<Node>();
 		noChild = new ArrayList<Node>();
 	}
-		//TODO
+	
 	public int connect(int id, int child){
 		if(id == -1) return id;
 		Node node = tree.get(id);
@@ -60,6 +60,17 @@ public class ChapterEditor{
 		}
 		
 		return node.getID();
+	}
+
+	public void disconnect(int id, int index) {
+		selected = tree.get(id);
+		if(selected.getType() == nodeType.Option){
+			((Option)selected).getChild(index).removeParent(selected.getID());
+			((Option)selected).removeConnection(index);
+		}else{
+			((Text)selected).getChild().removeParent(selected.getID());
+			((Text)selected).deleteChild();
+		}		
 	}
 	
 	/**

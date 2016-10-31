@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
@@ -18,12 +19,30 @@
                      <content>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <ScrollPane layoutX="23.0" layoutY="358.0" prefHeight="200.0" prefWidth="200.0">
-                                <content>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-                                </content>
-                              </ScrollPane>
-                              <ImageView fitHeight="164.0" fitWidth="200.0" layoutX="23.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" />
+                              <ComboBox layoutX="11.0" layoutY="14.0" prefHeight="25.0" prefWidth="221.0" />
+                              <BorderPane layoutX="22.0" layoutY="53.0" prefHeight="120.0" prefWidth="200.0">
+                                 <center>
+                                    <ImageView fitHeight="120.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+                                 </center>
+                              </BorderPane>
+                              <Text layoutX="22.0" layoutY="199.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Transform" />
+                              <TextField layoutX="60.0" layoutY="220.0" prefHeight="25.0" prefWidth="59.0" />
+                              <Text layoutX="22.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start" />
+                              <Text layoutX="37.0" layoutY="237.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" />
+                              <Text layoutX="136.0" layoutY="237.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" />
+                              <TextField layoutX="151.0" layoutY="220.0" prefHeight="25.0" prefWidth="59.0" />
+                              <Text layoutX="23.0" layoutY="265.0" strokeType="OUTSIDE" strokeWidth="0.0" text="End" />
+                              <TextField layoutX="151.0" layoutY="269.0" prefHeight="25.0" prefWidth="59.0" />
+                              <Text layoutX="136.0" layoutY="286.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" />
+                              <Text layoutX="37.0" layoutY="286.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" />
+                              <TextField layoutX="60.0" layoutY="269.0" prefHeight="25.0" prefWidth="59.0" />
+                              <Text layoutX="22.0" layoutY="317.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Delay" />
+                              <TextField layoutX="76.0" layoutY="300.0" prefHeight="25.0" prefWidth="59.0" />
+                              <TextField layoutX="76.0" layoutY="331.0" prefHeight="25.0" prefWidth="59.0" />
+                              <Text layoutX="22.0" layoutY="348.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Duration" />
+                              <CheckBox layoutX="24.0" layoutY="370.0" mnemonicParsing="false" text="Transisiton In" />
+                              <CheckBox layoutX="25.0" layoutY="397.0" mnemonicParsing="false" text="Transisiton Out" />
+                              <CheckBox layoutX="25.0" layoutY="425.0" mnemonicParsing="false" text="Keep for Next Scene" />
                            </children>
                         </AnchorPane>
                      </content></Tab>

@@ -36,6 +36,7 @@ public class SceneEditor {
 	ImageLoader imgLoader;
 	Timeline timeline;
 	ImageView actor;
+	boolean reset;
 	
 	private final float fixedIterval = 0.02f;
 	private ArrayList<Sprite> actorList;
@@ -69,7 +70,12 @@ public class SceneEditor {
 	@FXML
 	private void play(){
 		animTimer.start();
-		timeline.play();
+		if(reset){
+			timeline.playFromStart();
+			reset = false;
+		}else{
+			timeline.play();
+		}		
 	}
 	
 	@FXML
@@ -80,7 +86,8 @@ public class SceneEditor {
 	
 	@FXML
 	private void stop(){
-		timeline.stop();
+		timeline.pause();
+		reset = true;
 		pause();
 		resetSprite();
 		update();
@@ -140,6 +147,9 @@ public class SceneEditor {
 		this.cotroller = cotroller;
 		canvasPane.heightProperty().addListener( observable -> updateCanvas());
 		canvasPane.widthProperty().addListener( observable -> updateCanvas());
+		
+//		imagebck.scaleXProperty().bind(canvasPane.heightProperty());
+		
 		imagebck.fitWidthProperty().bind(canvasPane.widthProperty());
 		imagebck.fitHeightProperty().bind(canvasPane.heightProperty());
 		
@@ -181,6 +191,7 @@ public class SceneEditor {
 		
 		backdrop.heightProperty().set(canvasPane.getHeight());
 		backdrop.widthProperty().set(canvasPane.getWidth());
+		System.out.println(imagebck.getScaleX());
 		//imagebck.setFitWidth(backdrop.getWidth());
 //		if(imagebck.getFitHeight() > backdrop.getHeight())
 //			imagebck.set
@@ -233,14 +244,25 @@ public class SceneEditor {
 	}
 	
 	private void setActor(String name) {
+		
 		timeline = new Timeline();
 		actor = new ImageView(imgLoader.getSprite(name));
 		actor.setLayoutX(700);
-		actor.setLayoutY(700);
-		stageSet.getChildren().add(actor);
+		actor.setLayoutY(0);
+		actor.scaleXProperty().bind(imagebck.scaleXProperty());
 		KeyValue key = new KeyValue(actor.layoutXProperty(),300);
 		KeyFrame frame = new KeyFrame(Duration.millis(5000), key);
-		timeline.getKeyFrames().add(frame);
+		ImageView actor1 = new ImageView(imgLoader.getSprite(name));
+		System.out.println(actor.getScaleX());
+		System.out.println(imagebck.getScaleX());
+		actor1.setLayoutX(0);
+		actor1.setLayoutY(0);
+		actor1.scaleXProperty().bind(imagebck.scaleXProperty());
+		stageSet.getChildren().addAll(actor1, actor);
+		KeyValue key1 = new KeyValue(actor1.layoutXProperty(),400);
+		KeyFrame frame1 = new KeyFrame(Duration.millis(5000), key1);
+		timeline.getKeyFrames().addAll(frame1, frame );
+		timeline.setDelay(new Duration(500));
 	}
 
 	public void setBackground(String name){
