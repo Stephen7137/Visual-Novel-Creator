@@ -1,65 +1,85 @@
 package cpp.VNCreator.Model;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.DoublePropertyBase;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
 public class Sprite {
-	private String fileName;
-	private long start;
-	private long duration;
+
 	private Point2D startingPos;
 	private Point2D endingPos;
-	private Point2D currentPos;
+	private DoubleProperty curX;
+	private DoubleProperty curY;
+	
 	private Image image;
 	
 	
-	public Sprite(String fileName, Point2D startingPos, Point2D endingPos, 
-			long start, long duration) {
-		this.fileName = fileName;
+	public Sprite(Image image, Point2D startingPos, Point2D endingPos) {
+		this.image = image;
 		this.startingPos = startingPos;
 		this.endingPos = endingPos;
-		this.duration = duration;
-		this.start = start;
-		// TODO Auto-generated constructor stub
-	}
-	
-	public void move(){
-		currentPos = currentPos.add(getVelX(), getVelY());
-	}
-	
-	public void setImage(Image image){
-		this.image = image;
+		setStartPos();
 	}
 	
 	public Image getImage(){
 		return image;
 	}
 
-	private double getVelX(){
-		return  ((endingPos.getX() - startingPos.getX())/duration);
+	public void setStartPos() {
+		setCurX(startingPos.getX());
+		setCurY(startingPos.getY());
 	}
 	
-	private double getVelY(){
-		return  ((endingPos.getY() - startingPos.getY())/duration);
-	}
-	
-	public long getStart(){
-		return start;
-	}
-	
-	public String getFileName(){
-		return fileName;
+	public void setCurX(double value) {
+		curXProperty().set(value);
 	}
 
-	public void setStartPos() {
-		currentPos = new Point2D(startingPos.getX(), startingPos.getY());
+	public void setCurY(double value) {
+		curYProperty().set(value);
 	}
 
 	public double getCurX() {
-		return currentPos.getX();
+		return curX == null ? 0.0 : curX.get();
 	}
 
 	public double getCurY() {
-		return currentPos.getY();
+		return curY == null ? 0.0 : curY.get();
+	}
+	
+	public DoubleProperty curXProperty() {
+		if(curX == null){
+			curX = new DoublePropertyBase(){
+								
+				                @Override
+				                public Object getBean() {
+				                    return Sprite.this;
+				                }
+				
+				                @Override
+				                public String getName() {
+				                    return "curX";
+				                }
+				            };
+		}
+		return curX;
+	}
+
+	public DoubleProperty curYProperty() {
+		if(curY == null){
+			curY = new DoublePropertyBase(){
+								
+				                @Override
+				                public Object getBean() {
+				                    return Sprite.this;
+				                }
+				
+				                @Override
+				                public String getName() {
+				                    return "curY";
+				                }
+				            };
+		}
+		return curY;
 	}
 }

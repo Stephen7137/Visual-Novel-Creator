@@ -5,6 +5,7 @@ import cpp.VNCreator.Controller.OptionManager;
 import cpp.VNCreator.Model.NodeType.nodeType;
 import cpp.VNCreator.Node.Node;
 import cpp.VNCreator.Node.Option;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
@@ -14,6 +15,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 
 /**
@@ -154,6 +156,23 @@ public class Editor {
 		canvasPane.heightProperty().addListener( observable -> updateCanvas());
 		canvasPane.widthProperty().addListener( observable -> updateCanvas());
 		buildContextMenu();
+
+		canvas.setOnScroll(new EventHandler<ScrollEvent>(){
+			
+			@Override
+			public void handle(ScrollEvent event) {
+				
+				if(event.getDeltaY() >= 0){
+					canvas.setScaleX(.5);
+					canvas.setScaleY(.5);
+				}else if(event.getDeltaY() < 0 ){
+					canvas.setScaleX(2);
+					canvas.setScaleY(2);
+				}
+				controller.updateSel();
+			}
+			
+		});
 	}
 	
 	private void updateCanvas(){

@@ -34,8 +34,9 @@ public class Scene {
 	
 	public void addActor(String Filename, int x1, int y1,
 			int x2,	int y2,	long start, long duration){
-		Sprite actor = new Sprite(Filename, new Point2D(x1, y1),
-				new Point2D(x2,	y2), start,	duration);
-		sprites.add(actor);
+		//TODO
+//		Sprite actor = new Sprite(Filename, new Point2D(x1, y1),
+//				new Point2D(x2,	y2), start,	duration);
+//		sprites.add(actor);
 	}
 }

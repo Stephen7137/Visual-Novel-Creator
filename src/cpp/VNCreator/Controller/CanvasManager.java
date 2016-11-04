@@ -8,10 +8,12 @@ import java.util.Map.Entry;
 import cpp.VNCreator.Model.CVNode;
 import cpp.VNCreator.Model.TreePoint;
 import cpp.VNCreator.Node.Node;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -47,6 +49,8 @@ public class CanvasManager {
 	private int onConnect;
 	
 	private Color lastColor;
+	double x = 1;
+	double y = 1;
 	
 	
 	/**
