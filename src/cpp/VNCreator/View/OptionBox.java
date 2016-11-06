@@ -1,8 +1,6 @@
 package cpp.VNCreator.View;
 
 import cpp.VNCreator.Controller.OptionManager;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;

@@ -11,14 +11,16 @@ public class Sprite {
 	private Point2D endingPos;
 	private DoubleProperty curX;
 	private DoubleProperty curY;
+	private boolean flip;
 	
 	private Image image;
 	
 	
-	public Sprite(Image image, Point2D startingPos, Point2D endingPos) {
+	public Sprite(Image image, Point2D startingPos, Point2D endingPos, boolean flip) {
 		this.image = image;
 		this.startingPos = startingPos;
 		this.endingPos = endingPos;
+		this.flip = flip;
 		setStartPos();
 	}
 	
@@ -45,6 +47,10 @@ public class Sprite {
 
 	public double getCurY() {
 		return curY == null ? 0.0 : curY.get();
+	}
+
+	public boolean isFlipped(){
+		return flip;
 	}
 	
 	public DoubleProperty curXProperty() {

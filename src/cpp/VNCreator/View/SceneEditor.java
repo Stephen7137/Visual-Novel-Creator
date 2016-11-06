@@ -3,7 +3,10 @@ package cpp.VNCreator.View;
 import cpp.VNCreator.Controller.ImageLoader;
 import cpp.VNCreator.Controller.ImageLoader.ImageStorage;
 import cpp.VNCreator.Model.Sprite;
+import cpp.VNCreator.Node.Actor;
 
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map.Entry;
@@ -15,10 +18,14 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -40,7 +47,7 @@ public class SceneEditor {
 	
 	private final float fixedIterval = 0.02f;
 	private ArrayList<Sprite> actorList;
-	private ArrayList<Sprite> activeActor;
+	private ArrayList<Actor> layers;
 	AnimationTimer animTimer;
 	int fps = 0;
 
@@ -54,6 +61,7 @@ public class SceneEditor {
 	
 	@FXML
 	private Canvas backdrop;
+
 	
 	@FXML
 	private Canvas canvas;
@@ -66,6 +74,21 @@ public class SceneEditor {
 	
 	@FXML
 	private StackPane canvasPane;
+	
+	@FXML
+	private ComboBox<ComboObj> layerSel;
+	
+	@FXML
+	private TextField startX;
+	
+	@FXML
+	private TextField startY;
+	
+	@FXML
+	private TextField endX;
+	
+	@FXML
+	private TextField endY;
 	
 	@FXML
 	private void play(){
@@ -93,6 +116,55 @@ public class SceneEditor {
 		update();
 	}
 	
+	@FXML
+	private void addLayer(){
+		Actor actor = new Actor();
+		layers.add(actor);
+		layerSel.getItems().add(new ComboObj("Layer " + layers.size(), actor));
+	}
+	
+	@FXML
+	private void setActor(ActionEvent event){
+		ComboObj comboObj = layerSel.getValue();
+		
+	}
+	
+	private class ComboObj{
+		
+		private String name;
+		private Actor actor;
+		
+		public ComboObj( String name, Actor actor){
+			this.name = name;
+			this.actor = actor;
+		}
+		
+		public String toString(){
+			return name;
+		}
+		
+		public Actor getActor(){
+			return actor;
+		}
+	}
+	
+	private void drawPreview(){
+		bgc.setFill(Color.BLACK);
+		bgc.fillRect(0, 0, backdrop.getWidth(), backdrop.getHeight());
+		
+		if(bckgrndImage != null){
+			gc.drawImage(bckgrndImage, 0, 0);
+		}		
+		for(Actor actor : layers){
+			Image image = imgLoader.getSprite(actor.getName());
+			if(actor.isFlipped()){
+				gc.drawImage(image, actor.getEndX() + image.getWidth(), actor.getEndY(), -image.getWidth(), image.getHeight());
+			}else{
+				gc.drawImage(image, actor.getEndX(), actor.getEndY());
+			}			
+		}
+	}
+	
 //	public void update(Node node) {
 //		loadScene(node.getScene());
 //	}
@@ -110,9 +182,14 @@ public class SceneEditor {
 		
 		if(bckgrndImage != null){
 			gc.drawImage(bckgrndImage, 0, 0);
+			
 		}		
-		for(Sprite sprite : activeActor){
-			gc.drawImage(sprite.getImage(), sprite.getCurX(), sprite.getCurY());
+		for(Sprite sprite : actorList){
+			if(sprite.isFlipped()){
+				gc.drawImage(sprite.getImage(), sprite.getCurX() + sprite.getImage().getWidth(),  sprite.getCurY(), - sprite.getImage().getWidth(), sprite.getImage().getHeight());
+			}else{
+				gc.drawImage(sprite.getImage(), sprite.getCurX(), sprite.getCurY());
+			}
 		}
 	}
 	
@@ -137,7 +214,7 @@ public class SceneEditor {
 		
 		parTrans = new ParallelTransition();
 		actorList = new ArrayList<Sprite>();
-		activeActor = new ArrayList<Sprite>();
+		layers = new ArrayList<Actor>();
 		
 		animTimer = new AnimationTimer(){
 			//TODO
@@ -224,8 +301,8 @@ public class SceneEditor {
 //		actor.setLayoutX(700);
 //		actor.setLayoutY(0);
 		//actor.scaleXProperty().bind(imagebck.scaleXProperty());
-		Sprite sprite = new Sprite(imgLoader.getSprite(name) , new Point2D(0,0), new Point2D(300,300));
-		activeActor.add(sprite);
+		Sprite sprite = new Sprite(imgLoader.getSprite(name) , new Point2D(0,0), new Point2D(300,300), ran.nextInt(2) == 0);
+		actorList.add(sprite);
 		KeyValue key = new KeyValue(sprite.curXProperty(), ran.nextDouble()*1000);
 		KeyFrame frame = new KeyFrame(Duration.millis(ran.nextInt(10000)), key);
 		timeline.getKeyFrames().add(frame);
@@ -245,7 +322,7 @@ public class SceneEditor {
 	
 	private void resetSprite(){
 		//TODO
-		for(Sprite sprite : activeActor){
+		for(Sprite sprite : actorList){
 			sprite.setStartPos();
 		}
 	}
