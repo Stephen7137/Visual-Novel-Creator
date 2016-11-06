@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="560.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cpp.VNCreator.View.ActorPosition">
+   <children>
+      <CheckBox fx:id="flip" layoutX="22.0" layoutY="518.0" mnemonicParsing="false" text="Flip Image" />
+      <CheckBox layoutX="22.0" layoutY="492.0" mnemonicParsing="false" text="Transisiton Out" />
+      <CheckBox layoutX="19.0" layoutY="466.0" mnemonicParsing="false" text="Transisiton In" />
+      <Text layoutX="14.0" layoutY="450.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Duration" />
+      <TextField fx:id="duration" layoutX="73.0" layoutY="433.0" prefHeight="25.0" prefWidth="59.0" />
+      <TextField fx:id="delay" layoutX="73.0" layoutY="407.0" prefHeight="25.0" prefWidth="59.0" />
+      <Text layoutX="15.0" layoutY="424.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Delay" />
+      <TextField fx:id="endX" layoutX="57.0" layoutY="370.0" prefHeight="25.0" prefWidth="59.0" />
+      <Text layoutX="37.0" layoutY="387.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" />
+      <Text layoutX="129.0" layoutY="387.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" />
+      <TextField fx:id="endY" layoutX="148.0" layoutY="370.0" prefHeight="25.0" prefWidth="59.0" />
+      <Text layoutX="20.0" layoutY="366.0" strokeType="OUTSIDE" strokeWidth="0.0" text="End" />
+      <TextField fx:id="startY" layoutX="148.0" layoutY="332.0" prefHeight="25.0" prefWidth="59.0" />
+      <Text layoutX="129.0" layoutY="349.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" />
+      <Text layoutX="37.0" layoutY="349.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" />
+      <Text layoutX="17.0" layoutY="328.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start" />
+      <TextField fx:id="startX" layoutX="57.0" layoutY="332.0" prefHeight="25.0" prefWidth="59.0" />
+      <Text layoutX="17.0" layoutY="314.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Transform" />
+      <BorderPane layoutX="20.0" layoutY="74.0" prefHeight="120.0" prefWidth="200.0">
+         <bottom>
+            <Separator prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </bottom>
+         <center>
+            <ImageView fx:id="image" fitHeight="120.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+         </center>
+         <left>
+            <Separator orientation="VERTICAL" prefHeight="200.0" BorderPane.alignment="CENTER" />
+         </left>
+         <right>
+            <Separator orientation="VERTICAL" prefHeight="200.0" BorderPane.alignment="CENTER" />
+         </right>
+         <top>
+            <Separator prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </top>
+      </BorderPane>
+   </children>
+</AnchorPane>

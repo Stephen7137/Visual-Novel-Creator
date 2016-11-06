@@ -5,8 +5,7 @@ import cpp.VNCreator.Controller.ImageLoader.ImageStorage;
 import cpp.VNCreator.Model.Sprite;
 import cpp.VNCreator.Node.Actor;
 
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map.Entry;
@@ -18,34 +17,39 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.util.Callback;
 import javafx.util.Duration;
 
 public class SceneEditor {
 
 	Controller cotroller;
 	ImageLoader loader;
+	
 	Image bckgrndImage;
 	GraphicsContext gc;
 	GraphicsContext bgc;
 	ImageLoader imgLoader;
 	ParallelTransition parTrans;
-	ImageView actor;
-	boolean reset;
+	ActorPosition actorPos;
 	
-	private final float fixedIterval = 0.02f;
+	private boolean reset;
+	private double ar = 1.77777777778;
+	private double height = 0;
+	private double width = 0;
 	private ArrayList<Sprite> actorList;
 	private ArrayList<Actor> layers;
 	AnimationTimer animTimer;
@@ -53,11 +57,8 @@ public class SceneEditor {
 
 	long sceneTimer = 0;
 	
-//	@FXML
-//	private ImageView imagebck;
-	
-//	@FXML
-//	private Pane stageSet;
+	@FXML
+	private AnchorPane pane;
 	
 	@FXML
 	private Canvas backdrop;
@@ -79,16 +80,7 @@ public class SceneEditor {
 	private ComboBox<ComboObj> layerSel;
 	
 	@FXML
-	private TextField startX;
-	
-	@FXML
-	private TextField startY;
-	
-	@FXML
-	private TextField endX;
-	
-	@FXML
-	private TextField endY;
+	private ComboBox<ComboImg> imageSel;
 	
 	@FXML
 	private void play(){
@@ -124,9 +116,16 @@ public class SceneEditor {
 	}
 	
 	@FXML
-	private void setActor(ActionEvent event){
+	private void setLayer(){
 		ComboObj comboObj = layerSel.getValue();
-		
+		if(pane.isDisabled()) pane.setDisable(false);
+		actorPos.setActor(comboObj.getActor());
+	}
+	
+	@FXML
+	private void setActor(){
+		actorPos.setImage(imageSel.getValue().toString(), 
+				imageSel.getValue().getActor());
 	}
 	
 	private class ComboObj{
@@ -148,35 +147,44 @@ public class SceneEditor {
 		}
 	}
 	
-	private void drawPreview(){
+	private class ComboImg{
+		
+		private String name;
+		private ImageView image;
+		
+		public ComboImg( String name, ImageView image){
+			this.name = name;
+			this.image = image;
+		}
+		
+		public String toString(){
+			return name;
+		}
+		
+		public ImageView getActor(){
+			return image;
+		}
+	}
+	
+	public void drawPreview(){
+		stop();
 		bgc.setFill(Color.BLACK);
 		bgc.fillRect(0, 0, backdrop.getWidth(), backdrop.getHeight());
 		
 		if(bckgrndImage != null){
 			gc.drawImage(bckgrndImage, 0, 0);
+			for(Actor actor : layers){
+				Image image = imgLoader.getSprite(actor.getName());
+				if(actor.isFlipped()){
+					gc.drawImage(image, actor.getEndX() + image.getWidth(), actor.getEndY(), -image.getWidth(), image.getHeight());
+				}else{
+					gc.drawImage(image, actor.getEndX(), actor.getEndY());
+				}			
+			}
 		}		
-		for(Actor actor : layers){
-			Image image = imgLoader.getSprite(actor.getName());
-			if(actor.isFlipped()){
-				gc.drawImage(image, actor.getEndX() + image.getWidth(), actor.getEndY(), -image.getWidth(), image.getHeight());
-			}else{
-				gc.drawImage(image, actor.getEndX(), actor.getEndY());
-			}			
-		}
 	}
 	
-//	public void update(Node node) {
-//		loadScene(node.getScene());
-//	}
-	
-//	public void loadScene(Scene scene){
-//		for(Sprite sprite : scene.getSprites() ){
-//			activeActor.add(sprite);
-//			sprite.setImage(loader.getSprite(sprite.getFileName()));
-//		}
-//	}
-	
-	public void update(){
+	private void update(){
 		bgc.setFill(Color.BLACK);
 		bgc.fillRect(0, 0, backdrop.getWidth(), backdrop.getHeight());
 		
@@ -197,57 +205,53 @@ public class SceneEditor {
 		//TODO
 	}
 
-	
-	//int x = 0;
-	//int y = 0;
 	public void controller(Controller cotroller) {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("ActorPosition.fxml"));
+		try {
+			pane.getChildren().add(loader.load());
+			actorPos = loader.getController();
+			actorPos.setListeners(this);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		pane.setDisable(true);
+		imageSel.setCellFactory(new Callback<ListView<ComboImg>, ListCell<ComboImg>>() {
+            @Override public ListCell<ComboImg> call(ListView<ComboImg> p) {
+                return new ListCell<ComboImg>() {
+                    
+                    @Override protected void updateItem(ComboImg image, boolean empty) {
+                        super.updateItem(image, empty);
+                        
+                        if (image == null || empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(image.getActor());//image.getActor());
+                        }
+                   }
+              };
+          }
+       });
+		
 		gc = canvas.getGraphicsContext2D();
 		bgc = backdrop.getGraphicsContext2D();
 		this.cotroller = cotroller;
 		canvasPane.heightProperty().addListener( observable -> updateCanvas());
 		canvasPane.widthProperty().addListener( observable -> updateCanvas());
 		
-//		imagebck.scaleXProperty().bind(canvasPane.heightProperty());
-		
-//		imagebck.fitWidthProperty().bind(canvasPane.widthProperty());
-//		imagebck.fitHeightProperty().bind(canvasPane.heightProperty());
-		
 		parTrans = new ParallelTransition();
 		actorList = new ArrayList<Sprite>();
 		layers = new ArrayList<Actor>();
 		
 		animTimer = new AnimationTimer(){
-			//TODO
-			//int fps = 0;
-//			long lastTime = 0;
-//			long interval = 0;
 			
 			@Override
 			public void handle(long now) {
-				update();
-//				if(lastTime > 0){
-//					interval += (now - lastTime);
-//					sceneTimer += (now - lastTime);
-//					if( 1000000000 * fixedIterval <= interval){
-//						fixedUpdate();
-//						interval = 0;
-//					}
-//					update();
-//				}
-//				if(sceneTimer >= 1000000000){
-//					fps = 0;
-//					sceneTimer = 0;
-//				}
-//				lastTime = now;
 			}
 		};
 		pause();
-		//updateCanvas();
 	}
 
-	double ar = 1.77777777778;
-	double height = 0;
-	double width = 0;
 	private void updateCanvas(){
 		
 		backdrop.heightProperty().set(canvasPane.getHeight());
@@ -287,20 +291,13 @@ public class SceneEditor {
 				setActor(entry.getValue().getName());
 			});
 			cast.getChildren().add(view);
-			//TODO
-//			Sprite sprite= new Sprite("", new Point2D(0, 0), new Point2D(300, 300), 0, 20);
-//			sprite.setImage(entry.getValue().getImage());
-//			sprite.setStartPos();		
+			imageSel.getItems().add(new ComboImg( entry.getValue().getName(), view));
 		}
 	}
 	
 	private void setActor(String name) {
 		Random ran = new Random();
 		Timeline timeline = new Timeline();
-		//actor = new ImageView(imgLoader.getSprite(name));
-//		actor.setLayoutX(700);
-//		actor.setLayoutY(0);
-		//actor.scaleXProperty().bind(imagebck.scaleXProperty());
 		Sprite sprite = new Sprite(imgLoader.getSprite(name) , new Point2D(0,0), new Point2D(300,300), ran.nextInt(2) == 0);
 		actorList.add(sprite);
 		KeyValue key = new KeyValue(sprite.curXProperty(), ran.nextDouble()*1000);

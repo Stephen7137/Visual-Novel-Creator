@@ -43,12 +43,35 @@ public class Actor {
 		endY = value;
 	}
 	
+	public long getDuration(){
+		return duration;
+	}
+	
+	public void setDuration( long value){
+		duration = value;
+	}
+	
+	public long getDelay(){
+		return delay;
+	}
+	
+	public void setDelay( long value){
+		delay = value;
+	}
+	
 	public String getName(){
 		return imageName;
+	}
+	
+	public void setName(String name){
+		imageName = name;
 	}
 	
 	public boolean isFlipped(){
 		return flip;
 	}
 	
+	public void setFlip(Boolean value){
+		flip = value;
+	}
 }
