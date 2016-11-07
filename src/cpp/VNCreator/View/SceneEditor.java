@@ -4,14 +4,14 @@ import cpp.VNCreator.Controller.ImageLoader;
 import cpp.VNCreator.Controller.ImageLoader.ImageStorage;
 import cpp.VNCreator.Model.Sprite;
 import cpp.VNCreator.Node.Actor;
+import cpp.VNCreator.Node.Node;
+import cpp.VNCreator.Node.Scene;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map.Entry;
-import java.util.Random;
-
 import cpp.VNCreator.Controller.Controller;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
@@ -20,7 +20,6 @@ import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ComboBox;
@@ -46,6 +45,7 @@ public class SceneEditor {
 	ImageLoader imgLoader;
 	ParallelTransition parTrans;
 	ActorPosition actorPos;
+	Node node;
 	
 	private boolean reset;
 	private double ar = 1.77777777778;
@@ -224,10 +224,6 @@ public class SceneEditor {
 			}
 		}
 	}
-	
-	public void clear() {
-		//TODO
-	}
 
 	public void controller(Controller cotroller) {
 		FXMLLoader loader = new FXMLLoader();
@@ -250,7 +246,7 @@ public class SceneEditor {
                         if (image == null || empty) {
                             setGraphic(null);
                         } else {
-                            setGraphic(image.getActor());//image.getActor());
+                            setGraphic(image.getActor());
                         }
                    }
               };
@@ -322,9 +318,6 @@ public class SceneEditor {
 			ImageView view = new ImageView(entry.getValue().getImage());
 			view.setFitHeight(100);
 			view.setPreserveRatio(true);
-//			view.setOnMousePressed(event -> {
-//				setActor(entry.getValue().getName());
-//			});
 			cast.getChildren().add(view);
 			imageSel.getItems().add(new ComboImg( entry.getValue().getName(), view));
 			icons.put(entry.getValue().getName(), view);
@@ -333,6 +326,7 @@ public class SceneEditor {
 
 	public void setBackground(String name){
 		bckgrndImage = imgLoader.getBackground(name);
+		node.getScene().setBackground(name);
 		height = bckgrndImage.getHeight();
 		width = bckgrndImage.getWidth();
 		ar = width / height;
@@ -341,14 +335,21 @@ public class SceneEditor {
 		updateCanvas();
 	}
 	
-	private void resetSprite(){
-		//TODO
-		for(Sprite sprite : actorList){
-			sprite.setStartPos();
-		}
+	public void setActors(ArrayList<Actor> actors){
+		layers = actors;
+		for(Actor actor: layers){
+			layerSel.getItems().add(new ComboObj("Layer " + layers.size(), actor));
+		}		
 	}
 
 	public void setLoader(ImageLoader imgLoader) {
 		this.imgLoader = imgLoader;
+	}
+
+	public void setNode(Node selected) {
+		node = selected;
+		Scene scene = node.getScene();
+		setBackground(scene.getBackground());
+		setActors(scene.getLayers());
 	}
 }

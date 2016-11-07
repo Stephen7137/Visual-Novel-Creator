@@ -22,6 +22,7 @@ public abstract class Node implements Serializable {
 			text = "";
 			this.id = id;
 			this.type = type;
+			scene = new Scene();
 			parent = new Hashtable<Integer,Node>();
 		}
 		

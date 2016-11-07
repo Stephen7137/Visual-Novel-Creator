@@ -65,6 +65,7 @@ public class Controller {
 		cnvsManager.setSelected(chEditor.getSelectedID());
 		if(chEditor.getSelected() != null){
 			editor.update(chEditor.getSelected());
+			sEditor.setNode(chEditor.getSelected());
 		}else{
 			editor.clear();
 		}
