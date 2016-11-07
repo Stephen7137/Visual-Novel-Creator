@@ -71,7 +71,8 @@ public class ImageLoader {
 	}
 
 	public Image getSprite(String fileName) {
-		return actors.get(fileName).getImage();
+		ImageStorage image = actors.get(fileName);
+		return image != null ? image.getImage() : null;
 	}
 	
 	public Hashtable<String, ImageStorage> getSprite() {

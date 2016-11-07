@@ -11,6 +11,10 @@ public class Actor {
 	long delay;
 	boolean flip;
 	
+	public Actor(){
+		imageName = "";
+	}
+	
 	public double getStartX(){
 		return startX;
 	}

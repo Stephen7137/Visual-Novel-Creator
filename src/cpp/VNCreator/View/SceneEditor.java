@@ -55,6 +55,7 @@ public class SceneEditor {
 	private ArrayList<Actor> layers;
 	private HashMap<String, ImageView> icons;
 	AnimationTimer animTimer;
+	AnimationTimer previewTimer;
 	int fps = 0;
 
 	long sceneTimer = 0;
@@ -86,13 +87,16 @@ public class SceneEditor {
 	
 	@FXML
 	private void play(){
-		animTimer.start();
 		if(reset){
+			buildScene();
 			parTrans.playFromStart();
 			reset = false;
 		}else{
 			parTrans.play();
-		}		
+		}	
+		
+		previewTimer.stop();
+		animTimer.start();
 	}
 	
 	@FXML
@@ -103,11 +107,9 @@ public class SceneEditor {
 	
 	@FXML
 	private void stop(){
-		parTrans.pause();
 		reset = true;
 		pause();
-		resetSprite();
-		update();
+		previewTimer.start();
 	}
 	
 	@FXML
@@ -177,24 +179,27 @@ public class SceneEditor {
 			gc.drawImage(bckgrndImage, 0, 0);
 			for(Actor actor : layers){
 				Image image = imgLoader.getSprite(actor.getName());
-				if(actor.isFlipped()){
-					gc.drawImage(image, actor.getEndX() + image.getWidth(), actor.getEndY(), -image.getWidth(), image.getHeight());
-				}else{
-					gc.drawImage(image, actor.getEndX(), actor.getEndY());
-				}			
+				if(image != null){
+					if(actor.isFlipped()){
+						gc.drawImage(image, actor.getEndX() + image.getWidth(), actor.getEndY(), -image.getWidth(), image.getHeight());
+					}else{
+						gc.drawImage(image, actor.getEndX(), actor.getEndY());
+					}
+				}							
 			}
 		}
-		buildScene();
 	}
 	
 	private void buildScene(){
 		actorList = new ArrayList<Sprite>();
+		parTrans.getChildren().clear();
 		for(Actor actor: layers){
 			Timeline timeline = new Timeline();
-			Sprite sprite = new Sprite(imgLoader.getSprite(actor.getName()) , new Point2D(0,0), new Point2D(300,300), ran.nextInt(2) == 0);
+			Sprite sprite = new Sprite(imgLoader.getSprite(actor.getName()) , actor.getStartX(), 
+					actor.getStartY(), actor.isFlipped());
 			actorList.add(sprite);
 			KeyValue keyX = new KeyValue(sprite.curXProperty(), actor.getEndX());
-			KeyValue keyY = new KeyValue(sprite.curXProperty(), actor.getEndY());
+			KeyValue keyY = new KeyValue(sprite.curYProperty(), actor.getEndY());
 			KeyFrame frameX = new KeyFrame(Duration.millis(actor.getDuration()), keyX);
 			KeyFrame frameY = new KeyFrame(Duration.millis(actor.getDuration()), keyY);
 			timeline.getKeyFrames().addAll(frameX, frameY);
@@ -267,9 +272,19 @@ public class SceneEditor {
 			
 			@Override
 			public void handle(long now) {
+				update();
 			}
 		};
-		pause();
+		animTimer.stop();
+		previewTimer = new AnimationTimer(){
+			
+			@Override
+			public void handle(long now) {
+				drawPreview();
+			}
+		};
+		previewTimer.start();
+		reset = true;
 	}
 
 	private void updateCanvas(){

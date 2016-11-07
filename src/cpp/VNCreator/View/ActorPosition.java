@@ -131,7 +131,7 @@ public class ActorPosition {
 					String oldValue, String newValue) {
 				Long value = validateLong(newValue);
 				if( value != null){
-					actor.setStartX(value);
+					actor.setDelay(value);
 					sEditor.drawPreview();
 				}else{
 					if(newValue.length() == 0)
@@ -149,7 +149,7 @@ public class ActorPosition {
 					String oldValue, String newValue) {
 				Long value = validateLong(newValue);
 				if( value != null){
-					actor.setStartX(value);
+					actor.setDuration(value);
 					sEditor.drawPreview();
 				}else{
 					if(newValue.length() == 0)
@@ -172,7 +172,7 @@ public class ActorPosition {
 	}
 	
 	private Double validateDouble(String text){
-		if(!text.matches("[0-9]+[.]?[0-9]*")) return null;
+		if(!text.matches("[-]?[0-9]+[.]?[0-9]*")) return null;
 		try{
 			return Double.valueOf(text);
 		} catch(NumberFormatException nfe) {}
