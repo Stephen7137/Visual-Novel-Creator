@@ -124,6 +124,7 @@ public class SceneEditor {
 		ComboObj comboObj = layerSel.getValue();
 		if(pane.isDisabled()) pane.setDisable(false);
 		actorPos.setActor(icons.get(comboObj.getActor().getName()) ,comboObj.getActor());
+		imageSel.setValue(null);
 	}
 	
 	@FXML
@@ -223,6 +224,11 @@ public class SceneEditor {
 				gc.drawImage(sprite.getImage(), sprite.getCurX(), sprite.getCurY());
 			}
 		}
+	}
+	
+	private void drawBacground(Color color){
+		gc.setFill(color);
+		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 	}
 
 	public void controller(Controller cotroller) {
@@ -327,19 +333,25 @@ public class SceneEditor {
 	public void setBackground(String name){
 		bckgrndImage = imgLoader.getBackground(name);
 		node.getScene().setBackground(name);
-		height = bckgrndImage.getHeight();
-		width = bckgrndImage.getWidth();
-		ar = width / height;
-		canvas.setHeight(height);
-		canvas.setWidth(width);
+		if(bckgrndImage != null){
+			height = bckgrndImage.getHeight();
+			width = bckgrndImage.getWidth();
+			ar = width / height;
+			canvas.setHeight(height);
+			canvas.setWidth(width);
+		}else{
+			drawBacground(Color.WHITE);
+		}
 		updateCanvas();
 	}
 	
 	public void setActors(ArrayList<Actor> actors){
+		reset = true;
 		layers = actors;
-		for(Actor actor: layers){
-			layerSel.getItems().add(new ComboObj("Layer " + layers.size(), actor));
-		}		
+		layerSel.getItems().clear();
+		for(int i = 0; i < layers.size(); i++){
+			layerSel.getItems().add(new ComboObj("Layer " + (i + 1), layers.get(i)));
+		}	
 	}
 
 	public void setLoader(ImageLoader imgLoader) {
@@ -351,5 +363,6 @@ public class SceneEditor {
 		Scene scene = node.getScene();
 		setBackground(scene.getBackground());
 		setActors(scene.getLayers());
+		stop();
 	}
 }

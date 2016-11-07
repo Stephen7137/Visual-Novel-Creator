@@ -77,7 +77,6 @@ public class Controller {
 			//sEditor.update(chEditor.getCurrentNode());
 		}else{
 			console.clear();
-			sEditor.clear();
 		}
 	}
 

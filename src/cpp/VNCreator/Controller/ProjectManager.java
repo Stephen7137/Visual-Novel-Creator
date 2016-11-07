@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.prefs.Preferences;
 
 import com.google.gson.FieldNamingPolicy;
@@ -32,7 +31,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
@@ -92,7 +90,7 @@ public class ProjectManager {
 	             .registerTypeAdapter(Color.class, new ColorParser())
 	             .create();
 		
-		if(!file.getPath().equals("")) loadProject();
+		if(file.exists() && !file.getPath().equals("")) loadProject();
 	}
 		
 	/**
@@ -146,7 +144,7 @@ public class ProjectManager {
 			gson.toJson(new SaveProject(controller.getStartID(),
 					controller.getTree(), controller.getBookmark(), 
 					controller.getTreePoint()), writer);
-		} catch (IOException e) {}
+		} catch (IOException e) { e.printStackTrace(); }
 	}
 	
 	/**
@@ -212,9 +210,9 @@ public class ProjectManager {
 				for(SaveOptionText oText : ((SaveOption)node).children){
 					oNode.add(new OptionText(oText.title, oText.title));
 				}
-				tree.put(node.id, new Option(node.id, node.title, node.text, oNode));
+				tree.put(node.id, new Option(node.id, node.title, node.text, oNode, node.scene));
 			}else{
-				tree.put(node.id, new Text(node.id, node.title, node.text));
+				tree.put(node.id, new Text(node.id, node.title, node.text, node.scene));
 			}
 		}
 		
@@ -262,7 +260,6 @@ public class ProjectManager {
 			tmp.mkdir();
 			tmp = (new File(file + actFolder));
 			tmp.mkdir();
-			this.file = new File(file + File.separator + file.getName());
 			controller.verfiedDir();
 		}
 	}

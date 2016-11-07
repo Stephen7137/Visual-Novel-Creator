@@ -34,8 +34,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			
-			
+						
 			Scene scene = createScene(primaryStage);
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("VN Editor");

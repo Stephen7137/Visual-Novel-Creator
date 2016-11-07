@@ -19,11 +19,12 @@ public class Option extends Node{
 		child.add(new OptionText());
 	}
 	
-	public Option(int id, String title, String text, ArrayList<OptionText> oText) {
+	public Option(int id, String title, String text, ArrayList<OptionText> oText, Scene scene) {
 		this(id);
 		setTitle(title);
 		setText(text);
 		setChildren(oText);
+		setScene(scene);
 	}
 	
 	public void addChild(){

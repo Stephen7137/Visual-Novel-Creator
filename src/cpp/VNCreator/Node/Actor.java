@@ -1,7 +1,13 @@
 package cpp.VNCreator.Node;
 
-public class Actor {
+import java.io.Serializable;
+
+public class Actor implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4208159977759802893L;
 	String imageName;
 	double startX;
 	double startY;

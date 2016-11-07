@@ -63,7 +63,8 @@ public class ImageLoader {
 	}
 
 	public Image getBackground(String name) {
-		return background.get(name).image;
+		ImageStorage bImage = background.get(name);
+		return bImage != null ? bImage.image : null;
 	}
 
 	public Hashtable<String, ImageStorage> getBackground() {

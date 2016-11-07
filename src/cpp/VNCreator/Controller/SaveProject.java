@@ -9,6 +9,7 @@ import cpp.VNCreator.Model.NodeType.nodeType;
 import cpp.VNCreator.Node.Node;
 import cpp.VNCreator.Node.Option;
 import cpp.VNCreator.Node.OptionText;
+import cpp.VNCreator.Node.Scene;
 import cpp.VNCreator.Node.Text;
 import javafx.scene.paint.Color;
 
@@ -44,10 +45,10 @@ public class SaveProject implements Serializable{
 		for(Node tmp : node){
 			if(tmp.getType() == nodeType.Option){
 				option.add(new SaveOption(tmp.getTitle(), tmp.getText(), tmp.getType(),
-						tmp.getID(), tmp.getParents(), ((Option)tmp).getChildren()));
+						tmp.getID(), tmp.getParents(), ((Option)tmp).getChildren(), tmp.getScene()));
 			}else if(tmp.getType() == nodeType.Text){
 				text.add(new SaveText(tmp.getTitle(), tmp.getText(), tmp.getType(),
-						tmp.getID(), tmp.getParents(), ((Text)tmp).getChildId()));
+						tmp.getID(), tmp.getParents(), ((Text)tmp).getChildId(), tmp.getScene()));
 			}
 			
 		}
@@ -89,9 +90,11 @@ public class SaveProject implements Serializable{
 		public int id;
 		public nodeType type;
 		public List<Integer> parent;
+		public Scene scene;
 		
 		public SaveNode(String title, String text, nodeType type,
-				int id, ArrayList<Node> parent){
+				int id, ArrayList<Node> parent, Scene scene){
+			this.scene = scene;
 			this.id = id;
 			this.title = title;
 			this.text = text;
@@ -111,8 +114,9 @@ public class SaveProject implements Serializable{
 		private static final long serialVersionUID = 1L;
 		public int child;
 		
-		public SaveText(String title, String text, nodeType type, int id, ArrayList<Node> parent, int child) {
-			super(title, text, type, id, parent);
+		public SaveText(String title, String text, nodeType type, int id, 
+				ArrayList<Node> parent, int child, Scene scene) {
+			super(title, text, type, id, parent, scene);
 			this.child = child;
 		}	
 	}
@@ -125,8 +129,9 @@ public class SaveProject implements Serializable{
 		private static final long serialVersionUID = 1L;
 		public List<SaveOptionText> children;
 		
-		public SaveOption(String title, String text, nodeType type, int id, ArrayList<Node> parent, ArrayList<OptionText> child) {
-			super(title, text, type, id, parent);
+		public SaveOption(String title, String text, nodeType type, int id, 
+				ArrayList<Node> parent, ArrayList<OptionText> child, Scene scene) {
+			super(title, text, type, id, parent, scene);
 			children = new ArrayList<SaveOptionText>();
 			for(OptionText tmp : child){
 				children.add(new SaveOptionText(tmp.getTitle(), tmp.getTitle(), tmp.getID()));

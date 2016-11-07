@@ -74,6 +74,10 @@ public abstract class Node implements Serializable {
 			return scene;
 		}
 		
+		public void setScene(Scene scene) {
+			this.scene = scene;
+		}
+		
 		public boolean isEmpty() {
 			if(!title.equals("") || !text.equals("")) return false;
 			return true;

@@ -22,10 +22,11 @@ public class Text extends Node{
 		super(id, nodeType.Text);
 	}
 	
-	public Text(int id, String title, String text) {
+	public Text(int id, String title, String text, Scene scene) {
 		this(id);
 		setTitle(title);
 		setText(text);
+		setScene(scene);
 	}
 
 	public Node getChild() {
