@@ -7,6 +7,7 @@ import cpp.VNCreator.Node.Actor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -52,6 +53,7 @@ public class SceneEditor {
 	private double width = 0;
 	private ArrayList<Sprite> actorList;
 	private ArrayList<Actor> layers;
+	private HashMap<String, ImageView> icons;
 	AnimationTimer animTimer;
 	int fps = 0;
 
@@ -119,7 +121,7 @@ public class SceneEditor {
 	private void setLayer(){
 		ComboObj comboObj = layerSel.getValue();
 		if(pane.isDisabled()) pane.setDisable(false);
-		actorPos.setActor(comboObj.getActor());
+		actorPos.setActor(icons.get(comboObj.getActor().getName()) ,comboObj.getActor());
 	}
 	
 	@FXML
@@ -181,7 +183,24 @@ public class SceneEditor {
 					gc.drawImage(image, actor.getEndX(), actor.getEndY());
 				}			
 			}
-		}		
+		}
+		buildScene();
+	}
+	
+	private void buildScene(){
+		actorList = new ArrayList<Sprite>();
+		for(Actor actor: layers){
+			Timeline timeline = new Timeline();
+			Sprite sprite = new Sprite(imgLoader.getSprite(actor.getName()) , new Point2D(0,0), new Point2D(300,300), ran.nextInt(2) == 0);
+			actorList.add(sprite);
+			KeyValue keyX = new KeyValue(sprite.curXProperty(), actor.getEndX());
+			KeyValue keyY = new KeyValue(sprite.curXProperty(), actor.getEndY());
+			KeyFrame frameX = new KeyFrame(Duration.millis(actor.getDuration()), keyX);
+			KeyFrame frameY = new KeyFrame(Duration.millis(actor.getDuration()), keyY);
+			timeline.getKeyFrames().addAll(frameX, frameY);
+			timeline.setDelay(new Duration(actor.getDelay()));
+			parTrans.getChildren().add(timeline);
+		}
 	}
 	
 	private void update(){
@@ -233,6 +252,7 @@ public class SceneEditor {
           }
        });
 		
+		icons = new HashMap<String, ImageView>();
 		gc = canvas.getGraphicsContext2D();
 		bgc = backdrop.getGraphicsContext2D();
 		this.cotroller = cotroller;
@@ -287,24 +307,13 @@ public class SceneEditor {
 			ImageView view = new ImageView(entry.getValue().getImage());
 			view.setFitHeight(100);
 			view.setPreserveRatio(true);
-			view.setOnMousePressed(event -> {
-				setActor(entry.getValue().getName());
-			});
+//			view.setOnMousePressed(event -> {
+//				setActor(entry.getValue().getName());
+//			});
 			cast.getChildren().add(view);
 			imageSel.getItems().add(new ComboImg( entry.getValue().getName(), view));
+			icons.put(entry.getValue().getName(), view);
 		}
-	}
-	
-	private void setActor(String name) {
-		Random ran = new Random();
-		Timeline timeline = new Timeline();
-		Sprite sprite = new Sprite(imgLoader.getSprite(name) , new Point2D(0,0), new Point2D(300,300), ran.nextInt(2) == 0);
-		actorList.add(sprite);
-		KeyValue key = new KeyValue(sprite.curXProperty(), ran.nextDouble()*1000);
-		KeyFrame frame = new KeyFrame(Duration.millis(ran.nextInt(10000)), key);
-		timeline.getKeyFrames().add(frame);
-		timeline.setDelay(new Duration(500));
-		parTrans.getChildren().add(timeline);
 	}
 
 	public void setBackground(String name){

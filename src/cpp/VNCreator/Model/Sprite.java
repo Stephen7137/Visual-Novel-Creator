@@ -7,8 +7,8 @@ import javafx.scene.image.Image;
 
 public class Sprite {
 
-	private Point2D startingPos;
-	private Point2D endingPos;
+	private double startX;
+	private double startY;
 	private DoubleProperty curX;
 	private DoubleProperty curY;
 	private boolean flip;
@@ -16,10 +16,10 @@ public class Sprite {
 	private Image image;
 	
 	
-	public Sprite(Image image, Point2D startingPos, Point2D endingPos, boolean flip) {
+	public Sprite(Image image, double startX, double startY, boolean flip) {
 		this.image = image;
-		this.startingPos = startingPos;
-		this.endingPos = endingPos;
+		this.startX = startX;
+		this.startY = startY;
 		this.flip = flip;
 		setStartPos();
 	}
@@ -29,8 +29,8 @@ public class Sprite {
 	}
 
 	public void setStartPos() {
-		setCurX(startingPos.getX());
-		setCurY(startingPos.getY());
+		setCurX(startX);
+		setCurY(startY);
 	}
 	
 	public void setCurX(double value) {

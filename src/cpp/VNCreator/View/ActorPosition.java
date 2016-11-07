@@ -36,7 +36,11 @@ public class ActorPosition {
 	@FXML
 	private CheckBox flip;
 	
-	public void setActor(Actor actor){
+	public void setActor(ImageView imageView, Actor actor){
+		if(imageView != null) 
+			image.setImage(imageView.getImage());
+		else
+			image.setImage(null);
 		this.actor = actor;
 		startX.setText(String.valueOf(actor.getStartX()));
 		startY.setText(String.valueOf(actor.getStartY()));
