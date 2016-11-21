@@ -3,6 +3,7 @@ package cpp.VNCreator.View;
 import cpp.VNCreator.Controller.ImageLoader;
 import cpp.VNCreator.Controller.ImageLoader.ImageStorage;
 import cpp.VNCreator.Model.Sprite;
+import cpp.VNCreator.Model.Story;
 import cpp.VNCreator.Node.Actor;
 import cpp.VNCreator.Node.Node;
 import cpp.VNCreator.Node.Scene;
@@ -12,12 +13,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map.Entry;
+
 import cpp.VNCreator.Controller.Controller;
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.Canvas;
@@ -25,12 +31,15 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.util.Callback;
 import javafx.util.Duration;
 
@@ -57,6 +66,9 @@ public class SceneEditor {
 	AnimationTimer animTimer;
 	AnimationTimer previewTimer;
 	int fps = 0;
+	
+	DoubleProperty textX;
+	DoubleProperty textY;
 
 	long sceneTimer = 0;
 	
@@ -80,10 +92,25 @@ public class SceneEditor {
 	private StackPane canvasPane;
 	
 	@FXML
+	private TextArea text;
+	
+	@FXML
 	private ComboBox<ComboObj> layerSel;
 	
 	@FXML
 	private ComboBox<ComboImg> imageSel;
+	
+	@FXML
+	private ComboBox<String> font;
+	
+	@FXML
+	private ComboBox<Integer> size;
+	
+	@FXML
+	private TextField textFieldX;
+	
+	@FXML
+	private TextField textFieldY;
 	
 	@FXML
 	private void play(){
@@ -133,6 +160,11 @@ public class SceneEditor {
 				imageSel.getValue().getActor());
 	}
 	
+	@FXML
+	private void setFont(){
+		gc.setFont(new Font(font.getValue(), size.getValue()));
+	}
+	
 	private class ComboObj{
 		
 		private String name;
@@ -175,7 +207,6 @@ public class SceneEditor {
 		stop();
 		bgc.setFill(Color.BLACK);
 		bgc.fillRect(0, 0, backdrop.getWidth(), backdrop.getHeight());
-		
 		if(bckgrndImage != null){
 			gc.drawImage(bckgrndImage, 0, 0);
 			for(Actor actor : layers){
@@ -188,6 +219,7 @@ public class SceneEditor {
 					}
 				}							
 			}
+			gc.fillText(text.getText(), textX.get(), textY.get());
 		}
 	}
 	
@@ -232,6 +264,9 @@ public class SceneEditor {
 	}
 
 	public void controller(Controller cotroller) {
+		
+		gc = canvas.getGraphicsContext2D();
+		bgc = backdrop.getGraphicsContext2D();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("ActorPosition.fxml"));
 		try {
@@ -241,6 +276,7 @@ public class SceneEditor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	
 		pane.setDisable(true);
 		imageSel.setCellFactory(new Callback<ListView<ComboImg>, ListCell<ComboImg>>() {
             @Override public ListCell<ComboImg> call(ListView<ComboImg> p) {
@@ -259,9 +295,31 @@ public class SceneEditor {
           }
        });
 		
+		text.textProperty().addListener((observable, oldValue, newValue) -> {
+			node.setText(newValue);
+			cotroller.updateSel();
+			drawPreview();
+		});
+		
+		for(int i = 1; i < 101; i++){
+			size.getItems().add(i);
+		}
+		
+		textX = new SimpleDoubleProperty();
+		textY = new SimpleDoubleProperty();
+		
+		textFieldX.textProperty().addListener(numListener(textFieldX, textX ));
+		textFieldY.textProperty().addListener(numListener(textFieldY, textY ));
+		
+		textX.addListener(observalble -> node.getScene().setTextX(textX.get()));
+		textY.addListener(observalble -> node.getScene().setTextY(textY.get()));
+		
+		size.getSelectionModel().select((int) gc.getFont().getSize());
+		font.getItems().addAll(Font.getFamilies());
+		font.getSelectionModel().select(gc.getFont().getFamily());
+		
 		icons = new HashMap<String, ImageView>();
-		gc = canvas.getGraphicsContext2D();
-		bgc = backdrop.getGraphicsContext2D();
+		
 		this.cotroller = cotroller;
 		canvasPane.heightProperty().addListener( observable -> updateCanvas());
 		canvasPane.widthProperty().addListener( observable -> updateCanvas());
@@ -302,7 +360,7 @@ public class SceneEditor {
 				canvas.setScaleX(backdrop.getWidth()/  width);
 				canvas.setScaleY(backdrop.getWidth() * (1/ar) / height);
 			}
-		}	
+		}
 		update();
 	}
 
@@ -360,9 +418,41 @@ public class SceneEditor {
 
 	public void setNode(Node selected) {
 		node = selected;
+		text.setText(selected.getText());
 		Scene scene = node.getScene();
+		if(scene.getTextX() != 0 && scene.getTextY() != 0){
+			textFieldX.setText(String.valueOf(scene.getTextX()));
+			textFieldX.setText(String.valueOf(scene.getTextX()));
+		}		
 		setBackground(scene.getBackground());
 		setActors(scene.getLayers());
 		stop();
+	}
+	
+	private ChangeListener<String> numListener(TextField field, DoubleProperty numProp){
+		
+		return new ChangeListener<String>(){
+
+			@Override
+			public void changed(ObservableValue<? extends String> arg0,
+					String oldValue, String newValue) {
+				Double value = null;
+				if(newValue.matches("[-]?[0-9]+[.]?[0-9]*")){
+					try{
+					value = Double.valueOf(newValue);
+					} catch(NumberFormatException nfe) {}
+				}
+				
+				if( value != null){
+					numProp.set(value);
+					drawPreview();
+				}else{
+					if(newValue.length() == 0)
+						field.setText(newValue);
+					else
+						field.setText(oldValue);
+				}
+			}
+		};
 	}
 }

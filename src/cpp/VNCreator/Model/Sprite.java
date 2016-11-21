@@ -1,8 +1,7 @@
 package cpp.VNCreator.Model;
 
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.DoublePropertyBase;
-import javafx.geometry.Point2D;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.image.Image;
 
 public class Sprite {
@@ -21,6 +20,8 @@ public class Sprite {
 		this.startX = startX;
 		this.startY = startY;
 		this.flip = flip;
+		curX = new SimpleDoubleProperty();
+		curY = new SimpleDoubleProperty();
 		setStartPos();
 	}
 	
@@ -34,11 +35,11 @@ public class Sprite {
 	}
 	
 	public void setCurX(double value) {
-		curXProperty().set(value);
+		curX.set(value);
 	}
 
 	public void setCurY(double value) {
-		curYProperty().set(value);
+		curY.set(value);
 	}
 
 	public double getCurX() {
@@ -52,40 +53,12 @@ public class Sprite {
 	public boolean isFlipped(){
 		return flip;
 	}
-	
+
 	public DoubleProperty curXProperty() {
-		if(curX == null){
-			curX = new DoublePropertyBase(){
-								
-				                @Override
-				                public Object getBean() {
-				                    return Sprite.this;
-				                }
-				
-				                @Override
-				                public String getName() {
-				                    return "curX";
-				                }
-				            };
-		}
 		return curX;
 	}
 
 	public DoubleProperty curYProperty() {
-		if(curY == null){
-			curY = new DoublePropertyBase(){
-								
-				                @Override
-				                public Object getBean() {
-				                    return Sprite.this;
-				                }
-				
-				                @Override
-				                public String getName() {
-				                    return "curY";
-				                }
-				            };
-		}
 		return curY;
 	}
 }

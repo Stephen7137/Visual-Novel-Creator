@@ -14,6 +14,8 @@ public class Scene implements Serializable {
 	private static final long serialVersionUID = -6765865246349845321L;
 	String background;
 	ArrayList<Actor> layers;
+	double textX;
+	double textY;
 	
 	public Scene(){
 		background = "";
@@ -30,5 +32,21 @@ public class Scene implements Serializable {
 	
 	public ArrayList<Actor> getLayers(){
 		return layers;
+	}
+
+	public void setTextX(double textX) {
+		this.textX = textX;
+	}
+
+	public void setTextY(double textY) {
+		this.textY = textY;
+	}
+	
+	public double getTextX() {
+		return textX;
+	}
+
+	public double getTextY() {
+		return textY;
 	}
 }

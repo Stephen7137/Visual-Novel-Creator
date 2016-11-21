@@ -1,6 +1,7 @@
 package cpp.VNCreator.View;
 
 import cpp.VNCreator.Node.Actor;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -11,6 +12,8 @@ import javafx.scene.image.ImageView;
 public class ActorPosition {
 	
 	Actor actor;
+	String redDouble = "[-]?[0-9]+[.]?[0-9]*";
+	String redLong = "[0-9]+";
 	
 	@FXML
 	private ImageView image;
@@ -50,9 +53,9 @@ public class ActorPosition {
 		duration.setText(String.valueOf(actor.getDuration()));
 		flip.setSelected(actor.isFlipped());
 	}
-	
+	//TODO clean up numListener(startX, actor.));
 	public void setListeners(SceneEditor sEditor){
-		startX.textProperty().addListener(new ChangeListener<String>(){
+		startX.textProperty().addListener( new ChangeListener<String>(){
 
 			@Override
 			public void changed(ObservableValue<? extends String> arg0,
@@ -186,6 +189,34 @@ public class ActorPosition {
 		} catch(NumberFormatException nfe) {}
 		return null;
 	}
+	
+//	private ChangeListener<String> numListener(TextField field, DoubleProperty numProp, 
+//			SceneEditor sEditor, String red){
+//		
+//		return new ChangeListener<String>(){
+//
+//			@Override
+//			public void changed(ObservableValue<? extends String> arg0,
+//					String oldValue, String newValue) {
+//				Double value = null;
+//				if(newValue.matches(red)){
+//					try{
+//					value = Double.valueOf(newValue);
+//					} catch(NumberFormatException nfe) {}
+//				}
+//				
+//				if( value != null){
+//					numProp.set(value);
+//					sEditor.drawPreview();
+//				}else{
+//					if(newValue.length() == 0)
+//						field.setText(newValue);
+//					else
+//						field.setText(oldValue);
+//				}
+//			}
+//		};
+//	}
 
 	public void setImage(String string, ImageView image) {
 		this.image.setImage(image.getImage());
