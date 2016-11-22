@@ -3,7 +3,6 @@ package cpp.VNCreator.View;
 import cpp.VNCreator.Controller.ImageLoader;
 import cpp.VNCreator.Controller.ImageLoader.ImageStorage;
 import cpp.VNCreator.Model.Sprite;
-import cpp.VNCreator.Model.Story;
 import cpp.VNCreator.Node.Actor;
 import cpp.VNCreator.Node.Node;
 import cpp.VNCreator.Node.Scene;

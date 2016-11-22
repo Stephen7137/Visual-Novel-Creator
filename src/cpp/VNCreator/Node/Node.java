@@ -50,6 +50,11 @@ public abstract class Node implements Serializable {
 			return text;
 		}
 		
+		public void setText(String title, String text){
+			setTitle(title);
+			setText(text);
+		}
+		
 		public void addParent(Node node){
 			parent.put(node.getID(), node);
 		}

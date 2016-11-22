@@ -2,11 +2,13 @@ package cpp.VNCreator.Controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-
+import cpp.VNCreator.Model.NodeType.nodeType;
+import cpp.VNCreator.Node.Node;
+import cpp.VNCreator.Node.Option;
 import cpp.VNCreator.Node.OptionText;
 import cpp.VNCreator.View.Main;
 import cpp.VNCreator.View.OptionBox;
+import cpp.VNCreator.View.TextBox;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -23,90 +25,93 @@ import javafx.scene.control.TabPane;
  * @author Stephen Jackson
  *
  */
-public class OptionManager {
+public class TextManager {
 
 	TabPane option;
 	Controller controller;
-	ArrayList<OptionText> children;
-	ArrayList<OptionBox> optionBox;
-	private int curTab;
 	
-	public OptionManager(TabPane option, Controller controller){
+	Node node;
+	private int curTab;
+	private int tabNum;
+	
+	public TextManager(TabPane option, Controller controller){
 		this.controller = controller;
 		this.option = option;
 		
 		option.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 		    @Override
 		    public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-		    	if( newValue.intValue() == children.size()){
+		    	if( newValue.intValue() == tabNum){
 		    		addOption();
-		    	}else if(newValue.intValue() > 0){		    		
+		    	}else if(newValue.intValue() >= 0){		    		
 		    		curTab = newValue.intValue();
 		    	}
 		    }
 		}); 
-		//TODO temp replace ussing CSS style file;
 		option.setStyle("-fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;");
 	}
 	
 	/**
+	 *TODO update
 	 * Creates the options panel and adds a activation listener
 	 * to tell what box is active. Sets the text to oText of each
 	 * node and sets the id to be returned latter.
 	 * @param text all options
 	 * @throws IOException 
 	 */
-	public void setOption(ArrayList<OptionText> arrayList){
-		this.children = arrayList;
+	public void Update(Node node){
+		this.node = node;
 		curTab = 0;
 		buildOption();
 	}
 	
 	private void buildOption(){
-		reset();
-		optionBox = new ArrayList<OptionBox>();
+		option.getTabs().clear();
+		FXMLLoader loader = new FXMLLoader();
 		ObservableList<Tab> collection = FXCollections.observableArrayList();
-		for(int i = 0; i < children.size(); i++){
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("OptionBox.fxml"));
-			Tab tab = new Tab();
-			tab.setText(Integer.toString(i+1));
-			try {
-				tab.setContent(loader.load());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			OptionBox console = loader.getController();
-			optionBox.add(console);
-			console.controller(this, children.get(i).getTitle(), children.get(i).getText(), i);
-			if(i == 0) console.dissableUp();
-			if(i == children.size()-1) console.dissableDown();			
-			collection.add(tab);
-			//option.getTabs().add(tab);			
+		Tab tab = new Tab("Text");
+		loader.setLocation(Main.class.getResource("TextBox.fxml"));
+		try {
+			tab.setContent(loader.load());
+			((TextBox)loader.getController()).controller(this, node.getTitle(), node.getText(), -1);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		Tab tab = new Tab();
-		tab.setText("+");
 		collection.add(tab);
+		
+		if(node.getType() == nodeType.Option){
+			ArrayList<OptionText> optionNode = ((Option)node).getChildren();
+			for(int i = 0; i < optionNode.size(); i++){
+				loader = new FXMLLoader();
+				loader.setLocation(Main.class.getResource("OptionBox.fxml"));
+				tab = new Tab();
+				tab.setText(Integer.toString(i+1));
+				try {
+					tab.setContent(loader.load());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				OptionBox console = loader.getController();
+				console.controller(this, optionNode.get(i).getTitle(), 
+						optionNode.get(i).getText(), i);
+				if(i == 0) console.dissableUp();
+				if(i == optionNode.size()-1) console.dissableDown();			
+				collection.add(tab);			
+			}
+			tab = new Tab();
+			tab.setText("+");
+			collection.add(tab);			
+		}
+		
 		option.getTabs().addAll(collection);
+		tabNum = collection.size();
 		option.getSelectionModel().select(curTab);
 	}
 
 	private void addOption() {
-		save();
-		children.add(new OptionText());
+		((Option)node).addChild();
 		buildOption();
 		controller.updateSel();
-	}
-
-	public void reset() {
-		option.getTabs().clear();
-	}
-
-	public ArrayList<OptionText> save() {
-		for(OptionBox box : optionBox){
-			children.get(box.getID()).setText(box.getTitle(), box.getText());
-		}
-		return children;
 	}
 	
 	public void shiftUp(int id) {
@@ -122,13 +127,22 @@ public class OptionManager {
 	}
 	
 	private void swap(int i, int j){
-		Collections.swap(children, i, j);
+		((Option)node).swapChild(i, j);
 	}
 
 	public void delete(int id) {		
-		children.remove(children.get(id));
+		((Option)node).removeChild(((Option)node).getChildren().get(id));
 		curTab = 0;
 		buildOption();
 		controller.updateSel();
+	}
+
+	public void updateText(int id, String title, String text) {
+		if(id == -1){
+			node.setText(title, text);
+		}else{
+			OptionText optText = ((Option)node).getChildren().get(id);
+			optText.setText(title, text);
+		}
 	}
 }

@@ -1,6 +1,7 @@
 package cpp.VNCreator.Node;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import cpp.VNCreator.Model.NodeType.nodeType;
 
@@ -71,5 +72,9 @@ public class Option extends Node{
 
 	public Node getChild(int index) {
 		return child.get(index).getNode();
+	}
+
+	public void swapChild(int i, int j) {
+		Collections.swap(child, i, j);
 	}
 }

@@ -1,7 +1,7 @@
 package cpp.VNCreator.View;
 
 import cpp.VNCreator.Controller.Controller;
-import cpp.VNCreator.Controller.OptionManager;
+import cpp.VNCreator.Controller.TextManager;
 import cpp.VNCreator.Model.NodeType.nodeType;
 import cpp.VNCreator.Node.Node;
 import cpp.VNCreator.Node.Option;
@@ -45,7 +45,7 @@ public class Editor {
 
 	private Node selected;
 	private Controller controller;
-	private OptionManager optionManager;
+	private TextManager optionManager;
 	ContextMenu menu;
 	
 	/**
@@ -56,7 +56,6 @@ public class Editor {
 	 */
 	@FXML
 	private void save(){
-		saveNode();
 		controller.updateSel();
 	}
 	
@@ -134,14 +133,6 @@ public class Editor {
 			disable();
 		}
 	}
-	
-	private void saveNode(){
-		selected.setTitle(title.getText());
-		selected.setText(text.getText());
-		if(selected.getType() == nodeType.Option){
-			((Option)selected).setChildren(optionManager.save());
-		}
-	}
 
 	/**
 	 * Sets default values and adds listener to the canvas to be resized.
@@ -151,7 +142,7 @@ public class Editor {
 	 */
 	public void setCanvasManger(Controller controller) {
 		this.controller = controller;
-		optionManager = new OptionManager(option, controller);
+		optionManager = new TextManager(option, controller);
 		
 		canvasPane.heightProperty().addListener( observable -> updateCanvas());
 		canvasPane.widthProperty().addListener( observable -> updateCanvas());
@@ -192,7 +183,6 @@ public class Editor {
 	}
 
 	public void clear() {
-		if(selected != null) saveNode();
 		title.clear();
 		text.clear();
 		selected = null;
