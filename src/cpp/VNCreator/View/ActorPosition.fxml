@@ -7,27 +7,27 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="560.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cpp.VNCreator.View.ActorPosition">
+<AnchorPane prefHeight="383.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cpp.VNCreator.View.ActorPosition">
    <children>
-      <CheckBox fx:id="flip" layoutX="22.0" layoutY="518.0" mnemonicParsing="false" text="Flip Image" />
-      <CheckBox layoutX="22.0" layoutY="492.0" mnemonicParsing="false" text="Transisiton Out" />
-      <CheckBox layoutX="19.0" layoutY="466.0" mnemonicParsing="false" text="Transisiton In" />
-      <Text layoutX="14.0" layoutY="450.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Duration" />
-      <TextField fx:id="duration" layoutX="73.0" layoutY="433.0" prefHeight="25.0" prefWidth="59.0" />
-      <TextField fx:id="delay" layoutX="73.0" layoutY="407.0" prefHeight="25.0" prefWidth="59.0" />
-      <Text layoutX="15.0" layoutY="424.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Delay" />
-      <TextField fx:id="endX" layoutX="57.0" layoutY="370.0" prefHeight="25.0" prefWidth="59.0" />
-      <Text layoutX="37.0" layoutY="387.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" />
-      <Text layoutX="129.0" layoutY="387.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" />
-      <TextField fx:id="endY" layoutX="148.0" layoutY="370.0" prefHeight="25.0" prefWidth="59.0" />
-      <Text layoutX="20.0" layoutY="366.0" strokeType="OUTSIDE" strokeWidth="0.0" text="End" />
-      <TextField fx:id="startY" layoutX="148.0" layoutY="332.0" prefHeight="25.0" prefWidth="59.0" />
-      <Text layoutX="129.0" layoutY="349.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" />
-      <Text layoutX="37.0" layoutY="349.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" />
-      <Text layoutX="17.0" layoutY="328.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start" />
-      <TextField fx:id="startX" layoutX="57.0" layoutY="332.0" prefHeight="25.0" prefWidth="59.0" />
-      <Text layoutX="17.0" layoutY="314.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Transform" />
-      <BorderPane layoutX="20.0" layoutY="74.0" prefHeight="120.0" prefWidth="200.0">
+      <CheckBox fx:id="flip" layoutX="25.0" layoutY="357.0" mnemonicParsing="false" text="Flip Image" />
+      <CheckBox layoutX="25.0" layoutY="331.0" mnemonicParsing="false" text="Transisiton Out" />
+      <CheckBox layoutX="22.0" layoutY="305.0" mnemonicParsing="false" text="Transisiton In" />
+      <Text layoutX="17.0" layoutY="289.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Duration" />
+      <TextField fx:id="duration" layoutX="76.0" layoutY="272.0" prefHeight="25.0" prefWidth="59.0" />
+      <TextField fx:id="delay" layoutX="76.0" layoutY="246.0" prefHeight="25.0" prefWidth="59.0" />
+      <Text layoutX="18.0" layoutY="263.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Delay" />
+      <TextField fx:id="endX" layoutX="60.0" layoutY="209.0" prefHeight="25.0" prefWidth="59.0" />
+      <Text layoutX="40.0" layoutY="226.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" />
+      <Text layoutX="132.0" layoutY="226.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" />
+      <TextField fx:id="endY" layoutX="151.0" layoutY="209.0" prefHeight="25.0" prefWidth="59.0" />
+      <Text layoutX="23.0" layoutY="205.0" strokeType="OUTSIDE" strokeWidth="0.0" text="End" />
+      <TextField fx:id="startY" layoutX="151.0" layoutY="171.0" prefHeight="25.0" prefWidth="59.0" />
+      <Text layoutX="132.0" layoutY="188.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" />
+      <Text layoutX="40.0" layoutY="188.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" />
+      <Text layoutX="20.0" layoutY="167.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="176.2578125" />
+      <TextField fx:id="startX" layoutX="60.0" layoutY="171.0" prefHeight="25.0" prefWidth="59.0" />
+      <Text layoutX="20.0" layoutY="153.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Transform" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="176.2578125" AnchorPane.topAnchor="140.0" />
+      <BorderPane layoutX="21.0" layoutY="14.0" prefHeight="120.0" prefWidth="200.0" AnchorPane.leftAnchor="21.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="14.0">
          <bottom>
             <Separator prefWidth="200.0" BorderPane.alignment="CENTER" />
          </bottom>

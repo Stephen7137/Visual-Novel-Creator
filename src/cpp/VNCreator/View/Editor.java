@@ -2,9 +2,6 @@ package cpp.VNCreator.View;
 
 import cpp.VNCreator.Controller.Controller;
 import cpp.VNCreator.Controller.TextManager;
-import cpp.VNCreator.Model.NodeType.nodeType;
-import cpp.VNCreator.Node.Node;
-import cpp.VNCreator.Node.Option;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -43,32 +40,8 @@ public class Editor {
 	@FXML
 	private TabPane option;
 
-	private Node selected;
 	private Controller controller;
-	private TextManager optionManager;
 	ContextMenu menu;
-	
-	/**
-	 * Takes all the text from the text editor and
-	 * applies the new text to the selected node.
-	 * updates the text if the Selected node is
-	 * current.
-	 */
-	@FXML
-	private void save(){
-		controller.updateSel();
-	}
-	
-	/**
-	 * Deletes the node if the node is empty else throw error
-	 * box. User input will allow to continue to delete the node.
-	 */
-	@FXML
-	private void delete(){
-		if(!selected.isEmpty()){
-			controller.delete(selected.getID());
-		}
-	}
 	
 	/**
 	 * When the mouse is pressed the mouse location is verified on 
@@ -109,30 +82,6 @@ public class Editor {
 	private void onDrag(MouseEvent e){
 		controller.onDrag(e);
 	}
-		
-	/**
-	 * updates the text editor with the text from the selected node.
-	 * Enable text areas if there is a selected node.
-	 */
-	public void update(Node node) {
-		if(node != null){
-			if(selected != null) saveNode();
-			selected = node;
-			title.setDisable(false);
-			text.setDisable(false);
-			title.setText(node.getTitle());
-			text.setText(node.getText());
-			if(node.getType() == nodeType.Option){
-				option.setDisable(false);
-				optionManager.setOption((((Option)node).getChildren()));
-			}else{
-				option.setDisable(true);
-				optionManager.reset();
-			}
-		}else{
-			disable();
-		}
-	}
 
 	/**
 	 * Sets default values and adds listener to the canvas to be resized.
@@ -142,7 +91,7 @@ public class Editor {
 	 */
 	public void setCanvasManger(Controller controller) {
 		this.controller = controller;
-		optionManager = new TextManager(option, controller);
+		new TextManager(option, controller);
 		
 		canvasPane.heightProperty().addListener( observable -> updateCanvas());
 		canvasPane.widthProperty().addListener( observable -> updateCanvas());
@@ -174,18 +123,6 @@ public class Editor {
 	
 	public Canvas getCanvas(){
 		return canvas;
-	}
-	
-	private void disable(){
-		clear();
-		title.setDisable(true);
-		text.setDisable(true);
-	}
-
-	public void clear() {
-		title.clear();
-		text.clear();
-		selected = null;
 	}
 	
 	private void buildContextMenu(){

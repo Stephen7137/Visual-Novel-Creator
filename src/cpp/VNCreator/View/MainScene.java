@@ -19,7 +19,7 @@ import javafx.scene.layout.AnchorPane;
  * @author Stephen Jackson
  *
  */
-public class TextAdvEditorControler {
+public class MainScene {
 
 	private Controller controller;
 	
@@ -165,8 +165,7 @@ public class TextAdvEditorControler {
 	 * @param load pane to be add to the tab
 	 */
 	public void addTab(String string, AnchorPane load) {
-		Tab tab = new Tab();
-		tab.setText(string);
+		Tab tab = new Tab(string);
 		tab.setContent(load);
 		tabPane.getTabs().add(tab);
 	}
