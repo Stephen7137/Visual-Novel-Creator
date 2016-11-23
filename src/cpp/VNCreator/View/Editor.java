@@ -1,16 +1,12 @@
 package cpp.VNCreator.View;
 
 import cpp.VNCreator.Controller.Controller;
-import cpp.VNCreator.Controller.TextManager;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
@@ -30,15 +26,6 @@ public class Editor {
 	
 	@FXML
 	private AnchorPane canvasPane;
-	
-	@FXML
-	private TextField title;
-	
-	@FXML
-	private TextArea text;
-	
-	@FXML
-	private TabPane option;
 
 	private Controller controller;
 	ContextMenu menu;
@@ -91,7 +78,6 @@ public class Editor {
 	 */
 	public void setCanvasManger(Controller controller) {
 		this.controller = controller;
-		new TextManager(option, controller);
 		
 		canvasPane.heightProperty().addListener( observable -> updateCanvas());
 		canvasPane.widthProperty().addListener( observable -> updateCanvas());

@@ -3,9 +3,6 @@ package cpp.VNCreator.Node;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import cpp.VNCreator.Model.Sprite;
-import javafx.geometry.Point2D;
-
 public class Scene implements Serializable {
 	
 	/**

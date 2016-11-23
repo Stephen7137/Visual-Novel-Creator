@@ -7,8 +7,10 @@
 
 <AnchorPane prefHeight="485.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cpp.VNCreator.View.StoryEditor">
    <children>
-      <AnchorPane fx:id="textArea" layoutY="304.0" prefHeight="181.0" prefWidth="560.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <AnchorPane layoutY="304.0" prefHeight="181.0" prefWidth="560.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <TabPane fx:id="textArea" prefHeight="181.0" prefWidth="560.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+         </children></AnchorPane>
       <TabPane fx:id="canvas" prefHeight="302.0" prefWidth="560.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="183.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <Separator layoutY="300.0" prefHeight="9.0" prefWidth="560.0" />
    </children>
 </AnchorPane>

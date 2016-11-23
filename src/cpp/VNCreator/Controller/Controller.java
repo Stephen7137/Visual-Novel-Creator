@@ -9,10 +9,9 @@ import cpp.VNCreator.Model.SearchNode;
 import cpp.VNCreator.Model.Story;
 import cpp.VNCreator.Model.TreePoint;
 import cpp.VNCreator.Node.Node;
-import cpp.VNCreator.View.Editor;
+import cpp.VNCreator.View.MainScene;
 import cpp.VNCreator.View.SceneEditor;
 import cpp.VNCreator.View.SimConsole;
-import cpp.VNCreator.View.TextAdvEditorControler;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
@@ -29,9 +28,9 @@ public class Controller {
 	private ProjectManager save;
 	private SimConsole console;
 	private SceneEditor sEditor;
-	private Editor editor;
+	private TextManager textManager;
 	private ImageLoader imgLoader;
-	private TextAdvEditorControler taController;
+	private MainScene mainScene;
 	Story story;
 	
 	private Point2D mouse;
@@ -39,12 +38,12 @@ public class Controller {
 	private boolean onSelected;
 	private boolean onConnect;
 	
-	public void startUp(Canvas canvas, Stage primaryStage, Editor editor, SceneEditor sEditor, 
-				TextAdvEditorControler taController, SimConsole console) {
+	public void startUp(Canvas canvas, Stage primaryStage, TextManager textManager, SceneEditor sEditor, 
+				MainScene mainScene, SimConsole console) {
 		this.console = console;
-		this.taController = taController;
+		this.mainScene = mainScene;
 		this.sEditor = sEditor;
-		this.editor = editor;
+		this.textManager = textManager;
 		
 		cnvsManager = new CanvasManager(canvas);
 		imgLoader = new ImageLoader();
@@ -64,11 +63,16 @@ public class Controller {
 	public void updateSel(){
 		cnvsManager.setSelected(chEditor.getSelectedID());
 		if(chEditor.getSelected() != null){
-			editor.update(chEditor.getSelected());
+			textManager.update(chEditor.getSelected());
 			sEditor.setNode(chEditor.getSelected());
 		}else{
-			editor.clear();
+			textManager.clear();
 		}
+	}
+	
+	public void updateScene(){
+		cnvsManager.update();
+		sEditor.updateText();
 	}
 	
 	public void update(){
@@ -299,7 +303,7 @@ public class Controller {
 	}
 
 	public void verfiedDir() {
-		taController.enable();
+		mainScene.enable();
 	}
 
 	public int getStartID() {
@@ -323,7 +327,7 @@ public class Controller {
 		this.story = story;
 		chEditor.load(story.getStart(), story.getTree(), bookmark);
 		cnvsManager.load(lookup);
-		taController.enable();
+		mainScene.enable();
 
 		imgLoader.loadBackground(background);
 		imgLoader.loadActor(actors);

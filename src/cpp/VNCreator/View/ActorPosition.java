@@ -1,7 +1,6 @@
 package cpp.VNCreator.View;
 
 import cpp.VNCreator.Node.Actor;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;

@@ -27,28 +27,31 @@ import javafx.scene.control.TabPane;
  */
 public class TextManager {
 
-	TabPane option;
+	TabPane mainTab;
 	Controller controller;
 	
 	Node node;
 	private int curTab;
 	private int tabNum;
+	boolean update;
 	
-	public TextManager(TabPane option, Controller controller){
+	public TextManager(TabPane mainTab, Controller controller){
 		this.controller = controller;
-		this.option = option;
+		this.mainTab = mainTab;
 		
-		option.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+		mainTab.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 		    @Override
 		    public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-		    	if( newValue.intValue() == tabNum){
-		    		addOption();
-		    	}else if(newValue.intValue() >= 0){		    		
-		    		curTab = newValue.intValue();
+		    	if(update){
+			    	if( node.getType() == nodeType.Option && newValue.intValue() == tabNum){
+			    		addOption();
+			    	}else if(newValue.intValue() >= 0){		    		
+			    		curTab = newValue.intValue();
+			    	}
 		    	}
 		    }
 		}); 
-		option.setStyle("-fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;");
+		mainTab.setStyle("-fx-open-tab-animation: NONE; -fx-close-tab-animation: NONE;");
 	}
 	
 	/**
@@ -59,14 +62,16 @@ public class TextManager {
 	 * @param text all options
 	 * @throws IOException 
 	 */
-	public void Update(Node node){
+	public void update(Node node){
+		update = false;
 		this.node = node;
 		curTab = 0;
 		buildOption();
+		update = true;
 	}
 	
 	private void buildOption(){
-		option.getTabs().clear();
+		clear();
 		FXMLLoader loader = new FXMLLoader();
 		ObservableList<Tab> collection = FXCollections.observableArrayList();
 		Tab tab = new Tab("Text");
@@ -103,9 +108,9 @@ public class TextManager {
 			collection.add(tab);			
 		}
 		
-		option.getTabs().addAll(collection);
-		tabNum = collection.size();
-		option.getSelectionModel().select(curTab);
+		mainTab.getTabs().addAll(collection);
+		tabNum = collection.size() - 1;
+		mainTab.getSelectionModel().select(curTab);
 	}
 
 	private void addOption() {
@@ -115,15 +120,20 @@ public class TextManager {
 	}
 	
 	public void shiftUp(int id) {
-		curTab = id - 1;
-		swap(id, id-1);
-		buildOption();
+		shift(id, id - 1);
 	}
 
 	public void shiftDown(int id) {
-		curTab = id + 1;
-		swap(id, id+1);
+		shift(id, id + 1);
+	}
+	
+	public void shift(int i, int j){
+		update = false;
+		swap(i, j);
+		curTab = j + 1;
 		buildOption();
+		controller.updateScene();
+		update = true;
 	}
 	
 	private void swap(int i, int j){
@@ -144,5 +154,10 @@ public class TextManager {
 			OptionText optText = ((Option)node).getChildren().get(id);
 			optText.setText(title, text);
 		}
+		controller.updateScene();
+	}
+
+	public void clear() {
+		mainTab.getTabs().clear();
 	}
 }

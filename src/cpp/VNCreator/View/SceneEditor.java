@@ -417,7 +417,7 @@ public class SceneEditor {
 
 	public void setNode(Node selected) {
 		node = selected;
-		text.setText(selected.getText());
+		updateText();
 		Scene scene = node.getScene();
 		if(scene.getTextX() != 0 && scene.getTextY() != 0){
 			textFieldX.setText(String.valueOf(scene.getTextX()));
@@ -426,6 +426,10 @@ public class SceneEditor {
 		setBackground(scene.getBackground());
 		setActors(scene.getLayers());
 		stop();
+	}
+	
+	public void updateText(){
+		text.setText(node.getText());
 	}
 	
 	private ChangeListener<String> numListener(TextField field, DoubleProperty numProp){

@@ -8,19 +8,27 @@ import javafx.scene.layout.AnchorPane;
 public class StoryEditor {
 	
 	@FXML
-	protected AnchorPane textArea;
+	private TabPane textArea;
 	
 	@FXML
-	protected TabPane canvas;
+	private TabPane canvas;
 	
-	public void createStage( AnchorPane overview, AnchorPane scene, AnchorPane textArea ){
-		Tab tab = new Tab("Overview");
-		tab.setContent(overview);
+	public void loadOverview( AnchorPane overview ){
+		addTab( overview, "Overview");
+				
+	}
+	
+	public void loadScene(AnchorPane scene){
+		addTab(scene, "Scene Editor");
+	}
+	
+	private void addTab(AnchorPane pane, String name){
+		Tab tab = new Tab(name);
+		tab.setContent(pane);
 		canvas.getTabs().add(tab);
-		tab = new Tab("Scene Editor");
-		tab.setContent(scene);
-		canvas.getTabs().add(tab);
-		
-		textArea.getChildren().add(textArea);		
+	}
+	
+	public TabPane getTextArea(){
+		return textArea;
 	}
 }

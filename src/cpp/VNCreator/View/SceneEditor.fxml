@@ -69,7 +69,7 @@
             </TabPane>
          </children>
       </AnchorPane>
-      <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="414.0" prefWidth="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="244.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="415.0" prefWidth="563.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="244.0" AnchorPane.topAnchor="0.0">
          <children>
             <StackPane fx:id="canvasPane" prefHeight="414.0" prefWidth="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
@@ -79,7 +79,6 @@
             </StackPane>
          </children>
       </AnchorPane>
-      <Separator layoutX="560.0" orientation="VERTICAL" prefHeight="445.0" prefWidth="2.0" AnchorPane.bottomAnchor="209.0" AnchorPane.rightAnchor="241.0" AnchorPane.topAnchor="0.0" />
       <AnchorPane layoutY="414.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="244.0">
          <children>
             <Button layoutY="4.0" mnemonicParsing="false" onAction="#play" text="Play" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="4.0" />

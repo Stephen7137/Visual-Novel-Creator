@@ -6,9 +6,9 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="181.0" prefWidth="560.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="181.0" prefWidth="560.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cpp.VNCreator.View.TextBox">
    <children>
       <TextArea fx:id="text" layoutY="24.0" prefHeight="155.0" prefWidth="563.0" promptText="Text" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0" />
-      <TextField prefHeight="25.0" prefWidth="169.0" promptText="Title" />
+      <TextField fx:id="title" prefHeight="25.0" prefWidth="169.0" promptText="Title" />
    </children>
 </AnchorPane>

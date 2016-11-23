@@ -2,6 +2,7 @@ package cpp.VNCreator.View;
 	
 import java.io.IOException;
 import cpp.VNCreator.Controller.Controller;
+import cpp.VNCreator.Controller.TextManager;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -60,9 +61,9 @@ public class Main extends Application {
 	private Scene createScene(Stage primaryStage) throws IOException{
 				
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(Main.class.getResource("Text Adv Editor GUI.fxml"));
+		loader.setLocation(Main.class.getResource("MainScene.fxml"));
 		Scene scene = new Scene(loader.load());
-		TextAdvEditorControler mainController = loader.getController();
+		MainScene mainController = loader.getController();
 		mainController.disable();
 		
 		Controller controller = new Controller();
@@ -73,18 +74,25 @@ public class Main extends Application {
 		console.controller(controller);
 		
 		loader = new FXMLLoader();
-		loader.setLocation(Main.class.getResource("SceneEditor.fxml"));
-		mainController.addTab("Scene Editor", loader.load());
-		SceneEditor sEditor = loader.getController();
-		sEditor.controller(controller);
+		loader.setLocation(Main.class.getResource("StoryEditor.fxml"));
+		mainController.addTab("Story Editor", loader.load());
+		StoryEditor storyEditor = loader.getController();
 		
 		loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("Editor.fxml"));
-		mainController.addTab("Overview", loader.load());
+		storyEditor.loadOverview(loader.load());
 		Editor editor = loader.getController();
 		editor.setCanvasManger(controller);
+		
+		loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("SceneEditor.fxml"));
+		storyEditor.loadScene(loader.load());
+		SceneEditor sEditor = loader.getController();
+		sEditor.controller(controller);
+				
 		mainController.setController(controller);
-		controller.startUp(editor.getCanvas(), primaryStage, editor, sEditor,
+		controller.startUp(editor.getCanvas(), primaryStage, 
+				new TextManager(storyEditor.getTextArea(), controller), sEditor,
 				mainController, console);
 		
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>(){

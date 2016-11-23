@@ -1,6 +1,5 @@
 package cpp.VNCreator.View;
 
-import cpp.VNCreator.Controller.TextManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
