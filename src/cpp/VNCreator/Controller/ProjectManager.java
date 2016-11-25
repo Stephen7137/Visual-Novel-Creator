@@ -50,6 +50,7 @@ public class ProjectManager {
 	
 	final String bckFodler = File.separator + "Background";
 	final String actFolder = File.separator + "Actors";
+	final String textFolder = File.separator + "TextBackground";
 	
 	FileChooser imagechooser;
 	Controller controller;
@@ -280,6 +281,10 @@ public class ProjectManager {
 
 	public ArrayList<File> importActor() {
 		return loadImage(actFolder);
+	}
+	
+	public ArrayList<File> importTextBack() {
+		return loadImage(textFolder);
 	}
 	
 	public ArrayList<File> loadImage(String folder){

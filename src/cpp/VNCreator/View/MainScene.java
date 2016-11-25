@@ -140,6 +140,11 @@ public class MainScene {
 		controller.loadSprite();
 	}
 	
+	@FXML
+	private void importTextBack(){
+		controller.loadTextBackground();
+	}
+	
 	/**
 	 * Creates a Alert box and gets the user input of the user.
 	 * notifies if a Node has no parents.

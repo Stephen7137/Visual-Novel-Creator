@@ -45,7 +45,7 @@
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#importBackground" text="Import Background" />
                   <MenuItem mnemonicParsing="false" onAction="#importActor" text="Import Actor" />
-                  <SeparatorMenuItem mnemonicParsing="false" text="Import Text Packground" />
+                  <MenuItem mnemonicParsing="false" onAction="#importTextBack" text="Import Text Packground" />
               </items>
             </Menu>
       </menus>

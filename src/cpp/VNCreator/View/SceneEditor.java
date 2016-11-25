@@ -30,7 +30,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -89,10 +88,7 @@ public class SceneEditor {
 	
 	@FXML
 	private StackPane canvasPane;
-	
-	@FXML
-	private TextArea text;
-	
+		
 	@FXML
 	private ComboBox<ComboObj> layerSel;
 	
@@ -218,7 +214,7 @@ public class SceneEditor {
 					}
 				}							
 			}
-			gc.fillText(text.getText(), textX.get(), textY.get());
+			gc.fillText(node.getText(), textX.get(), textY.get());
 		}
 	}
 	
@@ -293,13 +289,7 @@ public class SceneEditor {
               };
           }
        });
-		
-		text.textProperty().addListener((observable, oldValue, newValue) -> {
-			node.setText(newValue);
-			cotroller.updateSel();
-			drawPreview();
-		});
-		
+				
 		for(int i = 1; i < 101; i++){
 			size.getItems().add(i);
 		}
@@ -386,6 +376,18 @@ public class SceneEditor {
 			icons.put(entry.getValue().getName(), view);
 		}
 	}
+	
+
+	public void loadTextBackIcon(Hashtable<String, ImageStorage> text) {
+		for(Entry<String, ImageStorage> entry : text.entrySet() ){
+			ImageView view = new ImageView(entry.getValue().getImage());
+			view.setFitHeight(100);
+			view.setPreserveRatio(true);
+//			cast.getChildren().add(view);
+//			imageSel.getItems().add(new ComboImg( entry.getValue().getName(), view));
+//			icons.put(entry.getValue().getName(), view);
+		}
+	}
 
 	public void setBackground(String name){
 		bckgrndImage = imgLoader.getBackground(name);
@@ -417,7 +419,6 @@ public class SceneEditor {
 
 	public void setNode(Node selected) {
 		node = selected;
-		updateText();
 		Scene scene = node.getScene();
 		if(scene.getTextX() != 0 && scene.getTextY() != 0){
 			textFieldX.setText(String.valueOf(scene.getTextX()));
@@ -427,11 +428,7 @@ public class SceneEditor {
 		setActors(scene.getLayers());
 		stop();
 	}
-	
-	public void updateText(){
-		text.setText(node.getText());
-	}
-	
+		
 	private ChangeListener<String> numListener(TextField field, DoubleProperty numProp){
 		
 		return new ChangeListener<String>(){

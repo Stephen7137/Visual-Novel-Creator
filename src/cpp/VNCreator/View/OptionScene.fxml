@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="171.0" prefWidth="253.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <ComboBox fx:id="font1" layoutX="15.0" layoutY="51.0" onAction="#setFont" prefWidth="150.0" />
+      <ComboBox fx:id="size1" layoutX="165.0" layoutY="51.0" onAction="#setFont" prefHeight="25.0" prefWidth="60.0" />
+      <Text layoutX="14.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text Offset" />
+      <Text layoutX="15.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" />
+      <TextField fx:id="textFieldX1" layoutX="33.0" layoutY="88.0" prefHeight="25.0" prefWidth="47.0" />
+      <TextField fx:id="textFieldY1" layoutX="104.0" layoutY="88.0" prefHeight="25.0" prefWidth="47.0" />
+      <Text layoutX="87.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" />
+      <Text layoutX="90.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" />
+      <TextField fx:id="textFieldY" layoutX="107.0" layoutY="130.0" prefHeight="25.0" prefWidth="47.0" />
+      <TextField fx:id="textFieldX" layoutX="36.0" layoutY="130.0" prefHeight="25.0" prefWidth="47.0" />
+      <Text layoutX="18.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" />
+      <ComboBox fx:id="size11" layoutX="165.0" layoutY="26.0" onAction="#setFont" prefHeight="25.0" prefWidth="60.0" />
+      <ComboBox fx:id="font11" layoutX="15.0" layoutY="26.0" onAction="#setFont" prefWidth="150.0" />
+   </children>
+</AnchorPane>

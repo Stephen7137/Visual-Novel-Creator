@@ -54,13 +54,14 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <TextArea fx:id="text" layoutY="24.0" prefHeight="155.0" prefWidth="563.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0" />
-                              <ComboBox fx:id="font" layoutY="2.0" onAction="#setFont" prefWidth="150.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                              <ComboBox fx:id="size" layoutX="150.0" onAction="#setFont" prefHeight="25.0" prefWidth="60.0" />
-                              <Text layoutX="219.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" />
-                              <TextField fx:id="textFieldX" layoutX="233.0" prefHeight="25.0" prefWidth="47.0" />
-                              <TextField fx:id="textFieldY" layoutX="309.0" prefHeight="25.0" prefWidth="47.0" />
-                              <Text layoutX="289.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" />
+                              <ComboBox fx:id="font" layoutX="18.0" layoutY="14.0" onAction="#setFont" prefWidth="150.0" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="14.0" />
+                              <ComboBox fx:id="size" layoutX="168.0" layoutY="14.0" onAction="#setFont" prefHeight="25.0" prefWidth="60.0" />
+                              <ColorPicker layoutX="20.0" layoutY="48.0" />
+                              <ComboBox fx:id="size2" layoutX="169.0" layoutY="79.0" onAction="#setFont" prefHeight="25.0" prefWidth="60.0" />
+                              <ColorPicker layoutX="20.0" layoutY="79.0" />
+                              <Text layoutX="105.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text Color" />
+                              <Text layoutX="105.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mask Color" />
+                              <TabPane layoutX="14.0" layoutY="125.0" prefHeight="275.0" prefWidth="217.0" tabClosingPolicy="UNAVAILABLE" />
                            </children>
                         </AnchorPane>
                   </content>
@@ -86,6 +87,8 @@
             <Button layoutX="85.0" layoutY="4.0" mnemonicParsing="false" onAction="#stop" text="Stop" AnchorPane.leftAnchor="85.0" AnchorPane.topAnchor="4.0" />
             <Button layoutX="140.0" layoutY="4.0" mnemonicParsing="false" onAction="#addLayer" text="Add Layer" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="4.0" />
             <TabPane layoutY="31.0" prefHeight="208.0" prefWidth="563.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="31.0" />
+            <ComboBox layoutX="219.0" layoutY="4.0" prefHeight="25.0" prefWidth="148.0" />
+            <Button layoutX="367.0" layoutY="4.0" mnemonicParsing="false" text="Next" />
          </children>
       </AnchorPane>
    </children>

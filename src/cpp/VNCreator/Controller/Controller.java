@@ -72,7 +72,7 @@ public class Controller {
 	
 	public void updateScene(){
 		cnvsManager.update();
-		sEditor.updateText();
+		//sEditor.updateText();
 	}
 	
 	public void update(){
@@ -243,6 +243,11 @@ public class Controller {
 	public void loadSprite(){
 		imgLoader.loadActor(save.importActor());
 		sEditor.loadActorIcon(imgLoader.getSprite());
+	}
+	
+	public void loadTextBackground() {
+		imgLoader.loadTextBack(save.importTextBack());
+		sEditor.loadTextBackIcon(imgLoader.getTextBack());		
 	}
 
 	public ArrayList<SearchNode> getAllNode() {

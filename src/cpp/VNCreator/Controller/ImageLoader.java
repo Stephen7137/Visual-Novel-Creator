@@ -1,6 +1,7 @@
 package cpp.VNCreator.Controller;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +11,7 @@ public class ImageLoader {
 	
 	Hashtable<String, ImageStorage> background;
 	Hashtable<String, ImageStorage> actors;
+	Hashtable<String, ImageStorage> text;
 	double aspRatio;
 	
 	public ImageLoader() {
@@ -23,6 +25,11 @@ public class ImageLoader {
 	
 	public void loadActor(List<File> file){
 		loadImage(file, actors);
+	}
+	
+	
+	public void loadTextBack(List<File> file) {
+		loadImage(file, text);
 	}
 	
 	public void loadImage(List<File> list, Hashtable<String, ImageStorage> table){
@@ -62,8 +69,8 @@ public class ImageLoader {
 		}
 	}
 
-	public Image getBackground(String name) {
-		ImageStorage bImage = background.get(name);
+	public Image getBackground(String fileName) {
+		ImageStorage bImage = background.get(fileName);
 		return bImage != null ? bImage.image : null;
 	}
 
@@ -79,9 +86,23 @@ public class ImageLoader {
 	public Hashtable<String, ImageStorage> getSprite() {
 		return actors;
 	}
+	
+	public Hashtable<String, ImageStorage> getTextBack() {
+		return text;
+	}
+	
+	public Image getTextBack(String fileName) {
+		ImageStorage image = text.get(fileName);
+		return text != null ? image.getImage() : null;
+	}
 
 	public double getRatio() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public void loadTextBack(ArrayList<File> importTextBack) {
+		// TODO Auto-generated method stub
+		
 	}
 }
