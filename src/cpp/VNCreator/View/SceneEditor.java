@@ -437,6 +437,7 @@ public class SceneEditor {
 	
 
 	public void loadTextBackIcon(Hashtable<String, ImageStorage> text) {
+		textBack.clear();
 		for(Entry<String, ImageStorage> entry : text.entrySet() ){
 			ImageView view = new ImageView(entry.getValue().getImage());
 			view.setFitHeight(100);
