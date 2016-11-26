@@ -8,12 +8,17 @@ public class OptionText {
 	
 	public OptionText(){
 		this("","");
+		option = new OptionScene();
+	}
+	
+	public OptionText(String title, String text, OptionScene optionScene){
+		this( title, text);
+		option = optionScene != null ? optionScene : new OptionScene();
 	}
 	
 	public OptionText(String title, String text){
 		this.title = title;
 		this.text = text;
-		option = new OptionScene();
 	}
 		
 	public String getTitle(){

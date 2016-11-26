@@ -209,7 +209,7 @@ public class ProjectManager {
 			if(node.type == nodeType.Option){
 				ArrayList<OptionText> oNode = new ArrayList<OptionText>();
 				for(SaveOptionText oText : ((SaveOption)node).children){
-					oNode.add(new OptionText(oText.title, oText.title));
+					oNode.add(new OptionText(oText.title, oText.title, oText.optionScene));
 				}
 				tree.put(node.id, new Option(node.id, node.title, node.text, oNode, node.scene));
 			}else{

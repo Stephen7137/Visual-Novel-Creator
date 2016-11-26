@@ -9,6 +9,7 @@ import cpp.VNCreator.Model.NodeType.nodeType;
 import cpp.VNCreator.Node.Node;
 import cpp.VNCreator.Node.Option;
 import cpp.VNCreator.Node.OptionText;
+import cpp.VNCreator.Node.OptionText.OptionScene;
 import cpp.VNCreator.Node.Scene;
 import cpp.VNCreator.Node.Text;
 import javafx.scene.paint.Color;
@@ -134,7 +135,7 @@ public class SaveProject implements Serializable{
 			super(title, text, type, id, parent, scene);
 			children = new ArrayList<SaveOptionText>();
 			for(OptionText tmp : child){
-				children.add(new SaveOptionText(tmp.getTitle(), tmp.getTitle(), tmp.getID()));
+				children.add(new SaveOptionText(tmp.getTitle(), tmp.getTitle(), tmp.getID(), tmp.getOptionScene()));
 			}	
 		}
 	}
@@ -147,11 +148,13 @@ public class SaveProject implements Serializable{
 		public String title;
 		public String text;
 		public int id;
+		public OptionScene optionScene;
 		
-		public SaveOptionText(String title, String text, int id){
+		public SaveOptionText(String title, String text, int id, OptionScene optionScene){
 			this.title = title;
 			this.text = text;
 			this.id = id;
+			this.optionScene = optionScene;
 		}
 	}
 	
