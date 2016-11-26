@@ -56,9 +56,9 @@
                            <children>
                               <ComboBox fx:id="font" layoutX="18.0" layoutY="14.0" onAction="#setFont" prefWidth="150.0" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="14.0" />
                               <ComboBox fx:id="size" layoutX="168.0" layoutY="14.0" onAction="#setFont" prefHeight="25.0" prefWidth="60.0" />
-                              <ColorPicker layoutX="20.0" layoutY="48.0" />
+                              <ColorPicker fx:id="textColor" layoutX="20.0" layoutY="48.0" onAction="#setTextColor" />
                               <ComboBox fx:id="size2" layoutX="169.0" layoutY="79.0" onAction="#setFont" prefHeight="25.0" prefWidth="60.0" />
-                              <ColorPicker layoutX="20.0" layoutY="79.0" />
+                              <ColorPicker fx:id="maskColor" layoutX="20.0" layoutY="79.0" onAction="#setMaskColor" />
                               <Text layoutX="105.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text Color" />
                               <Text layoutX="105.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mask Color" />
                               <TabPane layoutX="14.0" layoutY="125.0" prefHeight="275.0" prefWidth="217.0" tabClosingPolicy="UNAVAILABLE" />

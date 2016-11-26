@@ -43,4 +43,16 @@ public class OptionText {
 	public int getID(){
 		return node != null ? node.getID() : -1;
 	}
+	
+	public class OptionClass{
+		String textBackground;
+		double textAlpha;
+		String activetextBack;
+		double activeTextAlpha;
+		
+		double textX;
+		double textY;
+		double textXOffset;
+		double textYOffset;
+	}
 }

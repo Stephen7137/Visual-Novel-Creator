@@ -19,7 +19,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -27,6 +29,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -67,6 +70,7 @@ public class SceneEditor {
 	
 	DoubleProperty textX;
 	DoubleProperty textY;
+	BooleanProperty mask;
 
 	long sceneTimer = 0;
 	
@@ -106,6 +110,22 @@ public class SceneEditor {
 	
 	@FXML
 	private TextField textFieldY;
+	
+	@FXML
+	private ColorPicker maskColor;
+	
+	@FXML
+	private ColorPicker textColor;
+	
+	@FXML
+	private void setMaskColor(){
+		node.getScene().setMaskColor(maskColor.getValue());
+	}
+	
+	@FXML
+	private void setTextColor(){
+		node.getScene().setTextColor(textColor.getValue());
+	}
 	
 	@FXML
 	private void play(){
@@ -221,7 +241,10 @@ public class SceneEditor {
 	private void buildScene(){
 		actorList = new ArrayList<Sprite>();
 		parTrans.getChildren().clear();
+		long timerDuration = 0;
 		for(Actor actor: layers){
+			if( timerDuration < actor.getDuration() + actor.getDelay())
+				timerDuration = actor.getDuration() + actor.getDelay();
 			Timeline timeline = new Timeline();
 			Sprite sprite = new Sprite(imgLoader.getSprite(actor.getName()) , actor.getStartX(), 
 					actor.getStartY(), actor.isFlipped());
@@ -231,19 +254,27 @@ public class SceneEditor {
 			KeyFrame frameX = new KeyFrame(Duration.millis(actor.getDuration()), keyX);
 			KeyFrame frameY = new KeyFrame(Duration.millis(actor.getDuration()), keyY);
 			timeline.getKeyFrames().addAll(frameX, frameY);
-			timeline.setDelay(new Duration(actor.getDelay()));
+			timeline.setDelay(Duration.millis(actor.getDelay()));
 			parTrans.getChildren().add(timeline);
 		}
+		mask.set(false);
+		Timeline timeline = new Timeline();
+		KeyValue keyb = new KeyValue(mask, true);
+		KeyFrame frameb = new KeyFrame(Duration.millis(1), keyb);
+		timeline.getKeyFrames().add(frameb);
+		timeline.setDelay(Duration.millis(timerDuration));
+		parTrans.getChildren().add(timeline);
 	}
 	
 	private void update(){
+		Scene scene = node != null ? node.getScene() : null;
 		bgc.setFill(Color.BLACK);
 		bgc.fillRect(0, 0, backdrop.getWidth(), backdrop.getHeight());
 		
 		if(bckgrndImage != null){
 			gc.drawImage(bckgrndImage, 0, 0);
-			
-		}		
+		}	
+
 		for(Sprite sprite : actorList){
 			if(sprite.isFlipped()){
 				gc.drawImage(sprite.getImage(), sprite.getCurX() + sprite.getImage().getWidth(),  sprite.getCurY(), - sprite.getImage().getWidth(), sprite.getImage().getHeight());
@@ -251,6 +282,19 @@ public class SceneEditor {
 				gc.drawImage(sprite.getImage(), sprite.getCurX(), sprite.getCurY());
 			}
 		}
+		
+		if(scene != null){
+			System.out.println(mask.getValue());
+			if(mask.getValue()){
+				gc.setFill(scene.getMaskColor());
+				gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+			}
+			
+			gc.setFill(scene.getTextColor());
+			gc.fillText(node.getText(), textX.get(), textY.get());
+		}
+		
+		
 	}
 	
 	private void drawBacground(Color color){
@@ -296,9 +340,10 @@ public class SceneEditor {
 		
 		textX = new SimpleDoubleProperty();
 		textY = new SimpleDoubleProperty();
+		mask = new SimpleBooleanProperty();
 		
-		textFieldX.textProperty().addListener(numListener(textFieldX, textX ));
-		textFieldY.textProperty().addListener(numListener(textFieldY, textY ));
+//		textFieldX.textProperty().addListener(numListener(textFieldX, textX ));
+//		textFieldY.textProperty().addListener(numListener(textFieldY, textY ));
 		
 		textX.addListener(observalble -> node.getScene().setTextX(textX.get()));
 		textY.addListener(observalble -> node.getScene().setTextY(textY.get()));
