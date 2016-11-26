@@ -4,6 +4,7 @@ public class OptionText {
 	private String title;
 	private String text;
 	private Node node;
+	private OptionScene option;
 	
 	public OptionText(){
 		this("","");
@@ -12,6 +13,7 @@ public class OptionText {
 	public OptionText(String title, String text){
 		this.title = title;
 		this.text = text;
+		option = new OptionScene();
 	}
 		
 	public String getTitle(){
@@ -44,15 +46,19 @@ public class OptionText {
 		return node != null ? node.getID() : -1;
 	}
 	
-	public class OptionClass{
-		String textBackground;
-		double textAlpha;
+	public OptionScene getOptionScene(){
+		return option;
+	}
+	
+	public class OptionScene extends TextScene{
 		String activetextBack;
-		double activeTextAlpha;
 		
-		double textX;
-		double textY;
-		double textXOffset;
-		double textYOffset;
+		public void setActiveTextBack(String activetextBack){
+			this.activetextBack = activetextBack;
+		}
+		
+		public String getActiveTextBack(){
+			return activetextBack;
+		}
 	}
 }

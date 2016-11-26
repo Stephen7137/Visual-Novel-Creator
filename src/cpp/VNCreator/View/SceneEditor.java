@@ -3,8 +3,12 @@ package cpp.VNCreator.View;
 import cpp.VNCreator.Controller.ImageLoader;
 import cpp.VNCreator.Controller.ImageLoader.ImageStorage;
 import cpp.VNCreator.Model.Sprite;
+import cpp.VNCreator.Model.NodeType.nodeType;
 import cpp.VNCreator.Node.Actor;
 import cpp.VNCreator.Node.Node;
+import cpp.VNCreator.Node.Option;
+import cpp.VNCreator.Node.OptionText;
+import cpp.VNCreator.Node.OptionText.OptionScene;
 import cpp.VNCreator.Node.Scene;
 
 import java.io.IOException;
@@ -284,17 +288,25 @@ public class SceneEditor {
 		}
 		
 		if(scene != null){
-			System.out.println(mask.getValue());
+			
 			if(mask.getValue()){
 				gc.setFill(scene.getMaskColor());
 				gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 			}
 			
+			gc.setFont(new Font(scene.getFont(), scene.getFontSize()));
 			gc.setFill(scene.getTextColor());
-			gc.fillText(node.getText(), textX.get(), textY.get());
-		}
-		
-		
+			
+			gc.fillText(node.getText(), scene.getTextX(),scene.getTextY());
+			
+			if(node.getType() == nodeType.Option){
+				for(OptionText oText : ((Option)node).getChildren()){
+					OptionScene oScene = oText.getOptionScene();
+					gc.fillText(oText.getText(), oScene.getTextX(), oScene.getSceneY());
+				}
+			}
+			
+		}		
 	}
 	
 	private void drawBacground(Color color){

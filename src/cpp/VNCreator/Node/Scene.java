@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import javafx.scene.paint.Color;
 
-public class Scene implements Serializable {
+public class Scene extends TextScene implements Serializable {
 	
 	/**
 	 * 
@@ -15,20 +15,29 @@ public class Scene implements Serializable {
 	ArrayList<Actor> layers;
 	
 	Color mask;
-	double alpha;
 	Color text;
 	String font;
 	double size;
-	
-	String textBackground;
-	double textX;
-	double textY;
-	double textXOffset;
-	double textYOffset;
 		
 	public Scene(){
 		background = "";
 		layers = new ArrayList<Actor>();
+	}
+	
+	public String getFont(){
+		return font;
+	}
+	
+	public void setFont(String font){
+		this.font = font;
+	}
+	
+	public double getFontSize(){
+		return size;
+	}
+	
+	public void setFontSize(double size){
+		this.size = size;
 	}
 	
 	public String getBackground(){
@@ -38,25 +47,9 @@ public class Scene implements Serializable {
 	public void setBackground(String background){
 		this.background = background;
 	}
-	
+		
 	public ArrayList<Actor> getLayers(){
 		return layers;
-	}
-
-	public void setTextX(double textX) {
-		this.textX = textX;
-	}
-
-	public void setTextY(double textY) {
-		this.textY = textY;
-	}
-	
-	public double getTextX() {
-		return textX;
-	}
-
-	public double getTextY() {
-		return textY;
 	}
 	
 	public void setTextColor(Color color){
