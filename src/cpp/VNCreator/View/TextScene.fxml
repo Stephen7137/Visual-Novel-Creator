@@ -17,7 +17,7 @@
       <TextField fx:id="offsetY" layoutX="107.0" layoutY="130.0" prefHeight="25.0" prefWidth="47.0" AnchorPane.leftAnchor="107.0" AnchorPane.topAnchor="130.0" />
       <TextField fx:id="offsetX" layoutX="36.0" layoutY="130.0" prefHeight="25.0" prefWidth="47.0" AnchorPane.leftAnchor="36.0" AnchorPane.topAnchor="130.0" />
       <Text layoutX="18.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="134.05078125" />
-      <ComboBox fx:id="text" layoutX="15.0" layoutY="26.0" prefWidth="150.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="26.0" />
-      <ComboBox fx:id="active" layoutX="15.0" layoutY="51.0" prefWidth="150.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="51.0" />
+      <ComboBox fx:id="text" layoutX="15.0" layoutY="26.0" onAction="#setTextBack" prefWidth="150.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="26.0" />
+      <ComboBox fx:id="active" layoutX="15.0" layoutY="51.0" onAction="#setActiveText" prefWidth="150.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="51.0" />
    </children>
 </AnchorPane>

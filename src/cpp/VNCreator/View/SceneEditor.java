@@ -297,14 +297,14 @@ public class SceneEditor {
 			
 			if(scene.getTextBackground().length() > 0) gc.drawImage(imgLoader.getTextBack(scene.getTextBackground()),
 					scene.getSceneX(), scene.getSceneY());
-			gc.fillText(node.getText(), scene.getTextX(),scene.getTextY());
+			gc.fillText(node.getText(), scene.getTrueTextX(),scene.getTrueTextY());
 			
-			if(node.getType() == nodeType.Option){
+			if(node.getType() == nodeType.Option && mask.getValue()){
 				for(OptionText oText : ((Option)node).getChildren()){
 					OptionScene oScene = oText.getOptionScene();
 					if(oScene.getTextBackground().length() > 0)gc.drawImage(imgLoader.getTextBack(oScene.getTextBackground()),
 							oScene.getSceneX(), oScene.getSceneY());
-					gc.fillText(oText.getText(), oScene.getTextX(), oScene.getSceneY());
+					gc.fillText(oText.getText(), oScene.getTrueTextX(), oScene.getTrueTextY());
 				}
 			}
 			
@@ -443,6 +443,7 @@ public class SceneEditor {
 			view.setPreserveRatio(true);
 			textBack.add(new ComboImg(entry.getKey(), view));
 		}
+		if(node != null) textTab();
 	}
 
 	public void setBackground(String name){

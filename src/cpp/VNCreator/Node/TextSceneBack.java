@@ -16,20 +16,28 @@ public abstract class TextSceneBack {
 		return textBackground;
 	}
 
-	public void setTextX(double textX) {
-		this.textX = textX;
+	public void setTextX(double textXOffset) {
+		this.textXOffset = textXOffset;
+	}
+	
+	public double getTrueTextX() {
+		return textX + textXOffset;
 	}
 	
 	public double getTextX() {
-		return textX + textXOffset;
+		return textXOffset;
 	}
 
-	public void setTextY(double textY) {
-		this.textY = textY;
+	public void setTextY(double textYOffset) {
+		this.textYOffset = textYOffset;
+	}
+	
+	public double getTrueTextY() {
+		return textY + textYOffset;
 	}
 	
 	public double getTextY() {
-		return textY + textYOffset;
+		return textYOffset;
 	}
 	
 	public void setSceneX(double sceneX){
@@ -37,7 +45,7 @@ public abstract class TextSceneBack {
 	}
 	
 	public double getSceneX() {
-		return textXOffset;
+		return textX;
 	}
 	
 	public void setSceneY(double sceneY){
@@ -46,6 +54,6 @@ public abstract class TextSceneBack {
 	
 
 	public double getSceneY() {
-		return textYOffset;
+		return textY;
 	}	
 }

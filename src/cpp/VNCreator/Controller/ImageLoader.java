@@ -1,7 +1,6 @@
 package cpp.VNCreator.Controller;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +16,7 @@ public class ImageLoader {
 	public ImageLoader() {
 		background = new Hashtable<String, ImageStorage>();
 		actors = new Hashtable<String, ImageStorage>();
+		text = new Hashtable<String, ImageStorage>();
 	}
 		
 	public void loadBackground(List<File> file){
@@ -99,10 +99,5 @@ public class ImageLoader {
 	public double getRatio() {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	public void loadTextBack(ArrayList<File> importTextBack) {
-		// TODO Auto-generated method stub
-		
 	}
 }

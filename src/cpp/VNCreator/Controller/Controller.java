@@ -328,7 +328,8 @@ public class Controller {
 	}
 
 	public void loadProject(Story story, ArrayList<Node> bookmark, 
-			Hashtable<Integer, TreePoint> lookup, ArrayList<File> background, ArrayList<File> actors) {
+			Hashtable<Integer, TreePoint> lookup, ArrayList<File> background,
+			ArrayList<File> actors, ArrayList<File> textBack) {
 		this.story = story;
 		chEditor.load(story.getStart(), story.getTree(), bookmark);
 		cnvsManager.load(lookup);
@@ -336,8 +337,10 @@ public class Controller {
 
 		imgLoader.loadBackground(background);
 		imgLoader.loadActor(actors);
+		imgLoader.loadTextBack(textBack);
 		sEditor.loadBackIcon(imgLoader.getBackground());
 		sEditor.loadActorIcon(imgLoader.getSprite());
+		sEditor.loadTextBackIcon(imgLoader.getTextBack());
 	}
 
 	public void closeSave() {

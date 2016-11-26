@@ -17,6 +17,10 @@ import javafx.scene.control.TextField;
 import javafx.util.Callback;
 
 public class TextScene {
+	
+	OptionScene oScene;
+	TextSceneBack scene;
+	
 	@FXML
 	private ComboBox<ComboImg> text;
 	
@@ -35,17 +39,26 @@ public class TextScene {
 	@FXML
 	private TextField offsetY;
 	
+	@FXML
+	private void setTextBack(){
+		scene.setTextBackground(text.getValue().toString());
+	}
+	
+	@FXML
+	private void setActiveText(){
+		oScene.setActiveTextBack(active.getValue().toString());
+	}
+	
 	public void setTextController(TextSceneBack scene, ArrayList<ComboImg> textBack){
 		active.setVisible(false);
 		setController(scene, textBack);
 	}
 	
 	public void setOptionController(OptionScene scene, ArrayList<ComboImg> textBack){
+		oScene = scene;
 		setController(scene, textBack);
 		
 		active.getItems().addAll(textBack);
-		active.onActionProperty().addListener(observalble -> 
-			scene.setActiveTextBack(active.getValue().toString()));
 		active.setCellFactory(new Callback<ListView<ComboImg>, ListCell<ComboImg>>() {
             @Override public ListCell<ComboImg> call(ListView<ComboImg> p) {
                 return new ListCell<ComboImg>() {
@@ -65,6 +78,7 @@ public class TextScene {
 	}
 	
 	private void setController(TextSceneBack scene, ArrayList<ComboImg> textBack){
+		this.scene = scene;
 		DoubleProperty txX = new SimpleDoubleProperty();
 		txX.addListener(observalble -> scene.setSceneX(txX.get()));
 		textX.textProperty().set(String.valueOf(scene.getSceneX()));
@@ -77,17 +91,15 @@ public class TextScene {
 		
 		DoubleProperty offSetX = new SimpleDoubleProperty();
 		offSetX.addListener(observalble -> scene.setTextX(offSetX.get()));
-		offsetX.textProperty().set(String.valueOf(scene.getSceneX()));
-		offsetX.textProperty().addListener(numListener(offsetX, txY));		
+		offsetX.textProperty().set(String.valueOf(scene.getTextX()));
+		offsetX.textProperty().addListener(numListener(offsetX, offSetX));		
 		
 		DoubleProperty offSetY = new SimpleDoubleProperty();
 		offSetY.addListener(observalble -> scene.setTextY(offSetY.get()));
 		offsetY.textProperty().set(String.valueOf(scene.getTextY()));
-		offsetY.textProperty().addListener(numListener(offsetY, txY));
+		offsetY.textProperty().addListener(numListener(offsetY, offSetY));
 		
 		text.getItems().addAll(textBack);
-		text.onActionProperty().addListener(observalble -> 
-			scene.setTextBackground(text.getValue().toString()));
 		text.setCellFactory(new Callback<ListView<ComboImg>, ListCell<ComboImg>>() {
             @Override public ListCell<ComboImg> call(ListView<ComboImg> p) {
                 return new ListCell<ComboImg>() {

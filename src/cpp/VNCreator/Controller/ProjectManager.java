@@ -200,7 +200,7 @@ public class ProjectManager {
 		Hashtable<Integer, Node> tree =	createStory(save.getTree());
 		Story story = new Story(tree.get(save.start), tree);
 		controller.loadProject(story, createBookmark(save,story), 
-				createCanvas(save,story), loadBackground(), loadActor());
+				createCanvas(save,story), loadBackground(), loadActor(), loadText());
 	}
 	
 	private Hashtable<Integer, Node> createStory(ArrayList<SaveNode> save){
@@ -261,6 +261,8 @@ public class ProjectManager {
 			tmp.mkdir();
 			tmp = (new File(file + actFolder));
 			tmp.mkdir();
+			tmp = (new File(file + textFolder));
+			tmp.mkdir();
 			controller.verfiedDir();
 		}
 	}
@@ -273,6 +275,11 @@ public class ProjectManager {
 	public ArrayList<File> loadActor() {
 		return new ArrayList<File>(Arrays.asList((
 				new File(file + actFolder)).listFiles()));
+	}
+	
+	public ArrayList<File> loadText() {
+		return new ArrayList<File>(Arrays.asList((
+				new File(file + textFolder)).listFiles()));
 	}
 
 	public ArrayList<File> importBackground() {
