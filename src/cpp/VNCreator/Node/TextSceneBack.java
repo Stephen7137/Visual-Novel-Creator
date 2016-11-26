@@ -1,6 +1,6 @@
 package cpp.VNCreator.Node;
 
-public class TextScene {
+public class TextSceneBack {
 	
 	String textBackground;
 	double textX;

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import javafx.scene.paint.Color;
 
-public class Scene extends TextScene implements Serializable {
+public class Scene extends TextSceneBack implements Serializable {
 	
 	/**
 	 * 

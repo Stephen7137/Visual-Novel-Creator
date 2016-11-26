@@ -27,8 +27,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.Canvas;
@@ -38,7 +36,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -201,7 +198,7 @@ public class SceneEditor {
 		}
 	}
 	
-	private class ComboImg{
+	public class ComboImg{
 		
 		private String name;
 		private ImageView image;
@@ -279,7 +276,8 @@ public class SceneEditor {
 
 		for(Sprite sprite : actorList){
 			if(sprite.isFlipped()){
-				gc.drawImage(sprite.getImage(), sprite.getCurX() + sprite.getImage().getWidth(),  sprite.getCurY(), - sprite.getImage().getWidth(), sprite.getImage().getHeight());
+				gc.drawImage(sprite.getImage(), sprite.getCurX() + sprite.getImage().getWidth(),  sprite.getCurY(),
+						- sprite.getImage().getWidth(), sprite.getImage().getHeight());
 			}else{
 				gc.drawImage(sprite.getImage(), sprite.getCurX(), sprite.getCurY());
 			}
@@ -295,11 +293,15 @@ public class SceneEditor {
 			gc.setFont(new Font(scene.getFont(), scene.getFontSize()));
 			gc.setFill(scene.getTextColor());
 			
+			if(scene.getBackground().length() > 0)gc.drawImage(imgLoader.getTextBack(scene.getTextBackground()),
+					scene.getSceneX(), scene.getSceneY());
 			gc.fillText(node.getText(), scene.getTextX(),scene.getTextY());
 			
 			if(node.getType() == nodeType.Option){
 				for(OptionText oText : ((Option)node).getChildren()){
 					OptionScene oScene = oText.getOptionScene();
+					if(oScene.getTextBackground().length() > 0)gc.drawImage(imgLoader.getTextBack(oScene.getTextBackground()),
+							oScene.getSceneX(), oScene.getSceneY());
 					gc.fillText(oText.getText(), oScene.getTextX(), oScene.getSceneY());
 				}
 			}
@@ -352,8 +354,6 @@ public class SceneEditor {
 		textY = new SimpleDoubleProperty();
 		mask = new SimpleBooleanProperty();
 		
-//		textFieldX.textProperty().addListener(numListener(textFieldX, textX ));
-//		textFieldY.textProperty().addListener(numListener(textFieldY, textY ));
 		
 		textX.addListener(observalble -> node.getScene().setTextX(textX.get()));
 		textY.addListener(observalble -> node.getScene().setTextY(textY.get()));
@@ -484,30 +484,5 @@ public class SceneEditor {
 		stop();
 	}
 		
-	private ChangeListener<String> numListener(TextField field, DoubleProperty numProp){
-		
-		return new ChangeListener<String>(){
-
-			@Override
-			public void changed(ObservableValue<? extends String> arg0,
-					String oldValue, String newValue) {
-				Double value = null;
-				if(newValue.matches("[-]?[0-9]+[.]?[0-9]*")){
-					try{
-					value = Double.valueOf(newValue);
-					} catch(NumberFormatException nfe) {}
-				}
-				
-				if( value != null){
-					numProp.set(value);
-					drawPreview();
-				}else{
-					if(newValue.length() == 0)
-						field.setText(newValue);
-					else
-						field.setText(oldValue);
-				}
-			}
-		};
-	}
+	
 }

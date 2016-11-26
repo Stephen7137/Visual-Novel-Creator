@@ -6,19 +6,19 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="171.0" prefWidth="198.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="171.0" prefWidth="198.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cpp.VNCreator.View.TextScene">
    <children>
       <ComboBox fx:id="font1" layoutX="15.0" layoutY="51.0" onAction="#setFont" prefWidth="150.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="26.0" />
       <Text layoutX="14.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text Offset" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="113.05078125" />
       <Text layoutX="15.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="92.05078125" />
-      <TextField fx:id="textFieldX1" layoutX="33.0" layoutY="88.0" prefHeight="25.0" prefWidth="47.0" AnchorPane.leftAnchor="33.0" AnchorPane.topAnchor="88.0" />
-      <TextField fx:id="textFieldY1" layoutX="104.0" layoutY="88.0" prefHeight="25.0" prefWidth="47.0" AnchorPane.leftAnchor="104.0" AnchorPane.topAnchor="88.0" />
+      <TextField fx:id="textX" layoutX="33.0" layoutY="88.0" prefHeight="25.0" prefWidth="47.0" AnchorPane.leftAnchor="33.0" AnchorPane.topAnchor="88.0" />
+      <TextField fx:id="textY" layoutX="104.0" layoutY="88.0" prefHeight="25.0" prefWidth="47.0" AnchorPane.leftAnchor="104.0" AnchorPane.topAnchor="88.0" />
       <Text layoutX="87.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" AnchorPane.leftAnchor="87.0" AnchorPane.topAnchor="91.05078125" />
       <Text layoutX="90.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y" AnchorPane.leftAnchor="90.0" AnchorPane.topAnchor="134.05078125" />
-      <TextField fx:id="textFieldY" layoutX="107.0" layoutY="130.0" prefHeight="25.0" prefWidth="47.0" AnchorPane.leftAnchor="107.0" AnchorPane.topAnchor="130.0" />
-      <TextField fx:id="textFieldX" layoutX="36.0" layoutY="130.0" prefHeight="25.0" prefWidth="47.0" AnchorPane.leftAnchor="36.0" AnchorPane.topAnchor="130.0" />
+      <TextField fx:id="offsetY" layoutX="107.0" layoutY="130.0" prefHeight="25.0" prefWidth="47.0" AnchorPane.leftAnchor="107.0" AnchorPane.topAnchor="130.0" />
+      <TextField fx:id="offsetX" layoutX="36.0" layoutY="130.0" prefHeight="25.0" prefWidth="47.0" AnchorPane.leftAnchor="36.0" AnchorPane.topAnchor="130.0" />
       <Text layoutX="18.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="134.05078125" />
-      <ComboBox fx:id="font11" layoutX="15.0" layoutY="26.0" onAction="#setFont" prefWidth="150.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="26.0" />
-      <ComboBox fx:id="font111" layoutX="15.0" layoutY="51.0" onAction="#setFont" prefWidth="150.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="51.0" />
+      <ComboBox fx:id="text" layoutX="15.0" layoutY="26.0" prefWidth="150.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="26.0" />
+      <ComboBox fx:id="active" layoutX="15.0" layoutY="51.0" prefWidth="150.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="51.0" />
    </children>
 </AnchorPane>

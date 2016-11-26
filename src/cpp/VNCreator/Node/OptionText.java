@@ -50,7 +50,7 @@ public class OptionText {
 		return option;
 	}
 	
-	public class OptionScene extends TextScene{
+	public class OptionScene extends TextSceneBack{
 		String activetextBack;
 		
 		public void setActiveTextBack(String activetextBack){
