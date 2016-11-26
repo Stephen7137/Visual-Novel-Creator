@@ -51,14 +51,19 @@ public class OptionText {
 	}
 	
 	public class OptionScene extends TextSceneBack{
-		String activetextBack;
+		String activeTextBack;
 		
-		public void setActiveTextBack(String activetextBack){
-			this.activetextBack = activetextBack;
+		public OptionScene(){
+			textBackground = "";
+			activeTextBack = "";
+		}
+		
+		public void setActiveTextBack(String activeTextBack){
+			this.activeTextBack = activeTextBack;
 		}
 		
 		public String getActiveTextBack(){
-			return activetextBack;
+			return activeTextBack;
 		}
 	}
 }

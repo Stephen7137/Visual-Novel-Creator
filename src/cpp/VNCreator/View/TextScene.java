@@ -1,5 +1,8 @@
 package cpp.VNCreator.View;
 
+import java.util.ArrayList;
+
+import cpp.VNCreator.Node.OptionText.OptionScene;
 import cpp.VNCreator.Node.TextSceneBack;
 import cpp.VNCreator.View.SceneEditor.ComboImg;
 import javafx.beans.property.DoubleProperty;
@@ -32,11 +35,59 @@ public class TextScene {
 	@FXML
 	private TextField offsetY;
 	
-	public void setController(TextSceneBack scene){
-		DoubleProperty txtX = new SimpleDoubleProperty();
-		txtX.addListener(observalble -> scene.setSceneX(txtX.get()));
-		textX.textProperty().addListener(numListener(textX, txtX));
+	public void setTextController(TextSceneBack scene, ArrayList<ComboImg> textBack){
+		active.setVisible(false);
+		setController(scene, textBack);
+	}
+	
+	public void setOptionController(OptionScene scene, ArrayList<ComboImg> textBack){
+		setController(scene, textBack);
 		
+		active.getItems().addAll(textBack);
+		active.onActionProperty().addListener(observalble -> 
+			scene.setActiveTextBack(active.getValue().toString()));
+		active.setCellFactory(new Callback<ListView<ComboImg>, ListCell<ComboImg>>() {
+            @Override public ListCell<ComboImg> call(ListView<ComboImg> p) {
+                return new ListCell<ComboImg>() {
+                    
+                    @Override protected void updateItem(ComboImg image, boolean empty) {
+                        super.updateItem(image, empty);
+                        
+                        if (image == null || empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(image.getActor());
+                        }
+                   }
+              };
+          }
+       });
+	}
+	
+	private void setController(TextSceneBack scene, ArrayList<ComboImg> textBack){
+		DoubleProperty txX = new SimpleDoubleProperty();
+		txX.addListener(observalble -> scene.setSceneX(txX.get()));
+		textX.textProperty().set(String.valueOf(scene.getSceneX()));
+		textX.textProperty().addListener(numListener(textX, txX));
+				
+		DoubleProperty txY = new SimpleDoubleProperty();
+		txY.addListener(observalble -> scene.setSceneY(txY.get()));
+		textY.textProperty().set(String.valueOf(scene.getSceneY()));
+		textY.textProperty().addListener(numListener(textY, txY));		
+		
+		DoubleProperty offSetX = new SimpleDoubleProperty();
+		offSetX.addListener(observalble -> scene.setTextX(offSetX.get()));
+		offsetX.textProperty().set(String.valueOf(scene.getSceneX()));
+		offsetX.textProperty().addListener(numListener(offsetX, txY));		
+		
+		DoubleProperty offSetY = new SimpleDoubleProperty();
+		offSetY.addListener(observalble -> scene.setTextY(offSetY.get()));
+		offsetY.textProperty().set(String.valueOf(scene.getTextY()));
+		offsetY.textProperty().addListener(numListener(offsetY, txY));
+		
+		text.getItems().addAll(textBack);
+		text.onActionProperty().addListener(observalble -> 
+			scene.setTextBackground(text.getValue().toString()));
 		text.setCellFactory(new Callback<ListView<ComboImg>, ListCell<ComboImg>>() {
             @Override public ListCell<ComboImg> call(ListView<ComboImg> p) {
                 return new ListCell<ComboImg>() {

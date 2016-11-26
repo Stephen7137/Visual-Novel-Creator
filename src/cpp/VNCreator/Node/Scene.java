@@ -20,6 +20,7 @@ public class Scene extends TextSceneBack implements Serializable {
 	double size;
 		
 	public Scene(){
+		textBackground = "";
 		background = "";
 		layers = new ArrayList<Actor>();
 	}

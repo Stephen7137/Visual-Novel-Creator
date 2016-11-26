@@ -35,6 +35,7 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -65,6 +66,7 @@ public class SceneEditor {
 	private double width = 0;
 	private ArrayList<Sprite> actorList;
 	private ArrayList<Actor> layers;
+	private ArrayList<ComboImg> textBack;
 	private HashMap<String, ImageView> icons;
 	AnimationTimer animTimer;
 	AnimationTimer previewTimer;
@@ -293,7 +295,7 @@ public class SceneEditor {
 			gc.setFont(new Font(scene.getFont(), scene.getFontSize()));
 			gc.setFill(scene.getTextColor());
 			
-			if(scene.getBackground().length() > 0)gc.drawImage(imgLoader.getTextBack(scene.getTextBackground()),
+			if(scene.getTextBackground().length() > 0) gc.drawImage(imgLoader.getTextBack(scene.getTextBackground()),
 					scene.getSceneX(), scene.getSceneY());
 			gc.fillText(node.getText(), scene.getTextX(),scene.getTextY());
 			
@@ -363,6 +365,7 @@ public class SceneEditor {
 		font.getSelectionModel().select(gc.getFont().getFamily());
 		
 		icons = new HashMap<String, ImageView>();
+		textBack = new ArrayList<ComboImg>();
 		
 		this.cotroller = cotroller;
 		canvasPane.heightProperty().addListener( observable -> updateCanvas());
@@ -438,9 +441,7 @@ public class SceneEditor {
 			ImageView view = new ImageView(entry.getValue().getImage());
 			view.setFitHeight(100);
 			view.setPreserveRatio(true);
-//			cast.getChildren().add(view);
-//			imageSel.getItems().add(new ComboImg( entry.getValue().getName(), view));
-//			icons.put(entry.getValue().getName(), view);
+			textBack.add(new ComboImg(entry.getKey(), view));
 		}
 	}
 
@@ -474,14 +475,45 @@ public class SceneEditor {
 
 	public void setNode(Node selected) {
 		node = selected;
-		Scene scene = node.getScene();
-//		if(scene.getTextX() != 0 && scene.getTextY() != 0){TODO
-//			textFieldX.setText(String.valueOf(scene.getTextX()));
-//			textFieldX.setText(String.valueOf(scene.getTextX()));
-//		}		
-		setBackground(scene.getBackground());
-		setActors(scene.getLayers());
-		stop();
+		
+		if(node != null){			
+			textTab();
+			Scene scene = node.getScene();
+			setBackground(scene.getBackground());
+			setActors(scene.getLayers());
+			stop();
+		}	
+		
+	}
+	
+	private void textTab(){
+		textScene.getTabs().clear();
+		FXMLLoader loader = new FXMLLoader();
+		Tab tab = new Tab("Text");
+		loader.setLocation(Main.class.getResource("TextScene.fxml"));
+		try {
+			tab.setContent(loader.load());
+			((TextScene)loader.getController()).setTextController(node.getScene(), textBack);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		textScene.getTabs().add(tab);
+		if(node.getType() == nodeType.Option){
+			ArrayList<OptionText> oText = ((Option)node).getChildren();
+			for(int i = 0; i < oText.size(); i++){
+				OptionScene oScene = oText.get(i).getOptionScene();
+				tab = new Tab(String.valueOf(i + 1));
+				loader = new FXMLLoader();
+				loader.setLocation(Main.class.getResource("TextScene.fxml"));
+				try {
+					tab.setContent(loader.load());
+					((TextScene)loader.getController()).setOptionController(oScene, textBack);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				textScene.getTabs().add(tab);
+			}
+		}
 	}
 		
 	

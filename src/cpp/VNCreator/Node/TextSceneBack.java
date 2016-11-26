@@ -1,13 +1,13 @@
 package cpp.VNCreator.Node;
 
-public class TextSceneBack {
+public abstract class TextSceneBack {
 	
 	String textBackground;
 	double textX;
 	double textY;
 	double textXOffset;
 	double textYOffset;
-	
+
 	public void setTextBackground(String textBackground){
 		this.textBackground = textBackground;
 	}

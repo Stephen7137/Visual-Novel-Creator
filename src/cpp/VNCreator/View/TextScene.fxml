@@ -8,7 +8,6 @@
 
 <AnchorPane prefHeight="171.0" prefWidth="198.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cpp.VNCreator.View.TextScene">
    <children>
-      <ComboBox fx:id="font1" layoutX="15.0" layoutY="51.0" onAction="#setFont" prefWidth="150.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="26.0" />
       <Text layoutX="14.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text Offset" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="113.05078125" />
       <Text layoutX="15.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="92.05078125" />
       <TextField fx:id="textX" layoutX="33.0" layoutY="88.0" prefHeight="25.0" prefWidth="47.0" AnchorPane.leftAnchor="33.0" AnchorPane.topAnchor="88.0" />
