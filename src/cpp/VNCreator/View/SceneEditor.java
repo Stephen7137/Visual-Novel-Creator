@@ -37,6 +37,7 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -83,7 +84,6 @@ public class SceneEditor {
 	
 	@FXML
 	private Canvas backdrop;
-
 	
 	@FXML
 	private Canvas canvas;
@@ -96,6 +96,9 @@ public class SceneEditor {
 	
 	@FXML
 	private StackPane canvasPane;
+	
+	@FXML
+	private TabPane textScene;
 		
 	@FXML
 	private ComboBox<ComboObj> layerSel;
@@ -108,12 +111,6 @@ public class SceneEditor {
 	
 	@FXML
 	private ComboBox<Integer> size;
-	
-	@FXML
-	private TextField textFieldX;
-	
-	@FXML
-	private TextField textFieldY;
 	
 	@FXML
 	private ColorPicker maskColor;
@@ -181,7 +178,8 @@ public class SceneEditor {
 	
 	@FXML
 	private void setFont(){
-		gc.setFont(new Font(font.getValue(), size.getValue()));
+		node.getScene().setFont(font.getValue());
+		node.getScene().setFontSize(size.getValue());
 	}
 	
 	private class ComboObj{
@@ -477,10 +475,10 @@ public class SceneEditor {
 	public void setNode(Node selected) {
 		node = selected;
 		Scene scene = node.getScene();
-		if(scene.getTextX() != 0 && scene.getTextY() != 0){
-			textFieldX.setText(String.valueOf(scene.getTextX()));
-			textFieldX.setText(String.valueOf(scene.getTextX()));
-		}		
+//		if(scene.getTextX() != 0 && scene.getTextY() != 0){TODO
+//			textFieldX.setText(String.valueOf(scene.getTextX()));
+//			textFieldX.setText(String.valueOf(scene.getTextX()));
+//		}		
 		setBackground(scene.getBackground());
 		setActors(scene.getLayers());
 		stop();

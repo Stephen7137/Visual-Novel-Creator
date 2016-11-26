@@ -55,13 +55,12 @@
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
                               <ComboBox fx:id="font" layoutX="18.0" layoutY="14.0" onAction="#setFont" prefWidth="150.0" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="14.0" />
-                              <ComboBox fx:id="size" layoutX="168.0" layoutY="14.0" onAction="#setFont" prefHeight="25.0" prefWidth="60.0" />
-                              <ColorPicker fx:id="textColor" layoutX="20.0" layoutY="48.0" onAction="#setTextColor" />
-                              <ComboBox fx:id="size2" layoutX="169.0" layoutY="79.0" onAction="#setFont" prefHeight="25.0" prefWidth="60.0" />
-                              <ColorPicker fx:id="maskColor" layoutX="20.0" layoutY="79.0" onAction="#setMaskColor" />
-                              <Text layoutX="105.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text Color" />
-                              <Text layoutX="105.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mask Color" />
-                              <TabPane layoutX="14.0" layoutY="125.0" prefHeight="275.0" prefWidth="217.0" tabClosingPolicy="UNAVAILABLE" />
+                              <ComboBox fx:id="size" layoutX="168.0" layoutY="14.0" onAction="#setFont" prefHeight="25.0" prefWidth="60.0" AnchorPane.leftAnchor="168.0" AnchorPane.topAnchor="14.0" />
+                              <ColorPicker fx:id="textColor" layoutX="20.0" layoutY="48.0" onAction="#setTextColor" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="48.0" />
+                              <ColorPicker fx:id="maskColor" layoutX="20.0" layoutY="79.0" onAction="#setMaskColor" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="79.0" />
+                              <Text layoutX="108.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text Color" AnchorPane.leftAnchor="108.0" AnchorPane.topAnchor="52.0" />
+                              <Text layoutX="105.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mask Color" AnchorPane.leftAnchor="105.0" AnchorPane.topAnchor="83.05078125" />
+                              <TabPane fx:id="textScene" layoutX="14.0" layoutY="125.0" prefHeight="275.0" prefWidth="217.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="125.0" />
                            </children>
                         </AnchorPane>
                   </content>
