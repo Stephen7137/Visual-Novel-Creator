@@ -31,6 +31,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
@@ -49,7 +50,7 @@ import javafx.util.Duration;
 
 public class SceneEditor {
 
-	Controller cotroller;
+	Controller controller;
 	ImageLoader loader;
 	
 	Image bckgrndImage;
@@ -71,6 +72,7 @@ public class SceneEditor {
 	AnimationTimer animTimer;
 	AnimationTimer previewTimer;
 	int fps = 0;
+	private boolean startPreview;
 	
 	DoubleProperty textX;
 	DoubleProperty textY;
@@ -116,6 +118,21 @@ public class SceneEditor {
 	
 	@FXML
 	private ColorPicker textColor;
+	
+	@FXML
+	private ComboBox<Integer> nextNum;
+	
+	@FXML
+	private Button next;
+	
+	@FXML
+	private Button back;
+	
+	@FXML
+	private Button startPrev;
+	
+	@FXML
+	private Button endPrev;
 	
 	@FXML
 	private void setMaskColor(){
@@ -181,6 +198,41 @@ public class SceneEditor {
 		node.getScene().setFontSize(size.getValue());
 	}
 	
+	@FXML
+	private void startPreview(){
+		startPrev.setDisable(true);
+		endPrev.setDisable(false);
+		startPreview = true;
+	}
+	
+	@FXML
+	private void endPreview(){
+		startPrev.setDisable(false);
+		endPrev.setDisable(true);
+		startPreview = false;
+	}
+	
+	@FXML
+	private void next(){
+		startPreview();
+		if(nextNum.isDisable())
+			controller.nextSelect(0);
+		else
+			controller.nextSelect(nextNum.getValue());
+	}
+	
+	@FXML
+	private void back(){
+		endPreview();
+		controller.backSelect();
+	}
+	
+	@FXML
+	private void forward(){
+		startPreview();
+		controller.forwardSelect();
+	}
+	
 	private class ComboObj{
 		
 		private String name;
@@ -219,24 +271,44 @@ public class SceneEditor {
 		}
 	}
 	
-	public void drawPreview(){
-		stop();
-		bgc.setFill(Color.BLACK);
-		bgc.fillRect(0, 0, backdrop.getWidth(), backdrop.getHeight());
-		if(bckgrndImage != null){
-			gc.drawImage(bckgrndImage, 0, 0);
-			for(Actor actor : layers){
-				Image image = imgLoader.getSprite(actor.getName());
-				if(image != null){
-					if(actor.isFlipped()){
-						gc.drawImage(image, actor.getEndX() + image.getWidth(), actor.getEndY(), -image.getWidth(), image.getHeight());
-					}else{
-						gc.drawImage(image, actor.getEndX(), actor.getEndY());
-					}
-				}							
-			}
-			gc.fillText(node.getText(), textX.get(), textY.get());
+	public void drawStartPreview(){
+		
+		Scene scene = node != null ? node.getScene() : null;
+		drawBackStage();
+		drawBackgorund();	
+		
+		for(Actor actor : layers){
+			Image image = imgLoader.getSprite(actor.getName());
+			if(image != null){
+				if(actor.isFlipped()){
+					gc.drawImage(image, actor.getStartX() + image.getWidth(), actor.getStartY(), -image.getWidth(), image.getHeight());
+				}else{
+					gc.drawImage(image, actor.getStartX(), actor.getStartY());
+				}
+			}							
 		}
+		
+		if(scene != null) drawText(scene);
+	}
+	
+	public void drawEndPreview(){
+		
+		Scene scene = node != null ? node.getScene() : null;
+		drawBackStage();
+		drawBackgorund();	
+		
+		for(Actor actor : layers){
+			Image image = imgLoader.getSprite(actor.getName());
+			if(image != null){
+				if(actor.isFlipped()){
+					gc.drawImage(image, actor.getEndX() + image.getWidth(), actor.getEndY(), -image.getWidth(), image.getHeight());
+				}else{
+					gc.drawImage(image, actor.getEndX(), actor.getEndY());
+				}
+			}							
+		}
+		
+		if(scene != null) drawText(scene);
 	}
 	
 	private void buildScene(){
@@ -269,12 +341,8 @@ public class SceneEditor {
 	
 	private void update(){
 		Scene scene = node != null ? node.getScene() : null;
-		bgc.setFill(Color.BLACK);
-		bgc.fillRect(0, 0, backdrop.getWidth(), backdrop.getHeight());
-		
-		if(bckgrndImage != null){
-			gc.drawImage(bckgrndImage, 0, 0);
-		}	
+		drawBackStage();
+		drawBackgorund();		
 
 		for(Sprite sprite : actorList){
 			if(sprite.isFlipped()){
@@ -292,12 +360,7 @@ public class SceneEditor {
 				gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 			}
 			
-			gc.setFont(new Font(scene.getFont(), scene.getFontSize()));
-			gc.setFill(scene.getTextColor());
-			
-			if(scene.getTextBackground().length() > 0) gc.drawImage(imgLoader.getTextBack(scene.getTextBackground()),
-					scene.getSceneX(), scene.getSceneY());
-			gc.fillText(node.getText(), scene.getTrueTextX(),scene.getTrueTextY());
+			drawText(scene);
 			
 			if(node.getType() == nodeType.Option && mask.getValue()){
 				for(OptionText oText : ((Option)node).getChildren()){
@@ -309,6 +372,26 @@ public class SceneEditor {
 			}
 			
 		}		
+	}
+	
+	private void drawBackgorund(){
+		if(bckgrndImage != null){
+			gc.drawImage(bckgrndImage, 0, 0);
+		}	
+	}
+	
+	private void drawBackStage(){
+		bgc.setFill(Color.BLACK);
+		bgc.fillRect(0, 0, backdrop.getWidth(), backdrop.getHeight());
+	}
+	
+	private void drawText(Scene scene){
+		gc.setFont(new Font(scene.getFont(), scene.getFontSize()));
+		gc.setFill(scene.getTextColor());
+		
+		if(scene.getTextBackground().length() > 0) gc.drawImage(imgLoader.getTextBack(scene.getTextBackground()),
+				scene.getSceneX(), scene.getSceneY());
+		gc.fillText(node.getText(), scene.getTrueTextX(),scene.getTrueTextY());
 	}
 	
 	private void drawBacground(Color color){
@@ -367,7 +450,7 @@ public class SceneEditor {
 		icons = new HashMap<String, ImageView>();
 		textBack = new ArrayList<ComboImg>();
 		
-		this.cotroller = cotroller;
+		this.controller = cotroller;
 		canvasPane.heightProperty().addListener( observable -> updateCanvas());
 		canvasPane.widthProperty().addListener( observable -> updateCanvas());
 		
@@ -383,11 +466,16 @@ public class SceneEditor {
 			}
 		};
 		animTimer.stop();
+		
+		startPreview();
 		previewTimer = new AnimationTimer(){
 			
 			@Override
 			public void handle(long now) {
-				drawPreview();
+				if(startPreview)
+					drawStartPreview();
+				else
+					drawEndPreview();
 			}
 		};
 		previewTimer.start();
@@ -481,6 +569,16 @@ public class SceneEditor {
 		if(node != null){			
 			textTab();
 			Scene scene = node.getScene();
+			if(node.getType() == nodeType.Option){
+				nextNum.setDisable(false);
+				nextNum.getItems().clear();
+				for(int i = 0; i < ((Option)node).numChildren(); i++){
+					nextNum.getItems().add(i);
+				}
+				nextNum.getSelectionModel().selectFirst();
+			}else{
+				nextNum.setDisable(true);	
+			}
 			setBackground(scene.getBackground());
 			setActors(scene.getLayers());
 			stop();
@@ -517,6 +615,5 @@ public class SceneEditor {
 			}
 		}
 	}
-		
 	
 }

@@ -60,6 +60,21 @@ public class Controller {
 		}		
 	}
 	
+	public void nextSelect(int n){
+		chEditor.nextSelect(n);
+		updateSel();
+	}
+	
+	public void backSelect(){
+		chEditor.backSelect();
+		updateSel();
+	}
+	
+	public void forwardSelect(){
+		chEditor.forwardSelect();
+		updateSel();
+	}
+	
 	public void updateSel(){
 		cnvsManager.setSelected(chEditor.getSelectedID());
 		if(chEditor.getSelected() != null){

@@ -3,6 +3,7 @@ package cpp.VNCreator.Controller;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Random;
+import java.util.Stack;
 
 import cpp.VNCreator.Model.NodeType.nodeType;
 import cpp.VNCreator.Node.Node;
@@ -27,7 +28,9 @@ public class ChapterEditor{
 	private Hashtable<Integer,Node> tree;
 	private Node current;
 	private Node selected;
-	private Stack memory;
+	private Stack<Node> memory;
+	private Stack<Node> selectMemory;
+	private Stack<Node> forwardMemory;
 	Random keyGen;
 	
 	private Node start;
@@ -38,7 +41,9 @@ public class ChapterEditor{
 	 * @param tree
 	 */
 	public ChapterEditor(Hashtable<Integer,Node> tree){
-		memory = new Stack(20);
+		memory = new Stack<Node>();
+		selectMemory = new Stack<Node>();
+		forwardMemory = new Stack<Node>();
 		keyGen = new Random();
 		this.tree = tree;
 		current = null;
@@ -112,28 +117,6 @@ public class ChapterEditor{
 		}
 	}
 	
-	/**
-	 * disconnect disconnects selected from node with provided key.
-	 * checks to make sure if the node is in selected child list and
-	 * then deletes it. If selectedNode has no children then it is
-	 * add to arrayList noChild.
-	 * @param key
-	 * @return returns the key of the disconnected node.
-	 */
-	//TODO
-//	public int disconnect(int key){
-//		Text node = searchTree(key);
-//		selectedNode.removeChild(node);
-//		if(selectedNode.getChildSize() == 0 && !noChild.contains(selectedNode)){
-//			noChild.add(selectedNode);
-//		}
-//		node.removeParent(selectedNode);
-//		if(node.getParentSize() == 0 && !noParent.contains(node)){
-//			noParent.add(node);
-//		}
-//		return node.getKey();
-//	}
-	
 	public void addBookmark(){
 		bookmark.add(selected);
 	}
@@ -168,6 +151,32 @@ public class ChapterEditor{
 		return next;
 	}
 	
+	public void nextSelect(int input){
+		forwardMemory = new Stack<Node>();
+		if(selected != null && selected.hasChild()){
+			selectMemory.push(selected);
+			if(selected.getType() == nodeType.Option){
+				selected = ((Option)selected).getChild(input);
+			}else{
+				selected = ((Text)selected).getChild();
+			}
+		}
+	}
+	
+	public void backSelect(){
+		if(!selectMemory.isEmpty()){
+			forwardMemory.push(selected);
+			selected = selectMemory.pop();
+		}
+	}
+	
+	public void forwardSelect(){
+		if(!forwardMemory.isEmpty()){
+			selectMemory.push(selected);
+			selected = forwardMemory.pop();
+		}
+	}
+	
 	/*
 	 * back reverts the call next up to a predetermined limit.
 	 */
@@ -177,70 +186,6 @@ public class ChapterEditor{
 			current = memory.pop();
 		}		
 		return true;
-	}
-	
-	
-	/**
-	 * stack holds value Text to be recalled latter.
-	 * 
-	 * @author Stephen Jackson
-	 *
-	 */
-	class Stack{
-		
-		Node[] stack;
-		int size;
-		int max;
-		int pointer;
-		
-		public Stack(int max){
-			stack = new Node[max];
-			this.max = max;
-			size = 0;
-			pointer = 0;
-		}
-		
-		/**
-		 * push adds text to stack and updates size.
-		 * disallows size to be lager than stack size,
-		 * but allows text to over write values.
-		 * @param text
-		 */
-		public void push(Node text){
-			pointer = (pointer + 1)%stack.length;
-			stack[pointer] = text;
-			if(size < max){
-				size++;
-			}else{
-				size = max;
-			}
-		}
-		
-		/**
-		 * removes top of the stack and sets to null.
-		 * size is reduced to 0 and only moves if size
-		 * is greater than 0.
-		 * @return
-		 */
-		public Node pop(){
-			Node pop = stack[pointer];
-			stack[pointer] = null;
-			if(pointer == 0){
-				pointer = max - 1;
-			}else{
-				pointer--;
-			}
-			if(size > 0){
-				size--;
-			}else{
-				size = 0;
-			}
-			return pop;
-		}
-		
-		public Node peek(){
-			return size > 0 ? stack[pointer] : null;
-		}
 	}
 
 	/**
@@ -384,22 +329,6 @@ public class ChapterEditor{
 	public boolean validate() {
 		return ((noParent.size()==1 && noParent.contains(start)) 
 				|| (noParent.size()==0 && start!=null));
-	}
-
-	public String getSelTitle() {
-		return selected.getTitle();
-	}
-	
-	public void setSelTitle(String title) {
-		selected.setTitle(title);
-	}
-
-	public String getSelText() {
-		return selected.getText();
-	}
-	
-	public void setSelText(String text) {
-		selected.setText(text);
 	}
 	
 	public Node getCurrentNode(){

@@ -84,10 +84,14 @@
             <Button layoutY="4.0" mnemonicParsing="false" onAction="#play" text="Play" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="4.0" />
             <Button layoutX="38.0" layoutY="4.0" mnemonicParsing="false" onAction="#pause" text="Pause" AnchorPane.leftAnchor="38.0" AnchorPane.topAnchor="4.0" />
             <Button layoutX="85.0" layoutY="4.0" mnemonicParsing="false" onAction="#stop" text="Stop" AnchorPane.leftAnchor="85.0" AnchorPane.topAnchor="4.0" />
-            <Button layoutX="140.0" layoutY="4.0" mnemonicParsing="false" onAction="#addLayer" text="Add Layer" AnchorPane.leftAnchor="140.0" AnchorPane.topAnchor="4.0" />
+            <Button layoutX="126.0" layoutY="4.0" mnemonicParsing="false" onAction="#addLayer" text="Add Layer" AnchorPane.leftAnchor="126.0" AnchorPane.topAnchor="4.0" />
             <TabPane layoutY="31.0" prefHeight="208.0" prefWidth="563.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="31.0" />
-            <ComboBox layoutX="219.0" layoutY="4.0" prefHeight="25.0" prefWidth="148.0" />
-            <Button layoutX="367.0" layoutY="4.0" mnemonicParsing="false" text="Next" />
+            <ComboBox fx:id="nextNum" layoutX="196.0" layoutY="4.0" prefHeight="25.0" prefWidth="148.0" AnchorPane.leftAnchor="196.0" AnchorPane.topAnchor="4.0" />
+            <Button fx:id="next" layoutX="344.0" layoutY="4.0" mnemonicParsing="false" onAction="#next" text="Next" />
+            <Button fx:id="back" layoutX="385.0" layoutY="4.0" mnemonicParsing="false" onAction="#back" text="Back" AnchorPane.leftAnchor="385.0" AnchorPane.topAnchor="4.0" />
+            <Button fx:id="startPrev" layoutX="487.0" layoutY="4.0" mnemonicParsing="false" onAction="#startPreview" text="Start" AnchorPane.leftAnchor="487.0" AnchorPane.topAnchor="4.0" />
+            <Button fx:id="endPrev" layoutX="527.0" layoutY="4.0" mnemonicParsing="false" onAction="#endPreview" text="End" AnchorPane.leftAnchor="527.0" AnchorPane.topAnchor="4.0" />
+            <Button layoutX="426.0" layoutY="4.0" mnemonicParsing="false" onAction="#forward" text="Forward" AnchorPane.leftAnchor="426.0" AnchorPane.topAnchor="4.0" />
          </children>
       </AnchorPane>
    </children>

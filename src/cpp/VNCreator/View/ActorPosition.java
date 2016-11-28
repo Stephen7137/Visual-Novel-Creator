@@ -62,7 +62,6 @@ public class ActorPosition {
 				Double value = validateDouble(newValue);
 				if( value != null){
 					actor.setStartX(value);
-					sEditor.drawPreview();
 				}else{
 					if(newValue.length() == 0)
 						startX.setText(newValue);
@@ -80,7 +79,6 @@ public class ActorPosition {
 				Double value = validateDouble(newValue);
 				if( value != null){
 					actor.setStartY(value);
-					sEditor.drawPreview();
 				}else{
 					if(newValue.length() == 0)
 						startY.setText(newValue);
@@ -98,7 +96,6 @@ public class ActorPosition {
 				Double value = validateDouble(newValue);
 				if( value != null){
 					actor.setEndX(value);
-					sEditor.drawPreview();
 				}else{
 					if(newValue.length() == 0)
 						endX.setText(newValue);
@@ -116,7 +113,6 @@ public class ActorPosition {
 				Double value = validateDouble(newValue);
 				if( value != null){
 					actor.setEndY(value);
-					sEditor.drawPreview();
 				}else{
 					if(newValue.length() == 0)
 						endY.setText(newValue);
@@ -134,7 +130,6 @@ public class ActorPosition {
 				Long value = validateLong(newValue);
 				if( value != null){
 					actor.setDelay(value);
-					sEditor.drawPreview();
 				}else{
 					if(newValue.length() == 0)
 						delay.setText(newValue);
@@ -152,7 +147,6 @@ public class ActorPosition {
 				Long value = validateLong(newValue);
 				if( value != null){
 					actor.setDuration(value);
-					sEditor.drawPreview();
 				}else{
 					if(newValue.length() == 0)
 						duration.setText(newValue);
@@ -168,7 +162,6 @@ public class ActorPosition {
 			public void changed(ObservableValue<? extends Boolean> arg0, 
 					Boolean oldValue, Boolean newValue) {
 				actor.setFlip(newValue);
-				sEditor.drawPreview();
 			}
 		});
 	}
