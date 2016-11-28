@@ -60,19 +60,22 @@ public class Controller {
 		}		
 	}
 	
-	public void nextSelect(int n){
-		chEditor.nextSelect(n);
-		updateSel();
+	public boolean nextSelect(int n){
+		boolean next = chEditor.nextSelect(n);
+		if(next) updateSel();
+		return next;
 	}
 	
-	public void backSelect(){
-		chEditor.backSelect();
-		updateSel();
+	public boolean backSelect(){
+		boolean next = chEditor.backSelect();
+		if(next) updateSel();
+		return next;
 	}
 	
-	public void forwardSelect(){
-		chEditor.forwardSelect();
-		updateSel();
+	public boolean forwardSelect(){
+		boolean next = chEditor.forwardSelect();
+		if(next) updateSel();
+		return next;
 	}
 	
 	public void updateSel(){
@@ -87,13 +90,11 @@ public class Controller {
 	
 	public void updateScene(){
 		cnvsManager.update();
-		//sEditor.updateText();
 	}
 	
 	public void update(){
 		if(chEditor.getCurrentNode() != null){
 			console.update(chEditor.getCurrentNode());
-			//sEditor.update(chEditor.getCurrentNode());
 		}else{
 			console.clear();
 		}

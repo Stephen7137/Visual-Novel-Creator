@@ -151,7 +151,7 @@ public class ChapterEditor{
 		return next;
 	}
 	
-	public void nextSelect(int input){
+	public boolean nextSelect(int input){
 		forwardMemory = new Stack<Node>();
 		if(selected != null && selected.hasChild()){
 			selectMemory.push(selected);
@@ -160,21 +160,27 @@ public class ChapterEditor{
 			}else{
 				selected = ((Text)selected).getChild();
 			}
+			return true;
 		}
+		return false;
 	}
 	
-	public void backSelect(){
+	public boolean backSelect(){
 		if(!selectMemory.isEmpty()){
 			forwardMemory.push(selected);
 			selected = selectMemory.pop();
+			return true;
 		}
+		return false;
 	}
 	
-	public void forwardSelect(){
+	public boolean forwardSelect(){
 		if(!forwardMemory.isEmpty()){
 			selectMemory.push(selected);
 			selected = forwardMemory.pop();
+			return true;
 		}
+		return false;
 	}
 	
 	/*

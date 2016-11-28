@@ -223,14 +223,22 @@ public class SceneEditor {
 	
 	@FXML
 	private void back(){
-		endPreview();
-		controller.backSelect();
+		if(startPreview){
+			if(controller.backSelect())
+				endPreview();
+		}else{
+			startPreview();
+		}			
 	}
 	
 	@FXML
 	private void forward(){
-		startPreview();
-		controller.forwardSelect();
+		if(startPreview){
+			endPreview();
+		}else{
+			if(controller.forwardSelect())
+				startPreview();
+		}		
 	}
 	
 	private class ComboObj{
@@ -556,7 +564,8 @@ public class SceneEditor {
 		layerSel.getItems().clear();
 		for(int i = 0; i < layers.size(); i++){
 			layerSel.getItems().add(new ComboObj("Layer " + (i + 1), layers.get(i)));
-		}	
+		}
+		layerSel.getSelectionModel().selectFirst();
 	}
 
 	public void setLoader(ImageLoader imgLoader) {
