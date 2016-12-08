@@ -9,9 +9,7 @@
 
 <AnchorPane prefHeight="383.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cpp.VNCreator.View.ActorPosition">
    <children>
-      <CheckBox fx:id="flip" layoutX="25.0" layoutY="357.0" mnemonicParsing="false" text="Flip Image" />
-      <CheckBox layoutX="25.0" layoutY="331.0" mnemonicParsing="false" text="Transisiton Out" />
-      <CheckBox layoutX="22.0" layoutY="305.0" mnemonicParsing="false" text="Transisiton In" />
+      <CheckBox fx:id="flip" layoutX="17.0" layoutY="304.0" mnemonicParsing="false" text="Flip Image" />
       <Text layoutX="17.0" layoutY="289.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Duration" />
       <TextField fx:id="duration" layoutX="76.0" layoutY="272.0" prefHeight="25.0" prefWidth="59.0" />
       <TextField fx:id="delay" layoutX="76.0" layoutY="246.0" prefHeight="25.0" prefWidth="59.0" />

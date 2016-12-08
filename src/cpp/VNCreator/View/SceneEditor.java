@@ -181,9 +181,11 @@ public class SceneEditor {
 	@FXML
 	private void setLayer(){
 		ComboObj comboObj = layerSel.getValue();
-		if(pane.isDisabled()) pane.setDisable(false);
-		actorPos.setActor(icons.get(comboObj.getActor().getName()) ,comboObj.getActor());
-		imageSel.setValue(null);
+		if(comboObj != null){
+			if(pane.isDisabled()) pane.setDisable(false);
+			actorPos.setActor(icons.get(comboObj.getActor().getName()) ,comboObj.getActor());
+			imageSel.setValue(null);
+		}		
 	}
 	
 	@FXML

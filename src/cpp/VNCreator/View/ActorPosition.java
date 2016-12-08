@@ -214,4 +214,5 @@ public class ActorPosition {
 		this.image.setImage(image.getImage());
 		actor.setName(string);
 	}
+	
 }
